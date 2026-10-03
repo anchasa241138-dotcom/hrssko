@@ -17,9 +17,10 @@
                     },
                     colors: {
                         moph: {
-                            light: '#4ade80',
-                            DEFAULT: '#16a34a',
-                            dark: '#15803d',
+                            light: '#059669', // emerald-600
+                            DEFAULT: '#064e3b', // emerald-900
+                            dark: '#022c22', // emerald-950
+                            gold: '#fbbf24', // amber-400 for accents
                         }
                     }
                 }
@@ -29,7 +30,7 @@
     <style>
         body { font-family: 'Sarabun', sans-serif; }
         .bg-gradient-moph {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #065f46 0%, #022c22 100%);
         }
         
         /* View switching (Auth vs App) */
@@ -63,7 +64,7 @@
 <body class="bg-gray-50 h-screen overflow-hidden">
 
     <!-- ======================= AUTH VIEW (CENTERED CARD) ======================= -->
-    <div id="view-auth" class="view-section active h-full w-full relative flex items-center justify-center p-4" style="background: linear-gradient(135deg, #34d399 0%, #059669 100%);">
+    <div id="view-auth" class="view-section active h-full w-full relative flex items-center justify-center p-4" style="background: linear-gradient(135deg, #065f46 0%, #022c22 100%);">
         
         <!-- Auth Container -->
         <div id="auth-container" class="relative z-10 bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden border border-white/20 transition-all duration-500">
@@ -77,11 +78,11 @@
                 </div>
                 
                 <div class="relative z-10">
-                    <div class="w-16 h-16 mx-auto bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mb-3 border-2 border-white/40 shadow-lg">
-                        <i class="fas fa-hospital-user text-3xl text-white"></i>
+                    <div class="w-16 h-16 mx-auto bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mb-3 border-2 border-moph-gold shadow-lg">
+                        <i class="fas fa-hospital-user text-3xl text-moph-gold"></i>
                     </div>
-                    <h1 class="text-2xl font-bold mb-1 drop-shadow-md">ระบบการจ้างทางเลือก</h1>
-                    <p class="text-green-100 text-sm font-light">สำนักงานสาธารณสุขจังหวัดศรีสะเกษ</p>
+                    <h1 class="text-2xl font-bold mb-1 drop-shadow-md tracking-wide">ระบบการจ้างทางเลือก</h1>
+                    <p class="text-moph-gold text-sm font-medium tracking-wide">สำนักงานสาธารณสุขจังหวัดศรีสะเกษ</p>
                 </div>
             </div>
 
@@ -228,12 +229,12 @@
         
         <!-- Sidebar -->
         <aside class="w-72 bg-gradient-moph text-white shadow-xl flex flex-col transition-all duration-300 flex-shrink-0">
-            <div class="p-6 text-center border-b border-white/20">
-                <div class="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center mb-4 shadow-lg">
+            <div class="p-6 text-center border-b border-white/10">
+                <div class="w-20 h-20 mx-auto bg-gradient-to-br from-gray-50 to-gray-200 rounded-full flex items-center justify-center mb-4 shadow-lg border-2 border-moph-gold">
                     <i class="fas fa-hospital text-4xl text-moph-dark"></i>
                 </div>
-                <h1 class="text-xl font-bold leading-tight">ระบบการจ้างทางเลือก</h1>
-                <p class="text-sm text-green-100 mt-1">สสจ.ศรีสะเกษ</p>
+                <h1 class="text-xl font-bold leading-tight tracking-wide text-white drop-shadow-sm">ระบบการจ้างทางเลือก</h1>
+                <p class="text-sm text-moph-gold mt-1 font-medium tracking-wider">สสจ.ศรีสะเกษ</p>
             </div>
 
             <nav class="flex-1 overflow-y-auto py-4">
