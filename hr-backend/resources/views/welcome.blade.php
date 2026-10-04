@@ -242,22 +242,22 @@
                     <li>
                         <a href="#" onclick="switchAppTab('tab-dashboard', this)" class="sidebar-item active flex items-center px-6 py-3 text-white">
                             <i class="fas fa-chart-line w-6"></i>
-                            <span>1. แดชบอร์ดอัตรากำลังคน</span>
+                            <span>แดชบอร์ดอัตรากำลังคน</span>
                         </a>
                     </li>
                     <li>
                         <a href="#" onclick="switchAppTab('tab-vacant', this)" class="sidebar-item flex items-center px-6 py-3 text-green-50">
                             <i class="fas fa-chair w-6"></i>
-                            <span>2. การบริหารตำแหน่งว่าง</span>
+                            <span>การบริหารตำแหน่งว่าง</span>
                         </a>
                     </li>
                     <!-- Mock menus -->
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-tie w-6"></i><span>3. พนักงานราชการ</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user w-6"></i><span>4. ลูกจ้างประจำ</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-md w-6"></i><span>5. พนักงาน กสธ.</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-clock w-6"></i><span>6. ลูกจ้างชั่วคราว (รายเดือน)</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-users w-6"></i><span class="text-sm">7. ลูกจ้างชั่วคราวรายวัน/จ้างเหมา</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-bell w-6 relative"><span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-3 w-3 flex items-center justify-center">3</span></i><span>8. แจ้งเตือนใบประกอบฯ</span></a></li>
+                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-tie w-6"></i><span>พนักงานราชการ</span></a></li>
+                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user w-6"></i><span>ลูกจ้างประจำ</span></a></li>
+                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this)" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-md w-6"></i><span>พนักงานกระทรวงสาธารณสุข</span></a></li>
+                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-clock w-6"></i><span>ลูกจ้างชั่วคราว (รายเดือน)</span></a></li>
+                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-users w-6"></i><span class="text-sm">ลูกจ้างชั่วคราวรายวัน/จ้างเหมา</span></a></li>
+                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-bell w-6 relative"><span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-3 w-3 flex items-center justify-center">3</span></i><span>แจ้งเตือนใบประกอบฯ</span></a></li>
                 </ul>
             </nav>
             
@@ -281,7 +281,7 @@
         <main class="flex-1 flex flex-col h-screen overflow-hidden">
             <!-- Header -->
             <header class="bg-white shadow-sm h-16 flex items-center justify-between px-8 z-10 flex-shrink-0">
-                <h2 id="page-title" class="text-2xl font-bold text-gray-800">1. แดชบอร์ดแสดงสถานการณ์อัตรากำลังคน</h2>
+                <h2 id="page-title" class="text-2xl font-bold text-gray-800">แดชบอร์ดแสดงสถานการณ์อัตรากำลังคน</h2>
                 <div class="flex items-center gap-4">
                     <button class="text-gray-500 hover:text-moph transition">
                         <i class="fas fa-search text-xl"></i>
@@ -375,41 +375,205 @@
                                 </tr>
                             </thead>
                             <tbody id="vacant-table-body">
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="text-center">1</td>
-                                    <td>รพท.</td>
-                                    <td>เมืองศรีสะเกษ</td>
-                                    <td>-</td>
-                                    <td class="text-center">685412</td>
-                                    <td>พยาบาลวิชาชีพ</td>
-                                    <td>พนักงาน กสธ.</td>
-                                    <td class="text-center">15 ส.ค. 2568</td>
+                                
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="อัตราว่าง" data-opresult="-">
+                                      <td class="text-center">1</td>
+                                      <td>รพท.</td>
+                                      <td>เมืองศรีสะเกษ</td>
+                                      <td>-</td>
+                                      <td class="text-center">685412</td>
+                                      <td>พยาบาลวิชาชีพ</td>
+                                      <td>พนักงาน กสธ.</td>
+                                      <td class="text-center">15 ส.ค. 2568</td>
                                       <td class="text-center">45 วัน</td>
-                                      <td class="text-center">-</td>
+                                      <td class="text-center"><div class="leading-tight">อัตราว่าง</div></td>
                                       <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
-                                      <td class="text-center"><i class="fas fa-clock text-yellow-500"></i></td>
                                       <td class="text-center">-</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-center">ว่างเดิม</td>
-                                    <td class="text-center">1 ต.ค. 2568</td>
-                                    <td class="text-center">
-                                        <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
-                                        <button class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
-                                    </td>
-                                </tr>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">ว่างเดิม</td>
+                                      <td class="text-center">1 ต.ค. 2568</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="หน่วยงานขอสรรหาทดแทน" data-opresult="รอพิจารณา">
+                                      <td class="text-center">2</td>
+                                      <td>รพ.สต.</td>
+                                      <td>ขุขันธ์</td>
+                                      <td>รพ.สต.บ้านตาอุด</td>
+                                      <td class="text-center">112233</td>
+                                      <td>นักวิชาการสาธารณสุข</td>
+                                      <td>พนักงานกระทรวงสาธารณสุข</td>
+                                      <td class="text-center">1 ก.ย. 2569</td>
+                                      <td class="text-center">1 เดือน 3 วัน</td>
+                                      <td class="text-center"><div class="leading-tight">หน่วยงานขอสรรหาทดแทน<div class="text-xs text-yellow-600 font-medium mt-1"><i class="fas fa-clock"></i> รอพิจารณา</div></div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">ว่างเดิม</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="นพ.สสจ. พิจารณาผลการสรรหา" data-opresult="ผ่าน">
+                                      <td class="text-center">3</td>
+                                      <td>รพช.</td>
+                                      <td>ราษีไศล</td>
+                                      <td>-</td>
+                                      <td class="text-center">998877</td>
+                                      <td>เภสัชกร</td>
+                                      <td>ลูกจ้างชั่วคราว</td>
+                                      <td class="text-center">15 ก.ค. 2569</td>
+                                      <td class="text-center">2 เดือน 19 วัน</td>
+                                      <td class="text-center"><div class="leading-tight">นพ.สสจ. พิจารณาผลการสรรหา<div class="text-xs text-green-600 font-medium mt-1"><i class="fas fa-check-circle"></i> ผ่าน</div></div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">ว่างเดิม</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="ไม่มีผู้สมัคร/ไม่มีผู้ผ่านการคัดเลือก/เปลี่ยนเงื่อนไข" data-opresult="ไม่ผ่าน">
+                                      <td class="text-center">4</td>
+                                      <td>สสอ.</td>
+                                      <td>ขุนหาญ</td>
+                                      <td>-</td>
+                                      <td class="text-center">554433</td>
+                                      <td>เจ้าพนักงานสาธารณสุข</td>
+                                      <td>พนักงานกระทรวงสาธารณสุข</td>
+                                      <td class="text-center">10 มิ.ย. 2569</td>
+                                      <td class="text-center">3 เดือน 24 วัน</td>
+                                      <td class="text-center"><div class="leading-tight">ไม่มีผู้สมัคร/ไม่มีผู้ผ่านการคัดเลือก/เปลี่ยนเงื่อนไข<div class="text-xs text-red-600 font-medium mt-1"><i class="fas fa-times-circle"></i> ไม่ผ่าน</div></div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">ว่างเดิม</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
+<!-- APP TAB 3: STAFF MOPH -->
+                  <div id="tab-staff-moph" class="app-tab-content h-full hidden">
+                      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col h-full">
+                          <div class="flex items-center justify-between mb-4">
+                              <h3 class="text-lg font-bold text-gray-700">รายชื่อพนักงานกระทรวงสาธารณสุขทั้งหมด</h3>
+                              <button onclick="openStaffModal()" class="bg-moph text-white px-4 py-2 rounded-md hover:bg-moph/90 transition shadow-sm text-sm font-medium">
+                                  <i class="fas fa-plus mr-1"></i> เพิ่มข้อมูลพนักงาน
+                              </button>
+                          </div>
+                          
+                          <div class="overflow-x-auto overflow-y-auto flex-1 rounded-lg border border-gray-200">
+                              <table class="w-full text-sm text-left whitespace-nowrap">
+                                  <thead class="text-xs text-gray-700 uppercase bg-gray-100 sticky top-0 z-10">
+                                      <tr>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ลำดับ</th>
+                                          <th colspan="6" class="px-4 py-2 border-b border-r text-center">สังกัดหน่วยงาน</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ตำแหน่งเลขที่</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ระดับ</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ตำแหน่งสายงาน</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">สถานะตำแหน่ง</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ประเภทเจ้าหน้าที่</th>
+                                          <th colspan="4" class="px-4 py-2 border-b border-r text-center">ข้อมูลบุคคล</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">วันที่เริ่มจ้าง</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">วุฒิที่จ้าง</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">วันที่จบการศึกษา</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">เกรดเฉลี่ย</th>
+                                          <th colspan="4" class="px-4 py-2 border-b border-r text-center">ใบประกอบวิชาชีพ</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b text-center sticky right-0 bg-gray-100">จัดการ</th>
+                                      </tr>
+                                      <tr>
+                                          <!-- Agency -->
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">คำนำหน้า</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">อำเภอ</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">รพ.สต.</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">กลุ่มงาน</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">งาน</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">ตรง จ. / ไม่ตรง จ.</th>
+                                          <!-- Personal -->
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">คำนำหน้า</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">ชื่อ</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">สกุล</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">เลขบัตรประชาชน</th>
+                                          <!-- License -->
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">ชื่อใบประกอบฯ</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">เลขที่ใบประกอบฯ</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">วันออก</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">วันหมดอายุ</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody id="staff-moph-table-body">
+                                      <!-- Dummy Row -->
+                                      <tr class="hover:bg-gray-50 transition">
+                                          <td class="text-center sm-row-num">1</td>
+                                          <td>รพ.สต.</td>
+                                          <td>เมือง</td>
+                                          <td>บ้านหนอง</td>
+                                          <td>บริการ</td>
+                                          <td>พยาบาล</td>
+                                          <td class="text-center">ตรง จ.</td>
+                                          <td class="text-center">98765</td>
+                                          <td class="text-center">ปฏิบัติการ</td>
+                                          <td>พยาบาลวิชาชีพ</td>
+                                          <td class="text-center">มีคนครอง</td>
+                                          <td>พนักงานกระทรวงสาธารณสุข</td>
+                                          <td>นางสาว</td>
+                                          <td>สมหญิง</td>
+                                          <td>ใจดี</td>
+                                          <td class="text-center">1234567890123</td>
+                                          <td class="text-center">1 ม.ค. 2565</td>
+                                          <td>ป.ตรี</td>
+                                          <td class="text-center">1 พ.ค. 2564</td>
+                                          <td class="text-center">3.50</td>
+                                          <td>พยาบาลศาสตร์</td>
+                                          <td class="text-center">998877</td>
+                                          <td class="text-center">1 มิ.ย. 2564</td>
+                                          <td class="text-center">1 มิ.ย. 2569</td>
+                                          <td class="text-center sticky right-0 bg-white">
+                                              <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editStaffMoph(this)"><i class="fas fa-edit"></i></button>
+                                              <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button>
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+
             </div>
         </main>
     </div>
 
-    <!-- ======================= MODAL FORM ======================= -->
+    
+                  <!-- ======================= MODAL FORM ======================= -->
     <div id="dataModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
         <div class="bg-white w-11/12 max-w-4xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
@@ -495,6 +659,14 @@
                                     <option value="" disabled selected>เลือกสถานะการดำเนินการ</option>
                                 </select>
                             </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ผลการพิจารณา</label>
+                                <select id="modal_operation_result" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-moph disabled:bg-gray-100 disabled:cursor-not-allowed">
+                                    <option value="-">รอพิจารณา</option>
+                                    <option value="ผ่าน">ผ่าน</option>
+                                    <option value="ไม่ผ่าน">ไม่ผ่าน</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -520,11 +692,11 @@
                                     <div>
                                         <label class="block text-xs font-medium text-gray-600 mb-1">เอกสารแนบ (.pdf)</label>
                                         <div class="flex items-center gap-2">
-                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm">
-                                                <i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด
-                                                <input type="file" accept=".pdf" class="hidden">
+                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm" title="คลิกเพื่อเลือกไฟล์">
+                                                <span class="file-label-text"><i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด</span>
+                                                <input type="file" accept=".pdf" class="hidden" onchange="handleFileUpload(this)">
                                             </label>
-                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm" title="ดาวน์โหลดไฟล์">
+                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm btn-download-file" title="ดาวน์โหลดไฟล์" onclick="downloadMockFile(this)">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                         </div>
@@ -550,11 +722,11 @@
                                     <div>
                                         <label class="block text-xs font-medium text-gray-600 mb-1">เอกสารแนบ (.pdf)</label>
                                         <div class="flex items-center gap-2">
-                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm">
-                                                <i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด
-                                                <input type="file" accept=".pdf" class="hidden">
+                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm" title="คลิกเพื่อเลือกไฟล์">
+                                                <span class="file-label-text"><i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด</span>
+                                                <input type="file" accept=".pdf" class="hidden" onchange="handleFileUpload(this)">
                                             </label>
-                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm" title="ดาวน์โหลดไฟล์">
+                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm btn-download-file" title="ดาวน์โหลดไฟล์" onclick="downloadMockFile(this)">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                         </div>
@@ -580,11 +752,11 @@
                                     <div>
                                         <label class="block text-xs font-medium text-gray-600 mb-1">เอกสารแนบ (.pdf)</label>
                                         <div class="flex items-center gap-2">
-                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm">
-                                                <i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด
-                                                <input type="file" accept=".pdf" class="hidden">
+                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm" title="คลิกเพื่อเลือกไฟล์">
+                                                <span class="file-label-text"><i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด</span>
+                                                <input type="file" accept=".pdf" class="hidden" onchange="handleFileUpload(this)">
                                             </label>
-                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm" title="ดาวน์โหลดไฟล์">
+                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm btn-download-file" title="ดาวน์โหลดไฟล์" onclick="downloadMockFile(this)">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                         </div>
@@ -734,17 +906,49 @@
             const vacantDate = document.getElementById('modal_vacant_date') ? document.getElementById('modal_vacant_date').value : '-';
             const vacantDays = document.getElementById('modal_vacant_days_display') ? document.getElementById('modal_vacant_days_display').value : '-';
             const opStatusVal = document.getElementById('modal_operation_status') ? document.getElementById('modal_operation_status').value : '';
+            const opResultVal = document.getElementById('modal_operation_result') ? document.getElementById('modal_operation_result').value : '-';
 
             const ssj = document.getElementById('chk_ssj') && document.getElementById('chk_ssj').checked;
             const chro = document.getElementById('chk_chro') && document.getElementById('chk_chro').checked;
             const akp = document.getElementById('chk_akp') && document.getElementById('chk_akp').checked;
 
-            const formatIcon = (isChecked) => isChecked ? '<i class="fas fa-check text-green-500"></i>' : '-';
+              const sectSsj = document.getElementById('section_ssj');
+              const ssjDoc = sectSsj.querySelector('input[type="text"]').value;
+              const ssjDate = sectSsj.querySelector('input[type="date"]').value;
+              const ssjFileInput = sectSsj.querySelector('input[type="file"]');
+              const ssjFileUrl = ssjFileInput.getAttribute('data-fileurl') || '';
+              const ssjFileName = ssjFileInput.getAttribute('data-filename') || '';
+              const ssjFile = ssjFileName !== '';
+
+              const sectChro = document.getElementById('section_chro');
+              const chroDoc = sectChro.querySelector('input[type="text"]').value;
+              const chroDate = sectChro.querySelector('input[type="date"]').value;
+              const chroFileInput = sectChro.querySelector('input[type="file"]');
+              const chroFileUrl = chroFileInput.getAttribute('data-fileurl') || '';
+              const chroFileName = chroFileInput.getAttribute('data-filename') || '';
+              const chroFile = chroFileName !== '';
+
+              const sectAkp = document.getElementById('section_akp');
+              const akpDoc = sectAkp.querySelector('input[type="text"]').value;
+              const akpDate = sectAkp.querySelector('input[type="date"]').value;
+              const akpFileInput = sectAkp.querySelector('input[type="file"]');
+              const akpFileUrl = akpFileInput.getAttribute('data-fileurl') || '';
+              const akpFileName = akpFileInput.getAttribute('data-filename') || '';
+              const akpFile = akpFileName !== '';
+    
+
+            const formatIcon = (isChecked, hasFile) => {
+                if (!isChecked) return '-';
+                if (hasFile) {
+                    return '<div class="flex items-center justify-center gap-2"><i class="fas fa-check text-green-500"></i><button type="button" onclick="downloadFromTable(this)" class="text-gray-400 hover:text-green-600 transition" title="ดาวน์โหลดเอกสารแนบ"><i class="fas fa-download text-xs"></i></button></div>';
+                }
+                return '<i class="fas fa-check text-green-500"></i>';
+            };
 
             const tbody = document.getElementById('vacant-table-body');
             if(!tbody) return;
 
-            const rowCount = tbody.querySelectorAll('tr').length + 1;
+            const rowCount = editingRow ? editingRow.querySelector('td').innerText : (tbody.querySelectorAll('tr').length + 1);
             
             let formattedDate = vacantDate;
             if(vacantDate && vacantDate !== '-') {
@@ -755,9 +959,33 @@
                 }
             }
 
-            const tr = document.createElement('tr');
+            let tr;
+            if (editingRow) {
+                tr = editingRow;
+            } else {
+                tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition';
+                tbody.appendChild(tr);
+            }
+            
             tr.setAttribute('data-opstatus', opStatusVal || '');
-            tr.className = 'hover:bg-gray-50 transition';
+            tr.setAttribute('data-opresult', opResultVal || '-');
+            
+            tr.setAttribute('data-ssj-doc', ssjDoc);
+            tr.setAttribute('data-ssj-date', ssjDate);
+            tr.setAttribute('data-ssj-fileurl', ssjFileUrl);
+            tr.setAttribute('data-ssj-filename', ssjFileName);
+            
+            tr.setAttribute('data-chro-doc', chroDoc);
+            tr.setAttribute('data-chro-date', chroDate);
+            tr.setAttribute('data-chro-fileurl', chroFileUrl);
+            tr.setAttribute('data-chro-filename', chroFileName);
+            
+            tr.setAttribute('data-akp-doc', akpDoc);
+            tr.setAttribute('data-akp-date', akpDate);
+            tr.setAttribute('data-akp-fileurl', akpFileUrl);
+            tr.setAttribute('data-akp-filename', akpFileName);
+
             tr.innerHTML = `
                 <td class="text-center">${rowCount}</td>
                 <td>${prefix || '-'}</td>
@@ -768,10 +996,10 @@
                 <td>${empType || '-'}</td>
                 <td class="text-center">${formattedDate || '-'}</td>
                 <td class="text-center">${vacantDays || '-'}</td>
-                <td class="text-center">${opStatusVal || '-'}</td>
-                <td class="text-center">${formatIcon(chro)}</td>
-                <td class="text-center">${formatIcon(akp)}</td>
-                <td class="text-center">${formatIcon(ssj)}</td>
+                <td class="text-center">${formatOperationStatus(opStatusVal, opResultVal)}</td>
+                <td class="text-center">${formatIcon(chro, chroFile)}</td>
+                <td class="text-center">${formatIcon(akp, akpFile)}</td>
+                <td class="text-center">${formatIcon(ssj, ssjFile)}</td>
                 <td class="text-center">-</td>
                 <td class="text-center">-</td>
                 <td class="text-center">-</td>
@@ -780,12 +1008,13 @@
                 <td class="text-center">-</td>
                 <td class="text-center">
                     <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
-                    <button class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button>
+                    <button class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
                 </td>
             `;
 
-            tbody.appendChild(tr);
             toggleModal();
+            editingRow = null;
+            saveToLocalStorage();
             
             const form = document.querySelector('#dataModal form');
             if(form) form.reset();
@@ -829,15 +1058,317 @@
                     opStatus.appendChild(el);
                 });
                 opStatus.disabled = false;
+                if(document.getElementById('modal_operation_result')) document.getElementById('modal_operation_result').disabled = false;
                 
                 if (options.includes(currentValue)) {
                     opStatus.value = currentValue;
                 }
             } else {
                 opStatus.disabled = true;
+                if(document.getElementById('modal_operation_result')) document.getElementById('modal_operation_result').disabled = true;
             }
         }
+        let editingRow = null;
+
+        
+        function saveToLocalStorage() {
+            const tbody = document.getElementById('vacant-table-body');
+            if (tbody) {
+                localStorage.setItem('vacant_table_data', tbody.innerHTML);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            const tbody = document.getElementById('vacant-table-body');
+            const savedData = localStorage.getItem('vacant_table_data');
+            if (tbody && savedData) {
+                tbody.innerHTML = savedData;
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Force reset storage once so the user sees the new mock rows
+            if (!localStorage.getItem('mock_rows_initialized_v3')) {
+                localStorage.removeItem('vacant_table_data');
+                localStorage.setItem('mock_rows_initialized_v3', 'true');
+            }
+            loadFromLocalStorage();
+            loadStaffFromStorage();
+        });
+
+
+        
+        function handleFileUpload(input) {
+            const labelSpan = input.closest('label').querySelector('.file-label-text');
+            const downloadBtn = input.closest('.flex').querySelector('.btn-download-file');
+            if (input.files && input.files.length > 0) {
+                const fileName = input.files[0].name;
+                labelSpan.innerHTML = '<i class="fas fa-file-pdf mr-1 text-red-500"></i> ' + fileName;
+                // Store fake file url for mockup
+                const objectUrl = URL.createObjectURL(input.files[0]);
+                input.setAttribute('data-fileurl', objectUrl);
+                input.setAttribute('data-filename', fileName);
+                downloadBtn.classList.remove('text-gray-600');
+                downloadBtn.classList.add('text-green-600');
+            } else {
+                labelSpan.innerHTML = '<i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด';
+                input.removeAttribute('data-fileurl');
+                input.removeAttribute('data-filename');
+                downloadBtn.classList.add('text-gray-600');
+                downloadBtn.classList.remove('text-green-600');
+            }
+        }
+
+        function downloadMockFile(btn) {
+            const input = btn.closest('.flex').querySelector('input[type="file"]');
+            const fileUrl = input.getAttribute('data-fileurl');
+            const fileName = input.getAttribute('data-filename');
+            
+            if (fileUrl) {
+                // Create a temporary anchor to trigger download
+                const a = document.createElement('a');
+                a.href = fileUrl;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                alert('โปรดเลือกไฟล์ (อัพโหลด) ก่อนทำการดาวน์โหลดครับ');
+            }
+        }
+        
+        // Mock table download function
+        function downloadFromTable(btn) {
+            // สร้างไฟล์ PDF ตัวอย่างขนาดเล็กมาก (Dummy PDF) เพื่อจำลองการดาวน์โหลดจากตาราง
+            const dummyPdfBase64 = 'JVBERi0xLjQKJcOkw7zDtsOfCjIgMCBvYmoKPDwvTGVuZ3RoIDMgMCBSL0ZpbHRlci9GbGF0ZURlY29kZT4+CnN0cmVhbQp4nDPQM1Qo5ypUMFAwALJMLU31jBQsTAz1LBSKUrnCtRTy0yuLQExghrK+iZ6Bvpm+iYGlvkGagb65vpG+oYm+pb6ZgQGXYy0XFwB19A+tCmVuZHN0cmVhbQplbmRvYmoKCjMgMCBvYmoKNTQKZW5kb2JqCgo0IDAgb2JqCjw8L1R5cGUvUGFnZS9NZWRpYUJveFswIDAgNTk1IDg0Ml0vUmVzb3VyY2VzPDwvRm9udDw8L0YxIDEgMCBSPj4+Pi9Db250ZW50cyAyIDAgUi9QYXJlbnQgNSAwIFI+PgplbmRvYmoKCjEgMCBvYmoKPDwvVHlwZS9Gb250L1N1YnR5cGUvVHlwZTEvQmFzZUZvbnQvSGVsdmV0aWNhPj4KZW5kb2JqCgo1IDAgb2JqCjw8L1R5cGUvUGFnZXMvQ291bnQgMS9LaWRzWzQgMCBSXT4+CmVuZG9iagoKNiAwIG9iago8PC9UeXBlL0NhdGFsb2cvUGFnZXMgNSAwIFI+PgplbmRvYmoKCjcgMCBvYmoKPDwvUHJvZHVjZXIoZ2hvc3RzY3JpcHQpL0NyZWF0aW9uRGF0ZShEOjIwMjExMTE4MTExMjAzKzAzJzAwJyk+PgplbmRvYmoKCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDI1OCAwMDAwMCBuIAowMDAwMDAwMDE1IDAwMDAwIG4gCjAwMDAwMDAxNDAgMDAwMDAgbiAKMDAwMDAwMDE1OSAwMDAwMCBuIAowMDAwMDAwMzQ2IDAwMDAwIG4gCjAwMDAwMDA0MDMgMDAwMDAgbiAKMDAwMDAwMDQ1MiAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOC9Sb290IDYgMCBSL0luZm8gNyAwIFI+PgpzdGFydHhyZWYKNTE5CiUlRU9GCg==';
+            const a = document.createElement('a');
+            a.href = 'data:application/pdf;base64,' + dummyPdfBase64;
+            a.download = 'เอกสารแนบตัวอย่าง.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        
+        let editingStaffRow = null;
+
+        function toggleStaffModal() {
+            const modal = document.getElementById('staffModal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function openStaffModal() {
+            editingStaffRow = null;
+            
+            // Clear inputs
+            const inputs = document.querySelectorAll('#staffModal input:not([readonly]), #staffModal select');
+            inputs.forEach(el => {
+                if(el.tagName === 'SELECT') {
+                    if (el.id === 'sm_pers_title') el.value = 'นาย';
+                    else el.value = '';
+                } else {
+                    el.value = '';
+                }
+            });
+            
+            toggleStaffModal();
+        }
+
+        function saveStaffMoph() {
+            const tbody = document.getElementById('staff-moph-table-body');
+            
+            // Get all values
+            const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
+            
+            const agency_prefix = getVal('sm_agency_prefix');
+            const agency_district = getVal('sm_agency_district');
+            const agency_rpst = getVal('sm_agency_rpst');
+            const agency_group = getVal('sm_agency_group');
+            const agency_task = getVal('sm_agency_task');
+            const agency_match = getVal('sm_agency_match');
+            
+            const pos_no = getVal('sm_pos_no');
+            const pos_level = getVal('sm_pos_level');
+            const pos_name = getVal('sm_pos_name');
+            const pos_status = getVal('sm_pos_status');
+            const staff_type = getVal('sm_staff_type');
+            
+            const pers_title = getVal('sm_pers_title');
+            const pers_fname = getVal('sm_pers_fname');
+            const pers_lname = getVal('sm_pers_lname');
+            const pers_idcard = getVal('sm_pers_idcard');
+            
+            const pers_startdate = getVal('sm_pers_startdate');
+            const pers_degree = getVal('sm_pers_degree');
+            const pers_graddate = getVal('sm_pers_graddate');
+            const pers_gpa = getVal('sm_pers_gpa');
+            
+            const lic_name = getVal('sm_lic_name');
+            const lic_no = getVal('sm_lic_no');
+            const lic_issue = getVal('sm_lic_issue');
+            const lic_expire = getVal('sm_lic_expire');
+
+            const trHtml = `
+                <td class="text-center sm-row-num"></td>
+                <td class="text-center">${agency_prefix || '-'}</td>
+                <td class="text-center">${agency_district || '-'}</td>
+                <td class="text-center">${agency_rpst || '-'}</td>
+                <td class="text-center">${agency_group || '-'}</td>
+                <td class="text-center">${agency_task || '-'}</td>
+                <td class="text-center">${agency_match || '-'}</td>
+                
+                <td class="text-center">${pos_no || '-'}</td>
+                <td class="text-center">${pos_level || '-'}</td>
+                <td class="text-center">${pos_name || '-'}</td>
+                <td class="text-center">${pos_status || '-'}</td>
+                <td class="text-center">${staff_type || '-'}</td>
+                
+                <td class="text-center">${pers_title || '-'}</td>
+                <td class="text-center">${pers_fname || '-'}</td>
+                <td class="text-center">${pers_lname || '-'}</td>
+                <td class="text-center">${pers_idcard || '-'}</td>
+                
+                <td class="text-center">${pers_startdate ? formatDateToThai(pers_startdate) : '-'}</td>
+                <td class="text-center">${pers_degree || '-'}</td>
+                <td class="text-center">${pers_graddate ? formatDateToThai(pers_graddate) : '-'}</td>
+                <td class="text-center">${pers_gpa || '-'}</td>
+                
+                <td class="text-center">${lic_name || '-'}</td>
+                <td class="text-center">${lic_no || '-'}</td>
+                <td class="text-center">${lic_issue ? formatDateToThai(lic_issue) : '-'}</td>
+                <td class="text-center">${lic_expire ? formatDateToThai(lic_expire) : '-'}</td>
+                
+                <td class="text-center sticky right-0 bg-white">
+                    <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editStaffMoph(this)"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveStaffToStorage();"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+
+            let tr;
+            if (editingStaffRow) {
+                tr = editingStaffRow;
+                tr.innerHTML = trHtml;
+            } else {
+                // If it's the dummy loading row, clear it
+                if (tbody.innerHTML.includes('กำลังโหลดข้อมูล...')) {
+                    tbody.innerHTML = '';
+                }
+                tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition';
+                tr.innerHTML = trHtml;
+                tbody.appendChild(tr);
+            }
+            
+            // Set hidden data for editing later
+            tr.setAttribute('data-pers-startdate', pers_startdate);
+            tr.setAttribute('data-pers-graddate', pers_graddate);
+            tr.setAttribute('data-lic-issue', lic_issue);
+            tr.setAttribute('data-lic-expire', lic_expire);
+            
+            updateStaffRowNumbers();
+            saveStaffToStorage();
+            toggleStaffModal();
+        }
+        
+        function updateStaffRowNumbers() {
+            const tbody = document.getElementById('staff-moph-table-body');
+            const rows = tbody.querySelectorAll('tr');
+            let count = 1;
+            rows.forEach(row => {
+                const td = row.querySelector('.sm-row-num');
+                if (td) td.innerText = count++;
+            });
+        }
+
+        function editStaffMoph(btn) {
+            const tr = btn.closest('tr');
+            editingStaffRow = tr;
+            const tds = tr.querySelectorAll('td');
+            
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if(el) {
+                    if (val === '-' || !val) el.value = '';
+                    else el.value = val;
+                }
+            };
+            
+            setVal('sm_agency_prefix', tds[1].innerText.trim());
+            setVal('sm_agency_district', tds[2].innerText.trim());
+            setVal('sm_agency_rpst', tds[3].innerText.trim());
+            setVal('sm_agency_group', tds[4].innerText.trim());
+            setVal('sm_agency_task', tds[5].innerText.trim());
+            setVal('sm_agency_match', tds[6].innerText.trim());
+            
+            setVal('sm_pos_no', tds[7].innerText.trim());
+            setVal('sm_pos_level', tds[8].innerText.trim());
+            setVal('sm_pos_name', tds[9].innerText.trim());
+            setVal('sm_pos_status', tds[10].innerText.trim());
+            
+            setVal('sm_pers_title', tds[12].innerText.trim());
+            setVal('sm_pers_fname', tds[13].innerText.trim());
+            setVal('sm_pers_lname', tds[14].innerText.trim());
+            setVal('sm_pers_idcard', tds[15].innerText.trim());
+            
+            setVal('sm_pers_startdate', tr.getAttribute('data-pers-startdate') || '');
+            setVal('sm_pers_degree', tds[17].innerText.trim());
+            setVal('sm_pers_graddate', tr.getAttribute('data-pers-graddate') || '');
+            setVal('sm_pers_gpa', tds[19].innerText.trim());
+            
+            setVal('sm_lic_name', tds[20].innerText.trim());
+            setVal('sm_lic_no', tds[21].innerText.trim());
+            setVal('sm_lic_issue', tr.getAttribute('data-lic-issue') || '');
+            setVal('sm_lic_expire', tr.getAttribute('data-lic-expire') || '');
+            
+            toggleStaffModal();
+        }
+        
+        function saveStaffToStorage() {
+            const tbody = document.getElementById('staff-moph-table-body');
+            if (tbody) {
+                localStorage.setItem('staff_moph_data', tbody.innerHTML);
+            }
+        }
+        
+        // Modify existing loadFromLocalStorage
+        function loadStaffFromStorage() {
+            const tbody = document.getElementById('staff-moph-table-body');
+            const savedData = localStorage.getItem('staff_moph_data');
+            if (tbody && savedData) {
+                if (savedData.includes('text-center')) {
+                    tbody.innerHTML = savedData;
+                }
+            } else if (tbody && !savedData) {
+                // Keep dummy row if nothing saved
+                const initDummy = localStorage.getItem('staff_dummy_init');
+                if (!initDummy) {
+                    localStorage.setItem('staff_dummy_init', 'true');
+                    saveStaffToStorage(); // save the initial dummy HTML so edit works
+                }
+            }
+            updateStaffRowNumbers();
+        }
+        
+        function formatDateToThai(dateStr) {
+            if (!dateStr) return '-';
+            const parts = dateStr.split('-');
+            if (parts.length !== 3) return dateStr;
+            const year = parseInt(parts[0]) + 543;
+            const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+            const month = monthNames[parseInt(parts[1]) - 1];
+            const day = parseInt(parts[2]);
+            return `${day} ${month} ${year}`;
+        }
+
         function openAddModal() {
+            editingRow = null;
             const form = document.querySelector('#dataModal form');
             if(form) form.reset();
             handleModalPrefixChange();
@@ -853,8 +1384,43 @@
             toggleModal();
         }
 
+        
+        function formatOperationStatus(status, result) {
+            if (!status || status === '-') return '-';
+            let resultHtml = '';
+            if (result === 'ผ่าน') {
+                resultHtml = '<div class="text-xs text-green-600 font-medium mt-1"><i class="fas fa-check-circle"></i> ผ่าน</div>';
+            } else if (result === 'ไม่ผ่าน') {
+                resultHtml = '<div class="text-xs text-red-600 font-medium mt-1"><i class="fas fa-times-circle"></i> ไม่ผ่าน</div>';
+            } else {
+                resultHtml = '<div class="text-xs text-yellow-600 font-medium mt-1"><i class="fas fa-clock"></i> รอพิจารณา</div>';
+            }
+            return `<div class="leading-tight">${status}${resultHtml}</div>`;
+        } 
+
+
+        
+        function restoreFileInputUI(input, fileUrl, fileName) {
+            const labelSpan = input.closest('label').querySelector('.file-label-text');
+            const downloadBtn = input.closest('.flex').querySelector('.btn-download-file');
+            if (fileName && fileUrl) {
+                labelSpan.innerHTML = '<i class="fas fa-file-pdf mr-1 text-red-500"></i> ' + fileName;
+                input.setAttribute('data-fileurl', fileUrl);
+                input.setAttribute('data-filename', fileName);
+                downloadBtn.classList.remove('text-gray-600');
+                downloadBtn.classList.add('text-green-600');
+            } else {
+                labelSpan.innerHTML = '<i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด';
+                input.removeAttribute('data-fileurl');
+                input.removeAttribute('data-filename');
+                downloadBtn.classList.add('text-gray-600');
+                downloadBtn.classList.remove('text-green-600');
+            }
+        }
+
         function editVacantPosition(btn) {
             const tr = btn.closest('tr');
+            editingRow = tr;
             const tds = tr.querySelectorAll('td');
             
             const prefix = tds[1].innerText.trim();
@@ -865,10 +1431,35 @@
             const empType = tds[6].innerText.trim();
             const formattedDate = tds[7].innerText.trim();
             const vacantDays = tds[8].innerText.trim();
-            const opStatusVal = tds[9].innerText.trim() !== '-' ? tds[9].innerText.trim() : '';
+            const opStatusVal = tr.getAttribute('data-opstatus') || '';
+            const opResultVal = tr.getAttribute('data-opresult') || '-';
             const chro = tds[10].innerHTML.includes('fa-check');
-            const akp = tds[11].innerHTML.includes('fa-check');
-            const ssj = tds[12].innerHTML.includes('fa-check');
+              const akp = tds[11].innerHTML.includes('fa-check');
+              const ssj = tds[12].innerHTML.includes('fa-check');
+
+              const sectSsj = document.getElementById('section_ssj');
+              sectSsj.querySelector('input[type="text"]').value = tr.getAttribute('data-ssj-doc') || '';
+              sectSsj.querySelector('input[type="date"]').value = tr.getAttribute('data-ssj-date') || '';
+              restoreFileInputUI(sectSsj.querySelector('input[type="file"]'), tr.getAttribute('data-ssj-fileurl'), tr.getAttribute('data-ssj-filename'));
+
+              const sectChro = document.getElementById('section_chro');
+              sectChro.querySelector('input[type="text"]').value = tr.getAttribute('data-chro-doc') || '';
+              sectChro.querySelector('input[type="date"]').value = tr.getAttribute('data-chro-date') || '';
+              restoreFileInputUI(sectChro.querySelector('input[type="file"]'), tr.getAttribute('data-chro-fileurl'), tr.getAttribute('data-chro-filename'));
+
+              const sectAkp = document.getElementById('section_akp');
+              sectAkp.querySelector('input[type="text"]').value = tr.getAttribute('data-akp-doc') || '';
+              sectAkp.querySelector('input[type="date"]').value = tr.getAttribute('data-akp-date') || '';
+              restoreFileInputUI(sectAkp.querySelector('input[type="file"]'), tr.getAttribute('data-akp-fileurl'), tr.getAttribute('data-akp-filename'));
+                
+                if(document.getElementById('chk_ssj')) document.getElementById('chk_ssj').checked = ssj;
+                if(document.getElementById('chk_chro')) document.getElementById('chk_chro').checked = chro;
+                if(document.getElementById('chk_akp')) document.getElementById('chk_akp').checked = akp;
+                
+                toggleApprovalSection('ssj');
+                toggleApprovalSection('chro');
+                toggleApprovalSection('akp');
+
 
             const setVal = (id, val) => {
                 const el = document.getElementById(id);
@@ -886,6 +1477,7 @@
             setVal('modal_emp_type', empType);
             handleEmpTypeChange();
             setVal('modal_operation_status', opStatusVal);
+            setVal('modal_operation_result', opResultVal);
 
             if (formattedDate && formattedDate !== '-') {
                 const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
@@ -1009,8 +1601,9 @@
             element.classList.remove('text-green-50');
 
             const titleMap = {
-                'tab-dashboard': '1. แดชบอร์ดแสดงสถานการณ์อัตรากำลังคน',
-                'tab-vacant': '2. การบริหารตำแหน่งว่าง'
+                'tab-dashboard': 'แดชบอร์ดแสดงสถานการณ์อัตรากำลังคน',
+                'tab-vacant': 'การบริหารตำแหน่งว่าง',
+                'tab-staff-moph': 'พนักงานกระทรวงสาธารณสุข'
             };
             if(titleMap[tabId]) {
                 document.getElementById('page-title').innerText = titleMap[tabId];
@@ -1027,6 +1620,87 @@
             }
         }
     </script>
+
+          <!-- Staff Modal (Add/Edit) -->
+          <div id="staffModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+              <div class="bg-white rounded-xl shadow-xl w-full max-w-6xl max-h-[90vh] flex flex-col mx-4 overflow-hidden">
+                  <div class="flex justify-between items-center p-5 border-b border-gray-200">
+                      <h3 class="text-xl font-bold text-gray-800"><i class="fas fa-user-md text-moph mr-2"></i>บันทึกข้อมูลพนักงานกระทรวงสาธารณสุข</h3>
+                      <button onclick="toggleStaffModal()" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button>
+                  </div>
+                  <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-gray-50">
+                      
+                      <!-- Section 1: สังกัดหน่วยงาน -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-building mr-2"></i> 1. สังกัดหน่วยงาน</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้า (หน่วยงาน)</label><input type="text" id="sm_agency_prefix" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">อำเภอ</label><input type="text" id="sm_agency_district" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">รพ.สต.</label><input type="text" id="sm_agency_rpst" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">กลุ่มงาน</label><input type="text" id="sm_agency_group" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">งาน</label><input type="text" id="sm_agency_task" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div>
+                              <label class="block text-sm font-medium text-gray-700 mb-1">ตรง จ. / ไม่ตรง จ.</label>
+                              <select id="sm_agency_match" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph">
+                                  <option value="">-เลือก-</option>
+                                  <option value="ตรง จ.">ตรง จ.</option>
+                                  <option value="ไม่ตรง จ.">ไม่ตรง จ.</option>
+                              </select>
+                          </div>
+                      </div>
+
+                      <!-- Section 2: ข้อมูลตำแหน่ง -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-briefcase mr-2"></i> 2. ข้อมูลตำแหน่ง</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งเลขที่</label><input type="text" id="sm_pos_no" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ระดับ</label><input type="text" id="sm_pos_level" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งสายงาน</label><input type="text" id="sm_pos_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div>
+                              <label class="block text-sm font-medium text-gray-700 mb-1">สถานะตำแหน่ง</label>
+                              <select id="sm_pos_status" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph">
+                                  <option value="มีคนครอง">มีคนครอง</option>
+                                  <option value="ว่าง">ว่าง</option>
+                              </select>
+                          </div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ประเภทเจ้าหน้าที่</label><input type="text" id="sm_staff_type" value="พนักงานกระทรวงสาธารณสุข" readonly class="w-full border border-gray-300 bg-gray-100 rounded-md px-3 py-2 text-sm focus:outline-none"></div>
+                      </div>
+
+                      <!-- Section 3: ข้อมูลบุคคล -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-user mr-2"></i> 3. ข้อมูลบุคคล</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div>
+                              <label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้า (บุคคล)</label>
+                              <select id="sm_pers_title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph">
+                                  <option value="นาย">นาย</option>
+                                  <option value="นาง">นาง</option>
+                                  <option value="นางสาว">นางสาว</option>
+                              </select>
+                          </div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ</label><input type="text" id="sm_pers_fname" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">สกุล</label><input type="text" id="sm_pers_lname" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">เลขบัตรประชาชน</label><input type="text" id="sm_pers_idcard" maxlength="13" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่เริ่มจ้าง</label><input type="date" id="sm_pers_startdate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วุฒิที่จ้าง</label><input type="text" id="sm_pers_degree" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่จบการศึกษา</label><input type="date" id="sm_pers_graddate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">เกรดเฉลี่ย</label><input type="text" id="sm_pers_gpa" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                      </div>
+
+                      <!-- Section 4: ใบประกอบวิชาชีพ -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-id-card mr-2"></i> 4. ใบประกอบวิชาชีพ</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-2 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ชื่อใบประกอบวิชาชีพ</label><input type="text" id="sm_lic_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">เลขที่ใบประกอบวิชาชีพ</label><input type="text" id="sm_lic_no" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันออก</label><input type="date" id="sm_lic_issue" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันหมดอายุ</label><input type="date" id="sm_lic_expire" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                      </div>
+
+                  </div>
+                  <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                      <button onclick="toggleStaffModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium">ยกเลิก</button>
+                      <button onclick="saveStaffMoph()" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium">บันทึกข้อมูล</button>
+                  </div>
+              </div>
+          </div>
+
 </body>
 </html>
 

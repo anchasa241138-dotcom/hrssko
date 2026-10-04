@@ -241,22 +241,22 @@
                     <li>
                         <a href="#" onclick="switchAppTab('tab-dashboard', this)" class="sidebar-item active flex items-center px-6 py-3 text-white">
                             <i class="fas fa-chart-line w-6"></i>
-                            <span>1. แดชบอร์ดอัตรากำลังคน</span>
+                            <span>แดชบอร์ดอัตรากำลังคน</span>
                         </a>
                     </li>
                     <li>
                         <a href="#" onclick="switchAppTab('tab-vacant', this)" class="sidebar-item flex items-center px-6 py-3 text-green-50">
                             <i class="fas fa-chair w-6"></i>
-                            <span>2. การบริหารตำแหน่งว่าง</span>
+                            <span>การบริหารตำแหน่งว่าง</span>
                         </a>
                     </li>
                     <!-- Mock menus -->
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-tie w-6"></i><span>3. พนักงานราชการ</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user w-6"></i><span>4. ลูกจ้างประจำ</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-md w-6"></i><span>5. พนักงาน กสธ.</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-clock w-6"></i><span>6. ลูกจ้างชั่วคราว (รายเดือน)</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-users w-6"></i><span class="text-sm">7. ลูกจ้างชั่วคราวรายวัน/จ้างเหมา</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-bell w-6 relative"><span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-3 w-3 flex items-center justify-center">3</span></i><span>8. แจ้งเตือนใบประกอบฯ</span></a></li>
+                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-tie w-6"></i><span>พนักงานราชการ</span></a></li>
+                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user w-6"></i><span>ลูกจ้างประจำ</span></a></li>
+                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this)" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-md w-6"></i><span>พนักงานกระทรวงสาธารณสุข</span></a></li>
+                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-clock w-6"></i><span>ลูกจ้างชั่วคราว (รายเดือน)</span></a></li>
+                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-users w-6"></i><span class="text-sm">ลูกจ้างชั่วคราวรายวัน/จ้างเหมา</span></a></li>
+                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-bell w-6 relative"><span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-3 w-3 flex items-center justify-center">3</span></i><span>แจ้งเตือนใบประกอบฯ</span></a></li>
                 </ul>
             </nav>
             
@@ -280,7 +280,7 @@
         <main class="flex-1 flex flex-col h-screen overflow-hidden">
             <!-- Header -->
             <header class="bg-white shadow-sm h-16 flex items-center justify-between px-8 z-10 flex-shrink-0">
-                <h2 id="page-title" class="text-2xl font-bold text-gray-800">1. แดชบอร์ดแสดงสถานการณ์อัตรากำลังคน</h2>
+                <h2 id="page-title" class="text-2xl font-bold text-gray-800">แดชบอร์ดแสดงสถานการณ์อัตรากำลังคน</h2>
                 <div class="flex items-center gap-4">
                     <button class="text-gray-500 hover:text-moph transition">
                         <i class="fas fa-search text-xl"></i>
@@ -376,41 +376,205 @@
                                 </tr>
                             </thead>
                             <tbody id="vacant-table-body">
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="text-center">1</td>
-                                    <td>รพท.</td>
-                                    <td>เมืองศรีสะเกษ</td>
-                                    <td>-</td>
-                                    <td class="text-center">685412</td>
-                                    <td>พยาบาลวิชาชีพ</td>
-                                    <td>พนักงาน กสธ.</td>
-                                    <td class="text-center">15 ส.ค. 2568</td>
+                                
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="อัตราว่าง" data-opresult="-">
+                                      <td class="text-center">1</td>
+                                      <td>รพท.</td>
+                                      <td>เมืองศรีสะเกษ</td>
+                                      <td>-</td>
+                                      <td class="text-center">685412</td>
+                                      <td>พยาบาลวิชาชีพ</td>
+                                      <td>พนักงาน กสธ.</td>
+                                      <td class="text-center">15 ส.ค. 2568</td>
                                       <td class="text-center">45 วัน</td>
-                                      <td class="text-center">-</td>
+                                      <td class="text-center"><div class="leading-tight">อัตราว่าง</div></td>
                                       <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
-                                      <td class="text-center"><i class="fas fa-clock text-yellow-500"></i></td>
                                       <td class="text-center">-</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-center">ว่างเดิม</td>
-                                    <td class="text-center">1 ต.ค. 2568</td>
-                                    <td class="text-center">
-                                        <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
-                                        <button class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
-                                    </td>
-                                </tr>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">ว่างเดิม</td>
+                                      <td class="text-center">1 ต.ค. 2568</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="หน่วยงานขอสรรหาทดแทน" data-opresult="รอพิจารณา">
+                                      <td class="text-center">2</td>
+                                      <td>รพ.สต.</td>
+                                      <td>ขุขันธ์</td>
+                                      <td>รพ.สต.บ้านตาอุด</td>
+                                      <td class="text-center">112233</td>
+                                      <td>นักวิชาการสาธารณสุข</td>
+                                      <td>พนักงานกระทรวงสาธารณสุข</td>
+                                      <td class="text-center">1 ก.ย. 2569</td>
+                                      <td class="text-center">1 เดือน 3 วัน</td>
+                                      <td class="text-center"><div class="leading-tight">หน่วยงานขอสรรหาทดแทน<div class="text-xs text-yellow-600 font-medium mt-1"><i class="fas fa-clock"></i> รอพิจารณา</div></div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">ว่างเดิม</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="นพ.สสจ. พิจารณาผลการสรรหา" data-opresult="ผ่าน">
+                                      <td class="text-center">3</td>
+                                      <td>รพช.</td>
+                                      <td>ราษีไศล</td>
+                                      <td>-</td>
+                                      <td class="text-center">998877</td>
+                                      <td>เภสัชกร</td>
+                                      <td>ลูกจ้างชั่วคราว</td>
+                                      <td class="text-center">15 ก.ค. 2569</td>
+                                      <td class="text-center">2 เดือน 19 วัน</td>
+                                      <td class="text-center"><div class="leading-tight">นพ.สสจ. พิจารณาผลการสรรหา<div class="text-xs text-green-600 font-medium mt-1"><i class="fas fa-check-circle"></i> ผ่าน</div></div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">ว่างเดิม</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="ไม่มีผู้สมัคร/ไม่มีผู้ผ่านการคัดเลือก/เปลี่ยนเงื่อนไข" data-opresult="ไม่ผ่าน">
+                                      <td class="text-center">4</td>
+                                      <td>สสอ.</td>
+                                      <td>ขุนหาญ</td>
+                                      <td>-</td>
+                                      <td class="text-center">554433</td>
+                                      <td>เจ้าพนักงานสาธารณสุข</td>
+                                      <td>พนักงานกระทรวงสาธารณสุข</td>
+                                      <td class="text-center">10 มิ.ย. 2569</td>
+                                      <td class="text-center">3 เดือน 24 วัน</td>
+                                      <td class="text-center"><div class="leading-tight">ไม่มีผู้สมัคร/ไม่มีผู้ผ่านการคัดเลือก/เปลี่ยนเงื่อนไข<div class="text-xs text-red-600 font-medium mt-1"><i class="fas fa-times-circle"></i> ไม่ผ่าน</div></div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">ว่างเดิม</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
+<!-- APP TAB 3: STAFF MOPH -->
+                  <div id="tab-staff-moph" class="app-tab-content h-full hidden">
+                      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col h-full">
+                          <div class="flex items-center justify-between mb-4">
+                              <h3 class="text-lg font-bold text-gray-700">รายชื่อพนักงานกระทรวงสาธารณสุขทั้งหมด</h3>
+                              <button onclick="openStaffModal()" class="bg-moph text-white px-4 py-2 rounded-md hover:bg-moph/90 transition shadow-sm text-sm font-medium">
+                                  <i class="fas fa-plus mr-1"></i> เพิ่มข้อมูลพนักงาน
+                              </button>
+                          </div>
+                          
+                          <div class="overflow-x-auto overflow-y-auto flex-1 rounded-lg border border-gray-200">
+                              <table class="w-full text-sm text-left whitespace-nowrap">
+                                  <thead class="text-xs text-gray-700 uppercase bg-gray-100 sticky top-0 z-10">
+                                      <tr>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ลำดับ</th>
+                                          <th colspan="6" class="px-4 py-2 border-b border-r text-center">สังกัดหน่วยงาน</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ตำแหน่งเลขที่</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ระดับ</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ตำแหน่งสายงาน</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">สถานะตำแหน่ง</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ประเภทเจ้าหน้าที่</th>
+                                          <th colspan="4" class="px-4 py-2 border-b border-r text-center">ข้อมูลบุคคล</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">วันที่เริ่มจ้าง</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">วุฒิที่จ้าง</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">วันที่จบการศึกษา</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">เกรดเฉลี่ย</th>
+                                          <th colspan="4" class="px-4 py-2 border-b border-r text-center">ใบประกอบวิชาชีพ</th>
+                                          <th rowspan="2" class="px-4 py-3 border-b text-center sticky right-0 bg-gray-100">จัดการ</th>
+                                      </tr>
+                                      <tr>
+                                          <!-- Agency -->
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">คำนำหน้า</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">อำเภอ</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">รพ.สต.</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">กลุ่มงาน</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">งาน</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">ตรง จ. / ไม่ตรง จ.</th>
+                                          <!-- Personal -->
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">คำนำหน้า</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">ชื่อ</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">สกุล</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">เลขบัตรประชาชน</th>
+                                          <!-- License -->
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">ชื่อใบประกอบฯ</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">เลขที่ใบประกอบฯ</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">วันออก</th>
+                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">วันหมดอายุ</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody id="staff-moph-table-body">
+                                      <!-- Dummy Row -->
+                                      <tr class="hover:bg-gray-50 transition">
+                                          <td class="text-center sm-row-num">1</td>
+                                          <td>รพ.สต.</td>
+                                          <td>เมือง</td>
+                                          <td>บ้านหนอง</td>
+                                          <td>บริการ</td>
+                                          <td>พยาบาล</td>
+                                          <td class="text-center">ตรง จ.</td>
+                                          <td class="text-center">98765</td>
+                                          <td class="text-center">ปฏิบัติการ</td>
+                                          <td>พยาบาลวิชาชีพ</td>
+                                          <td class="text-center">มีคนครอง</td>
+                                          <td>พนักงานกระทรวงสาธารณสุข</td>
+                                          <td>นางสาว</td>
+                                          <td>สมหญิง</td>
+                                          <td>ใจดี</td>
+                                          <td class="text-center">1234567890123</td>
+                                          <td class="text-center">1 ม.ค. 2565</td>
+                                          <td>ป.ตรี</td>
+                                          <td class="text-center">1 พ.ค. 2564</td>
+                                          <td class="text-center">3.50</td>
+                                          <td>พยาบาลศาสตร์</td>
+                                          <td class="text-center">998877</td>
+                                          <td class="text-center">1 มิ.ย. 2564</td>
+                                          <td class="text-center">1 มิ.ย. 2569</td>
+                                          <td class="text-center sticky right-0 bg-white">
+                                              <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editStaffMoph(this)"><i class="fas fa-edit"></i></button>
+                                              <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button>
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+
             </div>
         </main>
     </div>
 
-    <!-- ======================= MODAL FORM ======================= -->
+    
+                  <!-- ======================= MODAL FORM ======================= -->
     <div id="dataModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
         <div class="bg-white w-11/12 max-w-4xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
@@ -496,6 +660,14 @@
                                     <option value="" disabled selected>เลือกสถานะการดำเนินการ</option>
                                 </select>
                             </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ผลการพิจารณา</label>
+                                <select id="modal_operation_result" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-moph disabled:bg-gray-100 disabled:cursor-not-allowed">
+                                    <option value="-">รอพิจารณา</option>
+                                    <option value="ผ่าน">ผ่าน</option>
+                                    <option value="ไม่ผ่าน">ไม่ผ่าน</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -521,11 +693,11 @@
                                     <div>
                                         <label class="block text-xs font-medium text-gray-600 mb-1">เอกสารแนบ (.pdf)</label>
                                         <div class="flex items-center gap-2">
-                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm">
-                                                <i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด
-                                                <input type="file" accept=".pdf" class="hidden">
+                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm" title="คลิกเพื่อเลือกไฟล์">
+                                                <span class="file-label-text"><i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด</span>
+                                                <input type="file" accept=".pdf" class="hidden" onchange="handleFileUpload(this)">
                                             </label>
-                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm" title="ดาวน์โหลดไฟล์">
+                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm btn-download-file" title="ดาวน์โหลดไฟล์" onclick="downloadMockFile(this)">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                         </div>
@@ -551,11 +723,11 @@
                                     <div>
                                         <label class="block text-xs font-medium text-gray-600 mb-1">เอกสารแนบ (.pdf)</label>
                                         <div class="flex items-center gap-2">
-                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm">
-                                                <i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด
-                                                <input type="file" accept=".pdf" class="hidden">
+                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm" title="คลิกเพื่อเลือกไฟล์">
+                                                <span class="file-label-text"><i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด</span>
+                                                <input type="file" accept=".pdf" class="hidden" onchange="handleFileUpload(this)">
                                             </label>
-                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm" title="ดาวน์โหลดไฟล์">
+                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm btn-download-file" title="ดาวน์โหลดไฟล์" onclick="downloadMockFile(this)">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                         </div>
@@ -581,11 +753,11 @@
                                     <div>
                                         <label class="block text-xs font-medium text-gray-600 mb-1">เอกสารแนบ (.pdf)</label>
                                         <div class="flex items-center gap-2">
-                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm">
-                                                <i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด
-                                                <input type="file" accept=".pdf" class="hidden">
+                                            <label class="flex-1 bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center cursor-pointer hover:bg-gray-100 transition text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis shadow-sm" title="คลิกเพื่อเลือกไฟล์">
+                                                <span class="file-label-text"><i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด</span>
+                                                <input type="file" accept=".pdf" class="hidden" onchange="handleFileUpload(this)">
                                             </label>
-                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm" title="ดาวน์โหลดไฟล์">
+                                            <button type="button" class="bg-white text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 text-sm hover:bg-gray-100 transition shadow-sm btn-download-file" title="ดาวน์โหลดไฟล์" onclick="downloadMockFile(this)">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                         </div>
@@ -683,6 +855,7 @@
         }
 
 
+            function handleAgencyChange() {
             const agency = document.getElementById('reg-agency').value;
             const district = document.getElementById('reg-district');
             
@@ -714,8 +887,9 @@
             element.classList.remove('text-green-50');
 
             const titleMap = {
-                'tab-dashboard': '1. แดชบอร์ดแสดงสถานการณ์อัตรากำลังคน',
-                'tab-vacant': '2. การบริหารตำแหน่งว่าง'
+                'tab-dashboard': 'แดชบอร์ดแสดงสถานการณ์อัตรากำลังคน',
+                'tab-vacant': 'การบริหารตำแหน่งว่าง',
+                'tab-staff-moph': 'พนักงานกระทรวงสาธารณสุข'
             };
             if(titleMap[tabId]) {
                 document.getElementById('page-title').innerText = titleMap[tabId];
@@ -732,8 +906,90 @@
             }
         }
     </script>
+
+          <!-- Staff Modal (Add/Edit) -->
+          <div id="staffModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+              <div class="bg-white rounded-xl shadow-xl w-full max-w-6xl max-h-[90vh] flex flex-col mx-4 overflow-hidden">
+                  <div class="flex justify-between items-center p-5 border-b border-gray-200">
+                      <h3 class="text-xl font-bold text-gray-800"><i class="fas fa-user-md text-moph mr-2"></i>บันทึกข้อมูลพนักงานกระทรวงสาธารณสุข</h3>
+                      <button onclick="toggleStaffModal()" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button>
+                  </div>
+                  <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-gray-50">
+                      
+                      <!-- Section 1: สังกัดหน่วยงาน -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-building mr-2"></i> 1. สังกัดหน่วยงาน</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้า (หน่วยงาน)</label><input type="text" id="sm_agency_prefix" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">อำเภอ</label><input type="text" id="sm_agency_district" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">รพ.สต.</label><input type="text" id="sm_agency_rpst" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">กลุ่มงาน</label><input type="text" id="sm_agency_group" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">งาน</label><input type="text" id="sm_agency_task" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div>
+                              <label class="block text-sm font-medium text-gray-700 mb-1">ตรง จ. / ไม่ตรง จ.</label>
+                              <select id="sm_agency_match" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph">
+                                  <option value="">-เลือก-</option>
+                                  <option value="ตรง จ.">ตรง จ.</option>
+                                  <option value="ไม่ตรง จ.">ไม่ตรง จ.</option>
+                              </select>
+                          </div>
+                      </div>
+
+                      <!-- Section 2: ข้อมูลตำแหน่ง -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-briefcase mr-2"></i> 2. ข้อมูลตำแหน่ง</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งเลขที่</label><input type="text" id="sm_pos_no" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ระดับ</label><input type="text" id="sm_pos_level" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งสายงาน</label><input type="text" id="sm_pos_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div>
+                              <label class="block text-sm font-medium text-gray-700 mb-1">สถานะตำแหน่ง</label>
+                              <select id="sm_pos_status" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph">
+                                  <option value="มีคนครอง">มีคนครอง</option>
+                                  <option value="ว่าง">ว่าง</option>
+                              </select>
+                          </div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ประเภทเจ้าหน้าที่</label><input type="text" id="sm_staff_type" value="พนักงานกระทรวงสาธารณสุข" readonly class="w-full border border-gray-300 bg-gray-100 rounded-md px-3 py-2 text-sm focus:outline-none"></div>
+                      </div>
+
+                      <!-- Section 3: ข้อมูลบุคคล -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-user mr-2"></i> 3. ข้อมูลบุคคล</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div>
+                              <label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้า (บุคคล)</label>
+                              <select id="sm_pers_title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph">
+                                  <option value="นาย">นาย</option>
+                                  <option value="นาง">นาง</option>
+                                  <option value="นางสาว">นางสาว</option>
+                              </select>
+                          </div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ</label><input type="text" id="sm_pers_fname" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">สกุล</label><input type="text" id="sm_pers_lname" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">เลขบัตรประชาชน</label><input type="text" id="sm_pers_idcard" maxlength="13" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่เริ่มจ้าง</label><input type="date" id="sm_pers_startdate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วุฒิที่จ้าง</label><input type="text" id="sm_pers_degree" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่จบการศึกษา</label><input type="date" id="sm_pers_graddate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">เกรดเฉลี่ย</label><input type="text" id="sm_pers_gpa" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                      </div>
+
+                      <!-- Section 4: ใบประกอบวิชาชีพ -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-id-card mr-2"></i> 4. ใบประกอบวิชาชีพ</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-2 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ชื่อใบประกอบวิชาชีพ</label><input type="text" id="sm_lic_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">เลขที่ใบประกอบวิชาชีพ</label><input type="text" id="sm_lic_no" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันออก</label><input type="date" id="sm_lic_issue" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันหมดอายุ</label><input type="date" id="sm_lic_expire" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                      </div>
+
+                  </div>
+                  <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                      <button onclick="toggleStaffModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium">ยกเลิก</button>
+                      <button onclick="saveStaffMoph()" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium">บันทึกข้อมูล</button>
+                  </div>
+              </div>
+          </div>
+
 </body>
 </html>
+
 
 
 
