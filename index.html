@@ -59,6 +59,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body class="bg-gray-50 h-screen overflow-hidden">
 
@@ -487,9 +488,18 @@
                       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col h-full">
                           <div class="flex items-center justify-between mb-4">
                               <h3 class="text-lg font-bold text-gray-700">รายชื่อพนักงานกระทรวงสาธารณสุขทั้งหมด</h3>
-                              <button onclick="openStaffModal()" class="bg-moph text-white px-4 py-2 rounded-md hover:bg-moph/90 transition shadow-sm text-sm font-medium">
-                                  <i class="fas fa-plus mr-1"></i> เพิ่มข้อมูลพนักงาน
-                              </button>
+                              <div class="flex items-center gap-2">
+                                  <label class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition shadow-sm text-sm font-medium cursor-pointer" title="นำเข้าข้อมูลจาก Excel">
+                                      <i class="fas fa-file-excel mr-1"></i> นำเข้า Excel
+                                      <input type="file" accept=".xlsx, .xls, .csv" class="hidden" onchange="importStaffExcel(this)">
+                                  </label>
+                                  <button onclick="exportStaffExcel()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition shadow-sm text-sm font-medium" title="ดาวน์โหลดเป็น Excel">
+                                      <i class="fas fa-download mr-1"></i> ส่งออก Excel
+                                  </button>
+                                  <button onclick="openStaffModal()" class="bg-moph text-white px-4 py-2 rounded-md hover:bg-moph/90 transition shadow-sm text-sm font-medium">
+                                      <i class="fas fa-plus mr-1"></i> เพิ่มข้อมูลพนักงาน
+                                  </button>
+                              </div>
                           </div>
                           
                           <div class="overflow-x-auto overflow-y-auto flex-1 rounded-lg border border-gray-200">

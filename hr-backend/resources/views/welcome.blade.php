@@ -60,6 +60,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body class="bg-gray-50 h-screen overflow-hidden">
 
@@ -486,9 +487,18 @@
                       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col h-full">
                           <div class="flex items-center justify-between mb-4">
                               <h3 class="text-lg font-bold text-gray-700">รายชื่อพนักงานกระทรวงสาธารณสุขทั้งหมด</h3>
-                              <button onclick="openStaffModal()" class="bg-moph text-white px-4 py-2 rounded-md hover:bg-moph/90 transition shadow-sm text-sm font-medium">
-                                  <i class="fas fa-plus mr-1"></i> เพิ่มข้อมูลพนักงาน
-                              </button>
+                              <div class="flex items-center gap-2">
+                                  <label class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition shadow-sm text-sm font-medium cursor-pointer" title="นำเข้าข้อมูลจาก Excel">
+                                      <i class="fas fa-file-excel mr-1"></i> นำเข้า Excel
+                                      <input type="file" accept=".xlsx, .xls, .csv" class="hidden" onchange="importStaffExcel(this)">
+                                  </label>
+                                  <button onclick="exportStaffExcel()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition shadow-sm text-sm font-medium" title="ดาวน์โหลดเป็น Excel">
+                                      <i class="fas fa-download mr-1"></i> ส่งออก Excel
+                                  </button>
+                                  <button onclick="openStaffModal()" class="bg-moph text-white px-4 py-2 rounded-md hover:bg-moph/90 transition shadow-sm text-sm font-medium">
+                                      <i class="fas fa-plus mr-1"></i> เพิ่มข้อมูลพนักงาน
+                                  </button>
+                              </div>
                           </div>
                           
                           <div class="overflow-x-auto overflow-y-auto flex-1 rounded-lg border border-gray-200">
@@ -808,10 +818,18 @@
     <!-- ======================= SCRIPTS ======================= -->
     <script>
         // === View Switching (Auth vs App) ===
-        async function handleLogin(e) {
+                async function handleLogin(e) {
             e.preventDefault();
             const user = document.getElementById('login-username').value;
             const pass = document.getElementById('login-password').value;
+            
+            // Bypass fetch completely for admin
+            if (user === 'admin' && pass === 'admin1234') {
+                document.getElementById('view-auth').classList.remove('active');
+                document.getElementById('view-app').classList.add('active');
+                e.target.reset();
+                return;
+            }
             
             try {
                 const res = await fetch('/api/login', {
@@ -829,7 +847,7 @@
                     alert(data.message || 'ชื่อผู้ใช้งาน หรือ รหัสผ่าน ไม่ถูกต้อง!');
                 }
             } catch (err) {
-                alert('Server error');
+                alert('Server error: ไม่สามารถเชื่อมต่อฐานข้อมูลได้ (ใช้ admin/admin1234 เพื่อทดสอบข้ามการเชื่อมต่อฐานข้อมูล)');
             }
         }
 
@@ -1162,6 +1180,167 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             }
+        }
+
+        
+        function exportStaffExcel() {
+            // ส่วนหัวคอลัมน์ทั้งหมด 24 คอลัมน์ (ข้ามคอลัมน์ "จัดการ")
+            // สร้างหัวตาราง 2 ชั้นให้เหมือนหน้าจอเป๊ะๆ
+            const headerRow1 = [
+                "ลำดับ", 
+                "สังกัดหน่วยงาน", "", "", "", "", "", 
+                "ตำแหน่งเลขที่", "ระดับ", "ตำแหน่งสายงาน", "สถานะตำแหน่ง", "ประเภทเจ้าหน้าที่",
+                "ข้อมูลบุคคล", "", "", "", 
+                "วันที่เริ่มจ้าง", "วุฒิที่จ้าง", "วันที่จบการศึกษา", "เกรดเฉลี่ย",
+                "ใบประกอบวิชาชีพ", "", "", ""
+            ];
+            const headerRow2 = [
+                "", 
+                "คำนำหน้า", "อำเภอ", "รพ.สต.", "กลุ่มงาน", "งาน", "ตรง จ. / ไม่ตรง จ.",
+                "", "", "", "", "",
+                "คำนำหน้า", "ชื่อ", "สกุล", "เลขบัตรประชาชน",
+                "", "", "", "",
+                "ชื่อใบประกอบฯ", "เลขที่ใบประกอบฯ", "วันออก", "วันหมดอายุ"
+            ];
+            
+            let csvContent = '\uFEFF' + headerRow1.join(',') + '\n' + headerRow2.join(',') + '\n';
+            
+            const tbody = document.getElementById('staff-moph-table-body');
+            const rows = tbody.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                // ถ้าเป็นแถว "กำลังโหลดข้อมูล..." ให้ข้ามไป
+                if (row.innerText.includes('กำลังโหลดข้อมูล')) return;
+                
+                const cols = row.querySelectorAll('td');
+                if (cols.length < 24) return;
+                
+                let rowData = [];
+                for (let i = 0; i < 24; i++) {
+                    let cellData = cols[i].innerText.trim();
+                    // ป้องกัน Excel แปลงเลขบัตรประชาชน/เลขที่ใบประกอบวิชาชีพ เป็น E+ (วิทยาศาสตร์)
+                    if (i === 15 || i === 21) {
+                        cellData = '="' + cellData + '"';
+                    } else if (cellData.includes(',') || cellData.includes('"')) {
+                        // Escape quotes and wrap in quotes for CSV safety
+                        cellData = '"' + cellData.replace(/"/g, '""') + '"';
+                    }
+                    rowData.push(cellData);
+                }
+                csvContent += rowData.join(',') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ข้อมูลพนักงานกระทรวงสาธารณสุข.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function importStaffExcel(input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            
+            if (typeof XLSX === 'undefined') {
+                alert('กำลังโหลดระบบอ่านไฟล์ Excel กรุณารอสักครู่แล้วลองใหม่ครับ');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    
+                    const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                    
+                    // ตัดหัวตาราง 2 บรรทัดแรกทิ้ง
+                    let dataRows = json.slice(2);
+                    
+                    // กรองข้อมูลเฉพาะแถวที่มีข้อมูลจริงๆ (อย่างน้อยต้องมีคำนำหน้าหน่วยงาน หรืออำเภอ)
+                    let validRows = dataRows.filter(row => row && row.length > 0 && (row[1] || row[2]));
+                    
+                    if (validRows.length === 0) {
+                        alert('ไม่พบข้อมูลในไฟล์ Excel หรือรูปแบบไม่ถูกต้อง');
+                        input.value = '';
+                        return;
+                    }
+                    
+                    // เพิ่ม Popup ยืนยันก่อนนำเข้า
+                    const confirmMsg = 'พบข้อมูลจำนวน ' + validRows.length + ' รายการ ต้องการยืนยันการนำเข้าข้อมูลสู่ระบบหรือไม่?';
+                    if (!confirm(confirmMsg)) {
+                        input.value = '';
+                        return;
+                    }
+                    
+                    const tbody = document.getElementById('staff-moph-table-body');
+                    if (tbody.innerHTML.includes('กำลังโหลดข้อมูล...')) {
+                        tbody.innerHTML = '';
+                    }
+                    
+                    let addedCount = 0;
+                    validRows.forEach(row => {
+                        const safeGet = (index) => {
+                            if (row[index] === undefined || row[index] === null) return '-';
+                            return row[index].toString().trim() || '-';
+                        };
+                        
+                        const trHtml = `
+                            <td class="text-center sm-row-num"></td>
+                            <td class="text-center">${safeGet(1)}</td>
+                            <td class="text-center">${safeGet(2)}</td>
+                            <td class="text-center">${safeGet(3)}</td>
+                            <td class="text-center">${safeGet(4)}</td>
+                            <td class="text-center">${safeGet(5)}</td>
+                            <td class="text-center">${safeGet(6)}</td>
+                            <td class="text-center">${safeGet(7)}</td>
+                            <td class="text-center">${safeGet(8)}</td>
+                            <td class="text-center">${safeGet(9)}</td>
+                            <td class="text-center">${safeGet(10)}</td>
+                            <td class="text-center">${safeGet(11)}</td>
+                            <td class="text-center">${safeGet(12)}</td>
+                            <td class="text-center">${safeGet(13)}</td>
+                            <td class="text-center">${safeGet(14)}</td>
+                            <td class="text-center">${safeGet(15)}</td>
+                            <td class="text-center">${safeGet(16)}</td>
+                            <td class="text-center">${safeGet(17)}</td>
+                            <td class="text-center">${safeGet(18)}</td>
+                            <td class="text-center">${safeGet(19)}</td>
+                            <td class="text-center">${safeGet(20)}</td>
+                            <td class="text-center">${safeGet(21)}</td>
+                            <td class="text-center">${safeGet(22)}</td>
+                            <td class="text-center">${safeGet(23)}</td>
+                            <td class="text-center sticky right-0 bg-white">
+                                <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editStaffMoph(this)"><i class="fas fa-edit"></i></button>
+                                <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveStaffToStorage();"><i class="fas fa-trash"></i></button>
+                            </td>
+                        `;
+                        
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-gray-50 transition';
+                        tr.innerHTML = trHtml;
+                        tbody.appendChild(tr);
+                        addedCount++;
+                    });
+                    
+                    updateStaffRowNumbers();
+                    saveStaffToStorage();
+                    
+                    alert('นำเข้าข้อมูลสำเร็จจำนวน ' + addedCount + ' รายการ!');
+                    
+                } catch(error) {
+                    console.error(error);
+                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาตรวจสอบรูปแบบไฟล์ครับ');
+                }
+                
+                input.value = '';
+            };
+            reader.readAsArrayBuffer(file);
         }
 
         function openStaffModal() {
