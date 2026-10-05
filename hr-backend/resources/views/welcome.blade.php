@@ -1240,7 +1240,182 @@
             document.body.removeChild(a);
         }
 
-        function importStaffExcel(input) {
+        
+        let editingStaffId = null;
+
+        async function loadStaffFromStorage() {
+            const tbody = document.getElementById('staff-moph-table-body');
+            if (!tbody) return;
+            const type = window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข';
+            tbody.innerHTML = '<tr><td colspan="25" class="text-center py-8 text-gray-500"><i class="fas fa-spinner fa-spin text-2xl mb-2 text-moph block"></i>กำลังดึงข้อมูล ' + type + ' จากฐานข้อมูลส่วนกลาง...</td></tr>';
+            
+            try {
+                const res = await fetch('/api/moph-staff');
+                if (!res.ok) throw new Error('API request failed');
+                let allStaff = await res.json();
+                
+                // Filter by selected staff type
+                const staffList = allStaff.filter(s => (s.staff_type || '').trim() === type.trim());
+                
+                if (staffList.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="25" class="text-center py-10 text-gray-400 font-medium"><i class="fas fa-inbox text-3xl mb-2 text-gray-300 block"></i>ยังไม่มีข้อมูล ' + type + ' ในฐานข้อมูล</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = '';
+                staffList.forEach((item, index) => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50 transition';
+                    tr.innerHTML = `
+                        <td class="text-center sm-row-num">${index + 1}</td>
+                        <td class="text-center">${item.agency_prefix || '-'}</td>
+                        <td class="text-center">${item.agency_district || '-'}</td>
+                        <td class="text-center">${item.agency_sub_district || '-'}</td>
+                        <td class="text-center">${item.agency_group || '-'}</td>
+                        <td class="text-center">${item.agency_work || '-'}</td>
+                        <td class="text-center">${item.agency_match || '-'}</td>
+                        <td class="text-center">${item.position_number || '-'}</td>
+                        <td class="text-center">${item.position_level || '-'}</td>
+                        <td class="text-center">${item.position_line || '-'}</td>
+                        <td class="text-center">${item.position_status || '-'}</td>
+                        <td class="text-center font-semibold text-gray-700">${item.staff_type || type}</td>
+                        <td class="text-center">${item.personal_prefix || '-'}</td>
+                        <td class="text-center">${item.personal_fname || '-'}</td>
+                        <td class="text-center">${item.personal_lname || '-'}</td>
+                        <td class="text-center">${item.personal_id_card || '-'}</td>
+                        <td class="text-center">${item.hire_date ? formatDateToThai(item.hire_date) : '-'}</td>
+                        <td class="text-center">${item.hire_qual || '-'}</td>
+                        <td class="text-center">${item.grad_date ? formatDateToThai(item.grad_date) : '-'}</td>
+                        <td class="text-center">${item.gpa || '-'}</td>
+                        <td class="text-center">${item.license_name || '-'}</td>
+                        <td class="text-center">${item.license_no || '-'}</td>
+                        <td class="text-center">${item.license_issue ? formatDateToThai(item.license_issue) : '-'}</td>
+                        <td class="text-center">${item.license_expire ? formatDateToThai(item.license_expire) : '-'}</td>
+                        <td class="text-center sticky right-0 bg-white shadow-sm border-l border-gray-200">
+                            <button type="button" class="text-blue-500 hover:text-blue-700 mx-1" onclick="editStaffMophById(${item.id}, ${JSON.stringify(item).replace(/"/g, '&quot;')})"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="text-red-500 hover:text-red-700 mx-1" onclick="deleteStaffById(${item.id})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="25" class="text-center py-6 text-red-500"><i class="fas fa-exclamation-triangle mr-2"></i>เกิดข้อผิดพลาดในการโหลดข้อมูลจากฐานข้อมูล</td></tr>';
+            }
+        }
+
+        function openStaffModal() {
+            editingStaffId = null;
+            const formInputs = document.querySelectorAll('#staffModal input:not([readonly]), #staffModal select');
+            formInputs.forEach(el => {
+                if (el.tagName === 'SELECT') {
+                    if (el.id === 'sm_pers_title') el.value = 'นาย';
+                    else el.value = '';
+                } else {
+                    el.value = '';
+                }
+            });
+            const stInput = document.getElementById('sm_staff_type');
+            if (stInput) stInput.value = window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข';
+            toggleStaffModal();
+        }
+
+        function editStaffMophById(id, item) {
+            editingStaffId = id;
+            const setVal = (fieldId, val) => {
+                const el = document.getElementById(fieldId);
+                if (el) el.value = (val === '-' || !val) ? '' : val;
+            };
+
+            setVal('sm_agency_prefix', item.agency_prefix);
+            setVal('sm_agency_district', item.agency_district);
+            setVal('sm_agency_rpst', item.agency_sub_district);
+            setVal('sm_agency_group', item.agency_group);
+            setVal('sm_agency_task', item.agency_work);
+            setVal('sm_agency_match', item.agency_match);
+
+            setVal('sm_pos_no', item.position_number);
+            setVal('sm_pos_level', item.position_level);
+            setVal('sm_pos_name', item.position_line);
+            setVal('sm_pos_status', item.position_status);
+            setVal('sm_staff_type', item.staff_type || window.currentStaffType);
+
+            setVal('sm_pers_title', item.personal_prefix || 'นาย');
+            setVal('sm_pers_fname', item.personal_fname);
+            setVal('sm_pers_lname', item.personal_lname);
+            setVal('sm_pers_idcard', item.personal_id_card);
+
+            setVal('sm_pers_startdate', item.hire_date);
+            setVal('sm_pers_degree', item.hire_qual);
+            setVal('sm_pers_graddate', item.grad_date);
+            setVal('sm_pers_gpa', item.gpa);
+
+            setVal('sm_lic_name', item.license_name);
+            setVal('sm_lic_no', item.license_no);
+            setVal('sm_lic_issue', item.license_issue);
+            setVal('sm_lic_expire', item.license_expire);
+
+            toggleStaffModal();
+        }
+
+        async function saveStaffMoph() {
+            const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
+
+            const payload = {
+                agency_prefix: getVal('sm_agency_prefix'),
+                agency_district: getVal('sm_agency_district'),
+                agency_sub_district: getVal('sm_agency_rpst'),
+                agency_group: getVal('sm_agency_group'),
+                agency_work: getVal('sm_agency_task'),
+                agency_match: getVal('sm_agency_match'),
+                position_number: getVal('sm_pos_no'),
+                position_level: getVal('sm_pos_level'),
+                position_line: getVal('sm_pos_name'),
+                position_status: getVal('sm_pos_status'),
+                staff_type: window.currentStaffType || getVal('sm_staff_type') || 'พนักงานกระทรวงสาธารณสุข',
+                personal_prefix: getVal('sm_pers_title'),
+                personal_fname: getVal('sm_pers_fname'),
+                personal_lname: getVal('sm_pers_lname'),
+                personal_id_card: getVal('sm_pers_idcard'),
+                hire_date: getVal('sm_pers_startdate'),
+                hire_qual: getVal('sm_pers_degree'),
+                grad_date: getVal('sm_pers_graddate'),
+                gpa: getVal('sm_pers_gpa'),
+                license_name: getVal('sm_lic_name'),
+                license_no: getVal('sm_lic_no'),
+                license_issue: getVal('sm_lic_issue'),
+                license_expire: getVal('sm_lic_expire')
+            };
+
+            const url = editingStaffId ? ('/api/moph-staff/' + editingStaffId) : '/api/moph-staff';
+            const method = editingStaffId ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('Save failed');
+                toggleStaffModal();
+                loadStaffFromStorage();
+            } catch (err) {
+                alert('เกิดข้อผิดพลาดในการบันทึกลงฐานข้อมูล: ' + err.message);
+            }
+        }
+
+        async function deleteStaffById(id) {
+            if (!confirm('คุณแน่ใจว่าต้องการลบรายการนี้ออกจากฐานข้อมูล?')) return;
+            try {
+                const res = await fetch('/api/moph-staff/' + id, { method: 'DELETE' });
+                if (!res.ok) throw new Error('Delete failed');
+                loadStaffFromStorage();
+            } catch (err) {
+                alert('เกิดข้อผิดพลาดในการลบ: ' + err.message);
+            }
+        }
+
+        async function importStaffExcel(input) {
             if (!input.files || input.files.length === 0) return;
             const file = input.files[0];
             
@@ -1250,19 +1425,15 @@
             }
             
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, {type: 'array'});
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
-                    
                     const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
                     
-                    // ตัดหัวตาราง 2 บรรทัดแรกทิ้ง
                     let dataRows = json.slice(2);
-                    
-                    // กรองข้อมูลเฉพาะแถวที่มีข้อมูลจริงๆ (อย่างน้อยต้องมีคำนำหน้าหน่วยงาน หรืออำเภอ)
                     let validRows = dataRows.filter(row => row && row.length > 0 && (row[1] || row[2]));
                     
                     if (validRows.length === 0) {
@@ -1271,267 +1442,60 @@
                         return;
                     }
                     
-                    // เพิ่ม Popup ยืนยันก่อนนำเข้า
-                    const confirmMsg = 'พบข้อมูลจำนวน ' + validRows.length + ' รายการ ต้องการยืนยันการนำเข้าข้อมูลสู่ระบบหรือไม่?';
-                    if (!confirm(confirmMsg)) {
+                    const type = window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข';
+                    if (!confirm('พบข้อมูลจำนวน ' + validRows.length + ' รายการ ต้องการนำเข้าสู่ฐานข้อมูล ' + type + ' หรือไม่?')) {
                         input.value = '';
                         return;
                     }
-                    
-                    const tbody = document.getElementById('staff-moph-table-body');
-                    if (tbody.innerHTML.includes('กำลังโหลดข้อมูล...') || tbody.innerHTML.includes('ยังไม่มีข้อมูล')) {
-                        tbody.innerHTML = '';
-                    }
-                    
-                    let addedCount = 0;
-                    validRows.forEach(row => {
-                        const safeGet = (index) => {
-                            if (row[index] === undefined || row[index] === null) return '-';
-                            return row[index].toString().trim() || '-';
-                        };
-                        
-                        const trHtml = `
-                            <td class="text-center sm-row-num"></td>
-                            <td class="text-center">${safeGet(1)}</td>
-                            <td class="text-center">${safeGet(2)}</td>
-                            <td class="text-center">${safeGet(3)}</td>
-                            <td class="text-center">${safeGet(4)}</td>
-                            <td class="text-center">${safeGet(5)}</td>
-                            <td class="text-center">${safeGet(6)}</td>
-                            <td class="text-center">${safeGet(7)}</td>
-                            <td class="text-center">${safeGet(8)}</td>
-                            <td class="text-center">${safeGet(9)}</td>
-                            <td class="text-center">${safeGet(10)}</td>
-                            <td class="text-center">${safeGet(11)}</td>
-                            <td class="text-center">${safeGet(12)}</td>
-                            <td class="text-center">${safeGet(13)}</td>
-                            <td class="text-center">${safeGet(14)}</td>
-                            <td class="text-center">${safeGet(15)}</td>
-                            <td class="text-center">${safeGet(16)}</td>
-                            <td class="text-center">${safeGet(17)}</td>
-                            <td class="text-center">${safeGet(18)}</td>
-                            <td class="text-center">${safeGet(19)}</td>
-                            <td class="text-center">${safeGet(20)}</td>
-                            <td class="text-center">${safeGet(21)}</td>
-                            <td class="text-center">${safeGet(22)}</td>
-                            <td class="text-center">${safeGet(23)}</td>
-                            <td class="text-center sticky right-0 bg-white">
-                                <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editStaffMoph(this)"><i class="fas fa-edit"></i></button>
-                                <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveStaffToStorage();"><i class="fas fa-trash"></i></button>
-                            </td>
-                        `;
-                        
-                        const tr = document.createElement('tr');
-                        tr.className = 'hover:bg-gray-50 transition';
-                        tr.innerHTML = trHtml;
-                        tbody.appendChild(tr);
-                        addedCount++;
+
+                    const safeGet = (row, index) => (row[index] !== undefined && row[index] !== null) ? String(row[index]).trim() : '';
+
+                    const payloads = validRows.map(row => ({
+                        agency_prefix: safeGet(row, 1),
+                        agency_district: safeGet(row, 2),
+                        agency_sub_district: safeGet(row, 3),
+                        agency_group: safeGet(row, 4),
+                        agency_work: safeGet(row, 5),
+                        agency_match: safeGet(row, 6),
+                        position_number: safeGet(row, 7),
+                        position_level: safeGet(row, 8),
+                        position_line: safeGet(row, 9),
+                        position_status: safeGet(row, 10),
+                        staff_type: type, // Force selected staff type
+                        personal_prefix: safeGet(row, 12),
+                        personal_fname: safeGet(row, 13),
+                        personal_lname: safeGet(row, 14),
+                        personal_id_card: safeGet(row, 15),
+                        hire_date: safeGet(row, 16),
+                        hire_qual: safeGet(row, 17),
+                        grad_date: safeGet(row, 18),
+                        gpa: safeGet(row, 19),
+                        license_name: safeGet(row, 20),
+                        license_no: safeGet(row, 21),
+                        license_issue: safeGet(row, 22),
+                        license_expire: safeGet(row, 23)
+                    }));
+
+                    const res = await fetch('/api/moph-staff', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(payloads)
                     });
+
+                    if (!res.ok) throw new Error('API Bulk Insert Failed');
                     
-                    updateStaffRowNumbers();
-                    saveStaffToStorage();
-                    
-                    alert('นำเข้าข้อมูลสำเร็จจำนวน ' + addedCount + ' รายการ!');
+                    alert('นำเข้าข้อมูลสู่ฐานข้อมูลส่วนกลางสำเร็จจำนวน ' + payloads.length + ' รายการ!');
+                    loadStaffFromStorage();
                     
                 } catch(error) {
                     console.error(error);
-                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาตรวจสอบรูปแบบไฟล์ครับ');
+                    alert('เกิดข้อผิดพลาดในการนำเข้าสู่ฐานข้อมูล: ' + error.message);
                 }
-                
                 input.value = '';
             };
             reader.readAsArrayBuffer(file);
         }
 
-        function openStaffModal() {
-            editingStaffRow = null;
-            
-            // Clear inputs
-            const inputs = document.querySelectorAll('#staffModal input:not([readonly]), #staffModal select');
-            inputs.forEach(el => {
-                if(el.tagName === 'SELECT') {
-                    if (el.id === 'sm_pers_title') el.value = 'นาย';
-                    else el.value = '';
-                } else {
-                    el.value = '';
-                }
-            });
-            
-            const stInput = document.getElementById('sm_staff_type');
-            if (stInput) stInput.value = window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข';
-            toggleStaffModal();
-        }
-
-        function saveStaffMoph() {
-            const tbody = document.getElementById('staff-moph-table-body');
-            
-            // Get all values
-            const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
-            
-            const agency_prefix = getVal('sm_agency_prefix');
-            const agency_district = getVal('sm_agency_district');
-            const agency_rpst = getVal('sm_agency_rpst');
-            const agency_group = getVal('sm_agency_group');
-            const agency_task = getVal('sm_agency_task');
-            const agency_match = getVal('sm_agency_match');
-            
-            const pos_no = getVal('sm_pos_no');
-            const pos_level = getVal('sm_pos_level');
-            const pos_name = getVal('sm_pos_name');
-            const pos_status = getVal('sm_pos_status');
-            const staff_type = window.currentStaffType || getVal('sm_staff_type') || 'พนักงานกระทรวงสาธารณสุข';
-            
-            const pers_title = getVal('sm_pers_title');
-            const pers_fname = getVal('sm_pers_fname');
-            const pers_lname = getVal('sm_pers_lname');
-            const pers_idcard = getVal('sm_pers_idcard');
-            
-            const pers_startdate = getVal('sm_pers_startdate');
-            const pers_degree = getVal('sm_pers_degree');
-            const pers_graddate = getVal('sm_pers_graddate');
-            const pers_gpa = getVal('sm_pers_gpa');
-            
-            const lic_name = getVal('sm_lic_name');
-            const lic_no = getVal('sm_lic_no');
-            const lic_issue = getVal('sm_lic_issue');
-            const lic_expire = getVal('sm_lic_expire');
-
-            const trHtml = `
-                <td class="text-center sm-row-num"></td>
-                <td class="text-center">${agency_prefix || '-'}</td>
-                <td class="text-center">${agency_district || '-'}</td>
-                <td class="text-center">${agency_rpst || '-'}</td>
-                <td class="text-center">${agency_group || '-'}</td>
-                <td class="text-center">${agency_task || '-'}</td>
-                <td class="text-center">${agency_match || '-'}</td>
-                
-                <td class="text-center">${pos_no || '-'}</td>
-                <td class="text-center">${pos_level || '-'}</td>
-                <td class="text-center">${pos_name || '-'}</td>
-                <td class="text-center">${pos_status || '-'}</td>
-                <td class="text-center">${staff_type || '-'}</td>
-                
-                <td class="text-center">${pers_title || '-'}</td>
-                <td class="text-center">${pers_fname || '-'}</td>
-                <td class="text-center">${pers_lname || '-'}</td>
-                <td class="text-center">${pers_idcard || '-'}</td>
-                
-                <td class="text-center">${pers_startdate ? formatDateToThai(pers_startdate) : '-'}</td>
-                <td class="text-center">${pers_degree || '-'}</td>
-                <td class="text-center">${pers_graddate ? formatDateToThai(pers_graddate) : '-'}</td>
-                <td class="text-center">${pers_gpa || '-'}</td>
-                
-                <td class="text-center">${lic_name || '-'}</td>
-                <td class="text-center">${lic_no || '-'}</td>
-                <td class="text-center">${lic_issue ? formatDateToThai(lic_issue) : '-'}</td>
-                <td class="text-center">${lic_expire ? formatDateToThai(lic_expire) : '-'}</td>
-                
-                <td class="text-center sticky right-0 bg-white">
-                    <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editStaffMoph(this)"><i class="fas fa-edit"></i></button>
-                    <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveStaffToStorage();"><i class="fas fa-trash"></i></button>
-                </td>
-            `;
-
-            let tr;
-            if (editingStaffRow) {
-                tr = editingStaffRow;
-                tr.innerHTML = trHtml;
-            } else {
-                // If it's the dummy loading row, clear it
-                if (tbody.innerHTML.includes('กำลังโหลดข้อมูล...') || tbody.innerHTML.includes('ยังไม่มีข้อมูล')) {
-                    tbody.innerHTML = '';
-                }
-                tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50 transition';
-                tr.innerHTML = trHtml;
-                tbody.appendChild(tr);
-            }
-            
-            // Set hidden data for editing later
-            tr.setAttribute('data-pers-startdate', pers_startdate);
-            tr.setAttribute('data-pers-graddate', pers_graddate);
-            tr.setAttribute('data-lic-issue', lic_issue);
-            tr.setAttribute('data-lic-expire', lic_expire);
-            
-            updateStaffRowNumbers();
-            saveStaffToStorage();
-            toggleStaffModal();
-        }
-        
-        function updateStaffRowNumbers() {
-            const tbody = document.getElementById('staff-moph-table-body');
-            const rows = tbody.querySelectorAll('tr');
-            let count = 1;
-            rows.forEach(row => {
-                const td = row.querySelector('.sm-row-num');
-                if (td) td.innerText = count++;
-            });
-        }
-
-        function editStaffMoph(btn) {
-            const tr = btn.closest('tr');
-            editingStaffRow = tr;
-            const tds = tr.querySelectorAll('td');
-            
-            const setVal = (id, val) => {
-                const el = document.getElementById(id);
-                if(el) {
-                    if (val === '-' || !val) el.value = '';
-                    else el.value = val;
-                }
-            };
-            
-            setVal('sm_agency_prefix', tds[1].innerText.trim());
-            setVal('sm_agency_district', tds[2].innerText.trim());
-            setVal('sm_agency_rpst', tds[3].innerText.trim());
-            setVal('sm_agency_group', tds[4].innerText.trim());
-            setVal('sm_agency_task', tds[5].innerText.trim());
-            setVal('sm_agency_match', tds[6].innerText.trim());
-            
-            setVal('sm_pos_no', tds[7].innerText.trim());
-            setVal('sm_pos_level', tds[8].innerText.trim());
-            setVal('sm_pos_name', tds[9].innerText.trim());
-            setVal('sm_pos_status', tds[10].innerText.trim());
-            
-            setVal('sm_pers_title', tds[12].innerText.trim());
-            setVal('sm_pers_fname', tds[13].innerText.trim());
-            setVal('sm_pers_lname', tds[14].innerText.trim());
-            setVal('sm_pers_idcard', tds[15].innerText.trim());
-            
-            setVal('sm_pers_startdate', tr.getAttribute('data-pers-startdate') || '');
-            setVal('sm_pers_degree', tds[17].innerText.trim());
-            setVal('sm_pers_graddate', tr.getAttribute('data-pers-graddate') || '');
-            setVal('sm_pers_gpa', tds[19].innerText.trim());
-            
-            setVal('sm_lic_name', tds[20].innerText.trim());
-            setVal('sm_lic_no', tds[21].innerText.trim());
-            setVal('sm_lic_issue', tr.getAttribute('data-lic-issue') || '');
-            setVal('sm_lic_expire', tr.getAttribute('data-lic-expire') || '');
-            
-            toggleStaffModal();
-        }
-        
-        function saveStaffToStorage() {
-            const tbody = document.getElementById('staff-moph-table-body');
-            if (tbody) {
-                const type = window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข';
-                localStorage.setItem('staff_data_' + type, tbody.innerHTML);
-            }
-        }
-        
-        // Modify existing loadFromLocalStorage
-        function loadStaffFromStorage() {
-            const tbody = document.getElementById('staff-moph-table-body');
-            if (!tbody) return;
-            const type = window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข';
-            const savedData = localStorage.getItem('staff_data_' + type);
-            if (savedData && savedData.trim() !== '' && !savedData.includes('ยังไม่มีข้อมูล')) {
-                tbody.innerHTML = savedData;
-            } else {
-                tbody.innerHTML = '<tr><td colspan="25" class="text-center py-10 text-gray-400 font-medium"><i class="fas fa-inbox text-3xl mb-2 text-gray-300 block"></i>ยังไม่มีข้อมูล ' + type + '</td></tr>';
-            }
-            updateStaffRowNumbers();
-        }
         
         function formatDateToThai(dateStr) {
             if (!dateStr) return '-';

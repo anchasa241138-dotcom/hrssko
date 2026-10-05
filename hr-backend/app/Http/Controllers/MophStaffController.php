@@ -8,12 +8,21 @@ class MophStaffController extends Controller
 {
     public function index()
     {
-        return MophStaff::all();
+        return MophStaff::orderBy('id', 'asc')->get();
     }
 
     public function store(Request $request)
     {
-        $staff = MophStaff::create($request->all());
+        $data = $request->all();
+        if (isset($data[0]) && is_array($data[0])) {
+            $created = [];
+            foreach ($data as $item) {
+                $created[] = MophStaff::create($item);
+            }
+            return response()->json($created, 201);
+        }
+
+        $staff = MophStaff::create($data);
         return response()->json($staff, 201);
     }
 
@@ -22,10 +31,11 @@ class MophStaffController extends Controller
         return $mophStaff;
     }
 
-    public function update(Request $request, MophStaff $mophStaff)
+    public function update(Request $request, $id)
     {
-        $mophStaff->update($request->all());
-        return response()->json($mophStaff, 200);
+        $staff = MophStaff::findOrFail($id);
+        $staff->update($request->all());
+        return response()->json($staff, 200);
     }
 
     public function destroy($id)
