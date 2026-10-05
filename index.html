@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ระบบการจ้างทางเลือก - สสจ.ศรีสะเกษ</title>
+    <meta name="csrf-token" content="static-site">
+    <title>ระบบการจ้างทางเลือก - สสจ.ศรีสะเกษ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -342,9 +343,7 @@
                 <div id="tab-vacant" class="app-tab-content">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold text-gray-700">รายการตำแหน่งว่างทั้งหมด</h3>
-                        <button onclick="toggleModal()" class="bg-moph hover:bg-moph-dark text-white px-4 py-2 rounded-lg shadow transition flex items-center gap-2">
-                            <i class="fas fa-plus"></i> เพิ่มข้อมูลตำแหน่งว่าง
-                        </button>
+                        <button onclick="openAddModal()" class="bg-moph hover:bg-moph-dark text-white px-4 py-2 rounded-lg shadow transition flex items-center gap-2"> <i class="fas fa-plus"></i> เพิ่มข้อมูลตำแหน่งว่าง </button>
                     </div>
 
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 table-container">
@@ -602,13 +601,13 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้า</label>
-                                <select class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-moph">
+                                <select id="modal_prefix" onchange="handleModalPrefixChange()" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-moph">
                                     <option value="" disabled selected>เลือกคำนำหน้า</option>
-                                    <option>รพท.</option>
-                                    <option>รพช.</option>
-                                    <option>สสอ.</option>
-                                    <option>รพ.สต.</option>
-                                    <option>สสจ.</option>
+                                    <option value="รพท.">รพท.</option>
+                                    <option value="รพช.">รพช.</option>
+                                    <option value="สสอ.">สสอ.</option>
+                                    <option value="รพ.สต.">รพ.สต.</option>
+                                    <option value="สสจ.">สสจ.</option>
                                 </select>
                             </div>
                             <div>
@@ -640,7 +639,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">รพ.สต.</label>
-                                <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-moph">
+                                <input type="text" id="modal_rpst" disabled class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-moph disabled:bg-gray-100 disabled:cursor-not-allowed">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งเลขที่</label><input type="text" id="modal_position_no" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-moph">
@@ -819,25 +818,44 @@
     <!-- ======================= SCRIPTS ======================= -->
     <script>
         // === View Switching (Auth vs App) ===
-        function handleLogin(e) {
+                async function handleLogin(e) {
             e.preventDefault();
             const user = document.getElementById('login-username').value;
             const pass = document.getElementById('login-password').value;
             
-            // ตรวจสอบ Username และ Password สำหรับ Admin
+            // Bypass fetch completely for admin
             if (user === 'admin' && pass === 'admin1234') {
                 document.getElementById('view-auth').classList.remove('active');
                 document.getElementById('view-app').classList.add('active');
-                e.target.reset(); // clear form
-            } else {
-                alert('ชื่อผู้ใช้งาน หรือ รหัสผ่าน ไม่ถูกต้อง!');
+                e.target.reset();
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('view-auth').classList.remove('active');
+                    document.getElementById('view-app').classList.add('active');
+                    e.target.reset();
+                } else {
+                    alert(data.message || 'ชื่อผู้ใช้งาน หรือ รหัสผ่าน ไม่ถูกต้อง!');
+                }
+            } catch (err) {
+                alert('Server error: ไม่สามารถเชื่อมต่อฐานข้อมูลได้ (ใช้ admin/admin1234 เพื่อทดสอบข้ามการเชื่อมต่อฐานข้อมูล)');
             }
         }
 
-        function handleLogout() {
+        async function handleLogout() {
+            await fetch('/api/logout', { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }});
             document.getElementById('view-app').classList.remove('active');
             document.getElementById('view-auth').classList.add('active');
-            switchAuthTab('login'); // ensure login tab is shown when logged out
+            switchAuthTab('login');
         }
 
         // === Auth Tabs (Login / Register) ===
@@ -857,15 +875,880 @@
             }
         }
 
-        function handleRegister(e) {
+        async function handleRegister(e) {
             e.preventDefault();
-            alert('ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบด้วยข้อมูลที่คุณสมัคร');
-            switchAuthTab('login');
-            e.target.reset();
+            const form = e.target;
+            const inputs = form.querySelectorAll('input, select');
+            
+            const payload = {
+                prefix: inputs[0].value,
+                first_name: inputs[1].value,
+                last_name: inputs[2].value,
+                position: inputs[3].value,
+                employment_type: inputs[4].value,
+                agency: inputs[5].value,
+                district: inputs[6].value,
+                phone: inputs[7].value,
+                password: inputs[8].value,
+                username: inputs[7].value, // ใช้เบอร์โทรเป็น Username สำหรับตัวอย่าง
+            };
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('ลงทะเบียนสำเร็จ! ตอนนี้คุณเข้าสู่ระบบแล้ว');
+                    document.getElementById('view-auth').classList.remove('active');
+                    document.getElementById('view-app').classList.add('active');
+                    form.reset();
+                } else {
+                    alert('ไม่สามารถลงทะเบียนได้ (อาจมีบัญชีนี้แล้ว)');
+                }
+            } catch (err) {
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+            }
+        }
+
+        function saveVacantPosition() {
+            const prefix = document.getElementById('modal_prefix') ? document.getElementById('modal_prefix').value : '-';
+            const district = document.getElementById('modal_district') ? document.getElementById('modal_district').value : '-';
+            const rpst = document.getElementById('modal_rpst') ? document.getElementById('modal_rpst').value : '-';
+            const positionNo = document.getElementById('modal_position_no') ? document.getElementById('modal_position_no').value : '-';
+            const positionName = document.getElementById('modal_position_name') ? document.getElementById('modal_position_name').value : '-';
+            const empType = document.getElementById('modal_emp_type') ? document.getElementById('modal_emp_type').value : '-';
+            const vacantDate = document.getElementById('modal_vacant_date') ? document.getElementById('modal_vacant_date').value : '-';
+            const vacantDays = document.getElementById('modal_vacant_days_display') ? document.getElementById('modal_vacant_days_display').value : '-';
+            const opStatusVal = document.getElementById('modal_operation_status') ? document.getElementById('modal_operation_status').value : '';
+            const opResultVal = document.getElementById('modal_operation_result') ? document.getElementById('modal_operation_result').value : '-';
+
+            const ssj = document.getElementById('chk_ssj') && document.getElementById('chk_ssj').checked;
+            const chro = document.getElementById('chk_chro') && document.getElementById('chk_chro').checked;
+            const akp = document.getElementById('chk_akp') && document.getElementById('chk_akp').checked;
+
+              const sectSsj = document.getElementById('section_ssj');
+              const ssjDoc = sectSsj.querySelector('input[type="text"]').value;
+              const ssjDate = sectSsj.querySelector('input[type="date"]').value;
+              const ssjFileInput = sectSsj.querySelector('input[type="file"]');
+              const ssjFileUrl = ssjFileInput.getAttribute('data-fileurl') || '';
+              const ssjFileName = ssjFileInput.getAttribute('data-filename') || '';
+              const ssjFile = ssjFileName !== '';
+
+              const sectChro = document.getElementById('section_chro');
+              const chroDoc = sectChro.querySelector('input[type="text"]').value;
+              const chroDate = sectChro.querySelector('input[type="date"]').value;
+              const chroFileInput = sectChro.querySelector('input[type="file"]');
+              const chroFileUrl = chroFileInput.getAttribute('data-fileurl') || '';
+              const chroFileName = chroFileInput.getAttribute('data-filename') || '';
+              const chroFile = chroFileName !== '';
+
+              const sectAkp = document.getElementById('section_akp');
+              const akpDoc = sectAkp.querySelector('input[type="text"]').value;
+              const akpDate = sectAkp.querySelector('input[type="date"]').value;
+              const akpFileInput = sectAkp.querySelector('input[type="file"]');
+              const akpFileUrl = akpFileInput.getAttribute('data-fileurl') || '';
+              const akpFileName = akpFileInput.getAttribute('data-filename') || '';
+              const akpFile = akpFileName !== '';
+    
+
+            const formatIcon = (isChecked, hasFile) => {
+                if (!isChecked) return '-';
+                if (hasFile) {
+                    return '<div class="flex items-center justify-center gap-2"><i class="fas fa-check text-green-500"></i><button type="button" onclick="downloadFromTable(this)" class="text-gray-400 hover:text-green-600 transition" title="ดาวน์โหลดเอกสารแนบ"><i class="fas fa-download text-xs"></i></button></div>';
+                }
+                return '<i class="fas fa-check text-green-500"></i>';
+            };
+
+            const tbody = document.getElementById('vacant-table-body');
+            if(!tbody) return;
+
+            const rowCount = editingRow ? editingRow.querySelector('td').innerText : (tbody.querySelectorAll('tr').length + 1);
+            
+            let formattedDate = vacantDate;
+            if(vacantDate && vacantDate !== '-') {
+                const d = new Date(vacantDate);
+                const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+                if(!isNaN(d)) {
+                    formattedDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
+                }
+            }
+
+            let tr;
+            if (editingRow) {
+                tr = editingRow;
+            } else {
+                tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition';
+                tbody.appendChild(tr);
+            }
+            
+            tr.setAttribute('data-opstatus', opStatusVal || '');
+            tr.setAttribute('data-opresult', opResultVal || '-');
+            
+            tr.setAttribute('data-ssj-doc', ssjDoc);
+            tr.setAttribute('data-ssj-date', ssjDate);
+            tr.setAttribute('data-ssj-fileurl', ssjFileUrl);
+            tr.setAttribute('data-ssj-filename', ssjFileName);
+            
+            tr.setAttribute('data-chro-doc', chroDoc);
+            tr.setAttribute('data-chro-date', chroDate);
+            tr.setAttribute('data-chro-fileurl', chroFileUrl);
+            tr.setAttribute('data-chro-filename', chroFileName);
+            
+            tr.setAttribute('data-akp-doc', akpDoc);
+            tr.setAttribute('data-akp-date', akpDate);
+            tr.setAttribute('data-akp-fileurl', akpFileUrl);
+            tr.setAttribute('data-akp-filename', akpFileName);
+
+            tr.innerHTML = `
+                <td class="text-center">${rowCount}</td>
+                <td>${prefix || '-'}</td>
+                <td>${district || '-'}</td>
+                <td>${prefix === 'รพ.สต.' ? rpst : '-'}</td>
+                <td class="text-center">${positionNo || '-'}</td>
+                <td>${positionName || '-'}</td>
+                <td>${empType || '-'}</td>
+                <td class="text-center">${formattedDate || '-'}</td>
+                <td class="text-center">${vacantDays || '-'}</td>
+                <td class="text-center">${formatOperationStatus(opStatusVal, opResultVal)}</td>
+                <td class="text-center">${formatIcon(chro, chroFile)}</td>
+                <td class="text-center">${formatIcon(akp, akpFile)}</td>
+                <td class="text-center">${formatIcon(ssj, ssjFile)}</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">
+                    <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                    <button class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+
+            toggleModal();
+            editingRow = null;
+            saveToLocalStorage();
+            
+            const form = document.querySelector('#dataModal form');
+            if(form) form.reset();
+            handleModalPrefixChange();
+            handleEmpTypeChange();
+            toggleApprovalSection('ssj');
+            toggleApprovalSection('chro');
+            toggleApprovalSection('akp');
+        }
+
+        function handleEmpTypeChange() {
+            const empType = document.getElementById('modal_emp_type').value;
+            const opStatus = document.getElementById('modal_operation_status');
+            
+            if (!opStatus) return;
+
+            const currentValue = opStatus.value;
+            opStatus.innerHTML = '<option value="" disabled selected>เลือกสถานะการดำเนินการ</option>';
+            
+            if (empType === 'พนักงานกระทรวงสาธารณสุข') {
+                const options = [
+                    "อัตราว่าง",
+                    "หน่วยงานขอสรรหาทดแทน",
+                    "ขอเปลี่ยนตำแหน่ง/ประเภทการว่าง/หน่วยงาน",
+                    "หน่วยงานส่งร่างประกาศรับสมัครฯ",
+                    "เสนอ นพ.สสจ. ลงนามประกาศรับสมัครฯ",
+                    "เผยแพร่/ประชาสัมพันธ์ประกาศรับสมัคร/สรรหา",
+                    "หน่วยงานรายงานผลการสรรหา",
+                    "นพ.สสจ. พิจารณาผลการสรรหา",
+                    "เรียกรายงานตัว/ทำสัญญาจ้าง",
+                    "ส่งสัญญาจ้างให้ สสจ.",
+                    "นพ.สสจ. ลงนามสัญญา/คำสั่งจ้าง",
+                    "บันทึกในระบบ HROPH",
+                    "ไม่มีผู้สมัคร/ไม่มีผู้ผ่านการคัดเลือก/เปลี่ยนเงื่อนไข"
+                ];
+                
+                options.forEach(opt => {
+                    const el = document.createElement('option');
+                    el.value = opt;
+                    el.innerText = opt;
+                    opStatus.appendChild(el);
+                });
+                opStatus.disabled = false;
+                if(document.getElementById('modal_operation_result')) document.getElementById('modal_operation_result').disabled = false;
+                
+                if (options.includes(currentValue)) {
+                    opStatus.value = currentValue;
+                }
+            } else {
+                opStatus.disabled = true;
+                if(document.getElementById('modal_operation_result')) document.getElementById('modal_operation_result').disabled = true;
+            }
+        }
+        let editingRow = null;
+
+        
+        function saveToLocalStorage() {
+            const tbody = document.getElementById('vacant-table-body');
+            if (tbody) {
+                localStorage.setItem('vacant_table_data', tbody.innerHTML);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            const tbody = document.getElementById('vacant-table-body');
+            const savedData = localStorage.getItem('vacant_table_data');
+            if (tbody && savedData) {
+                tbody.innerHTML = savedData;
+            }
         }
 
 
-            function handleAgencyChange() {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Force reset storage once so the user sees the new mock rows
+            if (!localStorage.getItem('mock_rows_initialized_v3')) {
+                localStorage.removeItem('vacant_table_data');
+                localStorage.setItem('mock_rows_initialized_v3', 'true');
+            }
+            loadFromLocalStorage();
+            loadStaffFromStorage();
+        });
+
+
+        
+        function handleFileUpload(input) {
+            const labelSpan = input.closest('label').querySelector('.file-label-text');
+            const downloadBtn = input.closest('.flex').querySelector('.btn-download-file');
+            if (input.files && input.files.length > 0) {
+                const fileName = input.files[0].name;
+                labelSpan.innerHTML = '<i class="fas fa-file-pdf mr-1 text-red-500"></i> ' + fileName;
+                // Store fake file url for mockup
+                const objectUrl = URL.createObjectURL(input.files[0]);
+                input.setAttribute('data-fileurl', objectUrl);
+                input.setAttribute('data-filename', fileName);
+                downloadBtn.classList.remove('text-gray-600');
+                downloadBtn.classList.add('text-green-600');
+            } else {
+                labelSpan.innerHTML = '<i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด';
+                input.removeAttribute('data-fileurl');
+                input.removeAttribute('data-filename');
+                downloadBtn.classList.add('text-gray-600');
+                downloadBtn.classList.remove('text-green-600');
+            }
+        }
+
+        function downloadMockFile(btn) {
+            const input = btn.closest('.flex').querySelector('input[type="file"]');
+            const fileUrl = input.getAttribute('data-fileurl');
+            const fileName = input.getAttribute('data-filename');
+            
+            if (fileUrl) {
+                // Create a temporary anchor to trigger download
+                const a = document.createElement('a');
+                a.href = fileUrl;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                alert('โปรดเลือกไฟล์ (อัพโหลด) ก่อนทำการดาวน์โหลดครับ');
+            }
+        }
+        
+        // Mock table download function
+        function downloadFromTable(btn) {
+            // สร้างไฟล์ PDF ตัวอย่างขนาดเล็กมาก (Dummy PDF) เพื่อจำลองการดาวน์โหลดจากตาราง
+            const dummyPdfBase64 = 'JVBERi0xLjQKJcOkw7zDtsOfCjIgMCBvYmoKPDwvTGVuZ3RoIDMgMCBSL0ZpbHRlci9GbGF0ZURlY29kZT4+CnN0cmVhbQp4nDPQM1Qo5ypUMFAwALJMLU31jBQsTAz1LBSKUrnCtRTy0yuLQExghrK+iZ6Bvpm+iYGlvkGagb65vpG+oYm+pb6ZgQGXYy0XFwB19A+tCmVuZHN0cmVhbQplbmRvYmoKCjMgMCBvYmoKNTQKZW5kb2JqCgo0IDAgb2JqCjw8L1R5cGUvUGFnZS9NZWRpYUJveFswIDAgNTk1IDg0Ml0vUmVzb3VyY2VzPDwvRm9udDw8L0YxIDEgMCBSPj4+Pi9Db250ZW50cyAyIDAgUi9QYXJlbnQgNSAwIFI+PgplbmRvYmoKCjEgMCBvYmoKPDwvVHlwZS9Gb250L1N1YnR5cGUvVHlwZTEvQmFzZUZvbnQvSGVsdmV0aWNhPj4KZW5kb2JqCgo1IDAgb2JqCjw8L1R5cGUvUGFnZXMvQ291bnQgMS9LaWRzWzQgMCBSXT4+CmVuZG9iagoKNiAwIG9iago8PC9UeXBlL0NhdGFsb2cvUGFnZXMgNSAwIFI+PgplbmRvYmoKCjcgMCBvYmoKPDwvUHJvZHVjZXIoZ2hvc3RzY3JpcHQpL0NyZWF0aW9uRGF0ZShEOjIwMjExMTE4MTExMjAzKzAzJzAwJyk+PgplbmRvYmoKCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDI1OCAwMDAwMCBuIAowMDAwMDAwMDE1IDAwMDAwIG4gCjAwMDAwMDAxNDAgMDAwMDAgbiAKMDAwMDAwMDE1OSAwMDAwMCBuIAowMDAwMDAwMzQ2IDAwMDAwIG4gCjAwMDAwMDA0MDMgMDAwMDAgbiAKMDAwMDAwMDQ1MiAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOC9Sb290IDYgMCBSL0luZm8gNyAwIFI+PgpzdGFydHhyZWYKNTE5CiUlRU9GCg==';
+            const a = document.createElement('a');
+            a.href = 'data:application/pdf;base64,' + dummyPdfBase64;
+            a.download = 'เอกสารแนบตัวอย่าง.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        
+        let editingStaffRow = null;
+
+        function toggleStaffModal() {
+            const modal = document.getElementById('staffModal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        
+        function exportStaffExcel() {
+            // ส่วนหัวคอลัมน์ทั้งหมด 24 คอลัมน์ (ข้ามคอลัมน์ "จัดการ")
+            // สร้างหัวตาราง 2 ชั้นให้เหมือนหน้าจอเป๊ะๆ
+            const headerRow1 = [
+                "ลำดับ", 
+                "สังกัดหน่วยงาน", "", "", "", "", "", 
+                "ตำแหน่งเลขที่", "ระดับ", "ตำแหน่งสายงาน", "สถานะตำแหน่ง", "ประเภทเจ้าหน้าที่",
+                "ข้อมูลบุคคล", "", "", "", 
+                "วันที่เริ่มจ้าง", "วุฒิที่จ้าง", "วันที่จบการศึกษา", "เกรดเฉลี่ย",
+                "ใบประกอบวิชาชีพ", "", "", ""
+            ];
+            const headerRow2 = [
+                "", 
+                "คำนำหน้า", "อำเภอ", "รพ.สต.", "กลุ่มงาน", "งาน", "ตรง จ. / ไม่ตรง จ.",
+                "", "", "", "", "",
+                "คำนำหน้า", "ชื่อ", "สกุล", "เลขบัตรประชาชน",
+                "", "", "", "",
+                "ชื่อใบประกอบฯ", "เลขที่ใบประกอบฯ", "วันออก", "วันหมดอายุ"
+            ];
+            
+            let csvContent = '\uFEFF' + headerRow1.join(',') + '\n' + headerRow2.join(',') + '\n';
+            
+            const tbody = document.getElementById('staff-moph-table-body');
+            const rows = tbody.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                // ถ้าเป็นแถว "กำลังโหลดข้อมูล..." ให้ข้ามไป
+                if (row.innerText.includes('กำลังโหลดข้อมูล')) return;
+                
+                const cols = row.querySelectorAll('td');
+                if (cols.length < 24) return;
+                
+                let rowData = [];
+                for (let i = 0; i < 24; i++) {
+                    let cellData = cols[i].innerText.trim();
+                    // ป้องกัน Excel แปลงเลขบัตรประชาชน/เลขที่ใบประกอบวิชาชีพ เป็น E+ (วิทยาศาสตร์)
+                    if (i === 15 || i === 21) {
+                        cellData = '="' + cellData + '"';
+                    } else if (cellData.includes(',') || cellData.includes('"')) {
+                        // Escape quotes and wrap in quotes for CSV safety
+                        cellData = '"' + cellData.replace(/"/g, '""') + '"';
+                    }
+                    rowData.push(cellData);
+                }
+                csvContent += rowData.join(',') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ข้อมูลพนักงานกระทรวงสาธารณสุข.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function importStaffExcel(input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            
+            if (typeof XLSX === 'undefined') {
+                alert('กำลังโหลดระบบอ่านไฟล์ Excel กรุณารอสักครู่แล้วลองใหม่ครับ');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    
+                    const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                    
+                    // ตัดหัวตาราง 2 บรรทัดแรกทิ้ง
+                    let dataRows = json.slice(2);
+                    
+                    // กรองข้อมูลเฉพาะแถวที่มีข้อมูลจริงๆ (อย่างน้อยต้องมีคำนำหน้าหน่วยงาน หรืออำเภอ)
+                    let validRows = dataRows.filter(row => row && row.length > 0 && (row[1] || row[2]));
+                    
+                    if (validRows.length === 0) {
+                        alert('ไม่พบข้อมูลในไฟล์ Excel หรือรูปแบบไม่ถูกต้อง');
+                        input.value = '';
+                        return;
+                    }
+                    
+                    // เพิ่ม Popup ยืนยันก่อนนำเข้า
+                    const confirmMsg = 'พบข้อมูลจำนวน ' + validRows.length + ' รายการ ต้องการยืนยันการนำเข้าข้อมูลสู่ระบบหรือไม่?';
+                    if (!confirm(confirmMsg)) {
+                        input.value = '';
+                        return;
+                    }
+                    
+                    const tbody = document.getElementById('staff-moph-table-body');
+                    if (tbody.innerHTML.includes('กำลังโหลดข้อมูล...')) {
+                        tbody.innerHTML = '';
+                    }
+                    
+                    let addedCount = 0;
+                    validRows.forEach(row => {
+                        const safeGet = (index) => {
+                            if (row[index] === undefined || row[index] === null) return '-';
+                            return row[index].toString().trim() || '-';
+                        };
+                        
+                        const trHtml = `
+                            <td class="text-center sm-row-num"></td>
+                            <td class="text-center">${safeGet(1)}</td>
+                            <td class="text-center">${safeGet(2)}</td>
+                            <td class="text-center">${safeGet(3)}</td>
+                            <td class="text-center">${safeGet(4)}</td>
+                            <td class="text-center">${safeGet(5)}</td>
+                            <td class="text-center">${safeGet(6)}</td>
+                            <td class="text-center">${safeGet(7)}</td>
+                            <td class="text-center">${safeGet(8)}</td>
+                            <td class="text-center">${safeGet(9)}</td>
+                            <td class="text-center">${safeGet(10)}</td>
+                            <td class="text-center">${safeGet(11)}</td>
+                            <td class="text-center">${safeGet(12)}</td>
+                            <td class="text-center">${safeGet(13)}</td>
+                            <td class="text-center">${safeGet(14)}</td>
+                            <td class="text-center">${safeGet(15)}</td>
+                            <td class="text-center">${safeGet(16)}</td>
+                            <td class="text-center">${safeGet(17)}</td>
+                            <td class="text-center">${safeGet(18)}</td>
+                            <td class="text-center">${safeGet(19)}</td>
+                            <td class="text-center">${safeGet(20)}</td>
+                            <td class="text-center">${safeGet(21)}</td>
+                            <td class="text-center">${safeGet(22)}</td>
+                            <td class="text-center">${safeGet(23)}</td>
+                            <td class="text-center sticky right-0 bg-white">
+                                <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editStaffMoph(this)"><i class="fas fa-edit"></i></button>
+                                <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveStaffToStorage();"><i class="fas fa-trash"></i></button>
+                            </td>
+                        `;
+                        
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-gray-50 transition';
+                        tr.innerHTML = trHtml;
+                        tbody.appendChild(tr);
+                        addedCount++;
+                    });
+                    
+                    updateStaffRowNumbers();
+                    saveStaffToStorage();
+                    
+                    alert('นำเข้าข้อมูลสำเร็จจำนวน ' + addedCount + ' รายการ!');
+                    
+                } catch(error) {
+                    console.error(error);
+                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาตรวจสอบรูปแบบไฟล์ครับ');
+                }
+                
+                input.value = '';
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function openStaffModal() {
+            editingStaffRow = null;
+            
+            // Clear inputs
+            const inputs = document.querySelectorAll('#staffModal input:not([readonly]), #staffModal select');
+            inputs.forEach(el => {
+                if(el.tagName === 'SELECT') {
+                    if (el.id === 'sm_pers_title') el.value = 'นาย';
+                    else el.value = '';
+                } else {
+                    el.value = '';
+                }
+            });
+            
+            toggleStaffModal();
+        }
+
+        function saveStaffMoph() {
+            const tbody = document.getElementById('staff-moph-table-body');
+            
+            // Get all values
+            const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
+            
+            const agency_prefix = getVal('sm_agency_prefix');
+            const agency_district = getVal('sm_agency_district');
+            const agency_rpst = getVal('sm_agency_rpst');
+            const agency_group = getVal('sm_agency_group');
+            const agency_task = getVal('sm_agency_task');
+            const agency_match = getVal('sm_agency_match');
+            
+            const pos_no = getVal('sm_pos_no');
+            const pos_level = getVal('sm_pos_level');
+            const pos_name = getVal('sm_pos_name');
+            const pos_status = getVal('sm_pos_status');
+            const staff_type = getVal('sm_staff_type');
+            
+            const pers_title = getVal('sm_pers_title');
+            const pers_fname = getVal('sm_pers_fname');
+            const pers_lname = getVal('sm_pers_lname');
+            const pers_idcard = getVal('sm_pers_idcard');
+            
+            const pers_startdate = getVal('sm_pers_startdate');
+            const pers_degree = getVal('sm_pers_degree');
+            const pers_graddate = getVal('sm_pers_graddate');
+            const pers_gpa = getVal('sm_pers_gpa');
+            
+            const lic_name = getVal('sm_lic_name');
+            const lic_no = getVal('sm_lic_no');
+            const lic_issue = getVal('sm_lic_issue');
+            const lic_expire = getVal('sm_lic_expire');
+
+            const trHtml = `
+                <td class="text-center sm-row-num"></td>
+                <td class="text-center">${agency_prefix || '-'}</td>
+                <td class="text-center">${agency_district || '-'}</td>
+                <td class="text-center">${agency_rpst || '-'}</td>
+                <td class="text-center">${agency_group || '-'}</td>
+                <td class="text-center">${agency_task || '-'}</td>
+                <td class="text-center">${agency_match || '-'}</td>
+                
+                <td class="text-center">${pos_no || '-'}</td>
+                <td class="text-center">${pos_level || '-'}</td>
+                <td class="text-center">${pos_name || '-'}</td>
+                <td class="text-center">${pos_status || '-'}</td>
+                <td class="text-center">${staff_type || '-'}</td>
+                
+                <td class="text-center">${pers_title || '-'}</td>
+                <td class="text-center">${pers_fname || '-'}</td>
+                <td class="text-center">${pers_lname || '-'}</td>
+                <td class="text-center">${pers_idcard || '-'}</td>
+                
+                <td class="text-center">${pers_startdate ? formatDateToThai(pers_startdate) : '-'}</td>
+                <td class="text-center">${pers_degree || '-'}</td>
+                <td class="text-center">${pers_graddate ? formatDateToThai(pers_graddate) : '-'}</td>
+                <td class="text-center">${pers_gpa || '-'}</td>
+                
+                <td class="text-center">${lic_name || '-'}</td>
+                <td class="text-center">${lic_no || '-'}</td>
+                <td class="text-center">${lic_issue ? formatDateToThai(lic_issue) : '-'}</td>
+                <td class="text-center">${lic_expire ? formatDateToThai(lic_expire) : '-'}</td>
+                
+                <td class="text-center sticky right-0 bg-white">
+                    <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editStaffMoph(this)"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveStaffToStorage();"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+
+            let tr;
+            if (editingStaffRow) {
+                tr = editingStaffRow;
+                tr.innerHTML = trHtml;
+            } else {
+                // If it's the dummy loading row, clear it
+                if (tbody.innerHTML.includes('กำลังโหลดข้อมูล...')) {
+                    tbody.innerHTML = '';
+                }
+                tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition';
+                tr.innerHTML = trHtml;
+                tbody.appendChild(tr);
+            }
+            
+            // Set hidden data for editing later
+            tr.setAttribute('data-pers-startdate', pers_startdate);
+            tr.setAttribute('data-pers-graddate', pers_graddate);
+            tr.setAttribute('data-lic-issue', lic_issue);
+            tr.setAttribute('data-lic-expire', lic_expire);
+            
+            updateStaffRowNumbers();
+            saveStaffToStorage();
+            toggleStaffModal();
+        }
+        
+        function updateStaffRowNumbers() {
+            const tbody = document.getElementById('staff-moph-table-body');
+            const rows = tbody.querySelectorAll('tr');
+            let count = 1;
+            rows.forEach(row => {
+                const td = row.querySelector('.sm-row-num');
+                if (td) td.innerText = count++;
+            });
+        }
+
+        function editStaffMoph(btn) {
+            const tr = btn.closest('tr');
+            editingStaffRow = tr;
+            const tds = tr.querySelectorAll('td');
+            
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if(el) {
+                    if (val === '-' || !val) el.value = '';
+                    else el.value = val;
+                }
+            };
+            
+            setVal('sm_agency_prefix', tds[1].innerText.trim());
+            setVal('sm_agency_district', tds[2].innerText.trim());
+            setVal('sm_agency_rpst', tds[3].innerText.trim());
+            setVal('sm_agency_group', tds[4].innerText.trim());
+            setVal('sm_agency_task', tds[5].innerText.trim());
+            setVal('sm_agency_match', tds[6].innerText.trim());
+            
+            setVal('sm_pos_no', tds[7].innerText.trim());
+            setVal('sm_pos_level', tds[8].innerText.trim());
+            setVal('sm_pos_name', tds[9].innerText.trim());
+            setVal('sm_pos_status', tds[10].innerText.trim());
+            
+            setVal('sm_pers_title', tds[12].innerText.trim());
+            setVal('sm_pers_fname', tds[13].innerText.trim());
+            setVal('sm_pers_lname', tds[14].innerText.trim());
+            setVal('sm_pers_idcard', tds[15].innerText.trim());
+            
+            setVal('sm_pers_startdate', tr.getAttribute('data-pers-startdate') || '');
+            setVal('sm_pers_degree', tds[17].innerText.trim());
+            setVal('sm_pers_graddate', tr.getAttribute('data-pers-graddate') || '');
+            setVal('sm_pers_gpa', tds[19].innerText.trim());
+            
+            setVal('sm_lic_name', tds[20].innerText.trim());
+            setVal('sm_lic_no', tds[21].innerText.trim());
+            setVal('sm_lic_issue', tr.getAttribute('data-lic-issue') || '');
+            setVal('sm_lic_expire', tr.getAttribute('data-lic-expire') || '');
+            
+            toggleStaffModal();
+        }
+        
+        function saveStaffToStorage() {
+            const tbody = document.getElementById('staff-moph-table-body');
+            if (tbody) {
+                localStorage.setItem('staff_moph_data', tbody.innerHTML);
+            }
+        }
+        
+        // Modify existing loadFromLocalStorage
+        function loadStaffFromStorage() {
+            const tbody = document.getElementById('staff-moph-table-body');
+            const savedData = localStorage.getItem('staff_moph_data');
+            if (tbody && savedData) {
+                if (savedData.includes('text-center')) {
+                    tbody.innerHTML = savedData;
+                }
+            } else if (tbody && !savedData) {
+                // Keep dummy row if nothing saved
+                const initDummy = localStorage.getItem('staff_dummy_init');
+                if (!initDummy) {
+                    localStorage.setItem('staff_dummy_init', 'true');
+                    saveStaffToStorage(); // save the initial dummy HTML so edit works
+                }
+            }
+            updateStaffRowNumbers();
+        }
+        
+        function formatDateToThai(dateStr) {
+            if (!dateStr) return '-';
+            const parts = dateStr.split('-');
+            if (parts.length !== 3) return dateStr;
+            const year = parseInt(parts[0]) + 543;
+            const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+            const month = monthNames[parseInt(parts[1]) - 1];
+            const day = parseInt(parts[2]);
+            return `${day} ${month} ${year}`;
+        }
+
+        function openAddModal() {
+            editingRow = null;
+            const form = document.querySelector('#dataModal form');
+            if(form) form.reset();
+            handleModalPrefixChange();
+            
+            if(document.getElementById('chk_ssj')) document.getElementById('chk_ssj').checked = false;
+            if(document.getElementById('chk_chro')) document.getElementById('chk_chro').checked = false;
+            if(document.getElementById('chk_akp')) document.getElementById('chk_akp').checked = false;
+            
+            toggleApprovalSection('ssj');
+            toggleApprovalSection('chro');
+            toggleApprovalSection('akp');
+            
+            toggleModal();
+        }
+
+        
+        function formatOperationStatus(status, result) {
+            if (!status || status === '-') return '-';
+            let resultHtml = '';
+            if (result === 'ผ่าน') {
+                resultHtml = '<div class="text-xs text-green-600 font-medium mt-1"><i class="fas fa-check-circle"></i> ผ่าน</div>';
+            } else if (result === 'ไม่ผ่าน') {
+                resultHtml = '<div class="text-xs text-red-600 font-medium mt-1"><i class="fas fa-times-circle"></i> ไม่ผ่าน</div>';
+            } else {
+                resultHtml = '<div class="text-xs text-yellow-600 font-medium mt-1"><i class="fas fa-clock"></i> รอพิจารณา</div>';
+            }
+            return `<div class="leading-tight">${status}${resultHtml}</div>`;
+        } 
+
+
+        
+        function restoreFileInputUI(input, fileUrl, fileName) {
+            const labelSpan = input.closest('label').querySelector('.file-label-text');
+            const downloadBtn = input.closest('.flex').querySelector('.btn-download-file');
+            if (fileName && fileUrl) {
+                labelSpan.innerHTML = '<i class="fas fa-file-pdf mr-1 text-red-500"></i> ' + fileName;
+                input.setAttribute('data-fileurl', fileUrl);
+                input.setAttribute('data-filename', fileName);
+                downloadBtn.classList.remove('text-gray-600');
+                downloadBtn.classList.add('text-green-600');
+            } else {
+                labelSpan.innerHTML = '<i class="fas fa-upload mr-1 text-gray-400"></i> อัพโหลด';
+                input.removeAttribute('data-fileurl');
+                input.removeAttribute('data-filename');
+                downloadBtn.classList.add('text-gray-600');
+                downloadBtn.classList.remove('text-green-600');
+            }
+        }
+
+        function editVacantPosition(btn) {
+            const tr = btn.closest('tr');
+            editingRow = tr;
+            const tds = tr.querySelectorAll('td');
+            
+            const prefix = tds[1].innerText.trim();
+            const district = tds[2].innerText.trim();
+            const rpst = tds[3].innerText.trim();
+            const positionNo = tds[4].innerText.trim();
+            const positionName = tds[5].innerText.trim();
+            const empType = tds[6].innerText.trim();
+            const formattedDate = tds[7].innerText.trim();
+            const vacantDays = tds[8].innerText.trim();
+            const opStatusVal = tr.getAttribute('data-opstatus') || '';
+            const opResultVal = tr.getAttribute('data-opresult') || '-';
+            const chro = tds[10].innerHTML.includes('fa-check');
+              const akp = tds[11].innerHTML.includes('fa-check');
+              const ssj = tds[12].innerHTML.includes('fa-check');
+
+              const sectSsj = document.getElementById('section_ssj');
+              sectSsj.querySelector('input[type="text"]').value = tr.getAttribute('data-ssj-doc') || '';
+              sectSsj.querySelector('input[type="date"]').value = tr.getAttribute('data-ssj-date') || '';
+              restoreFileInputUI(sectSsj.querySelector('input[type="file"]'), tr.getAttribute('data-ssj-fileurl'), tr.getAttribute('data-ssj-filename'));
+
+              const sectChro = document.getElementById('section_chro');
+              sectChro.querySelector('input[type="text"]').value = tr.getAttribute('data-chro-doc') || '';
+              sectChro.querySelector('input[type="date"]').value = tr.getAttribute('data-chro-date') || '';
+              restoreFileInputUI(sectChro.querySelector('input[type="file"]'), tr.getAttribute('data-chro-fileurl'), tr.getAttribute('data-chro-filename'));
+
+              const sectAkp = document.getElementById('section_akp');
+              sectAkp.querySelector('input[type="text"]').value = tr.getAttribute('data-akp-doc') || '';
+              sectAkp.querySelector('input[type="date"]').value = tr.getAttribute('data-akp-date') || '';
+              restoreFileInputUI(sectAkp.querySelector('input[type="file"]'), tr.getAttribute('data-akp-fileurl'), tr.getAttribute('data-akp-filename'));
+                
+                if(document.getElementById('chk_ssj')) document.getElementById('chk_ssj').checked = ssj;
+                if(document.getElementById('chk_chro')) document.getElementById('chk_chro').checked = chro;
+                if(document.getElementById('chk_akp')) document.getElementById('chk_akp').checked = akp;
+                
+                toggleApprovalSection('ssj');
+                toggleApprovalSection('chro');
+                toggleApprovalSection('akp');
+
+
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if(el) {
+                    if (val === '-' || !val) el.value = '';
+                    else el.value = val;
+                }
+            };
+
+            setVal('modal_prefix', prefix);
+            setVal('modal_district', district);
+            setVal('modal_rpst', rpst);
+            setVal('modal_position_no', positionNo);
+            setVal('modal_position_name', positionName);
+            setVal('modal_emp_type', empType);
+            handleEmpTypeChange();
+            setVal('modal_operation_status', opStatusVal);
+            setVal('modal_operation_result', opResultVal);
+
+            if (formattedDate && formattedDate !== '-') {
+                const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+                const parts = formattedDate.split(' ');
+                if(parts.length === 3) {
+                    const d = parts[0].padStart(2, '0');
+                    const m = String(thaiMonths.indexOf(parts[1]) + 1).padStart(2, '0');
+                    const y = String(parseInt(parts[2]) - 543);
+                    document.getElementById('modal_vacant_date').value = y + '-' + m + '-' + d;
+                }
+            } else {
+                document.getElementById('modal_vacant_date').value = '';
+            }
+
+            const vDaysEl = document.getElementById('modal_vacant_days_display');
+            if (vDaysEl) {
+                vDaysEl.value = (vacantDays === '-' ? '' : vacantDays);
+            }
+
+            if(document.getElementById('chk_chro')) document.getElementById('chk_chro').checked = chro;
+            if(document.getElementById('chk_akp')) document.getElementById('chk_akp').checked = akp;
+            if(document.getElementById('chk_ssj')) document.getElementById('chk_ssj').checked = ssj;
+
+            handleModalPrefixChange();
+            toggleApprovalSection('ssj');
+            toggleApprovalSection('chro');
+            toggleApprovalSection('akp');
+
+            toggleModal();
+        }
+        function toggleApprovalSection(id) {
+            const chk = document.getElementById('chk_' + id);
+            const section = document.getElementById('section_' + id);
+            if (chk.checked) {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
+        }
+
+        function calculateVacantDays() {
+            const dateInput = document.getElementById('modal_vacant_date').value;
+            const displayInput = document.getElementById('modal_vacant_days_display');
+            
+            if (!dateInput) {
+                displayInput.value = "";
+                return;
+            }
+
+            const vacantDate = new Date(dateInput);
+            const today = new Date();
+            
+            vacantDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            if (vacantDate > today) {
+                displayInput.value = "ล่วงหน้า (ยังไม่ว่าง)";
+                return;
+            }
+
+            const diffTime = Math.abs(today - vacantDate);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) {
+                displayInput.value = "0 วัน";
+            } else {
+                const months = Math.floor(diffDays / 30);
+                const days = diffDays % 30;
+                
+                let result = [];
+                if (months > 0) result.push(months + " เดือน");
+                if (days > 0) result.push(days + " วัน");
+                
+                displayInput.value = result.join(" ");
+            }
+        }
+
+        function handleModalPrefixChange() {
+            const prefix = document.getElementById('modal_prefix').value;
+            const rpst = document.getElementById('modal_rpst');
+            if (prefix === 'รพ.สต.') {
+                rpst.disabled = false;
+                rpst.required = true;
+                rpst.focus();
+            } else {
+                rpst.disabled = true;
+                rpst.required = false;
+                rpst.value = "";
+            }
+        }
+
+        function handleAgencyChange() {
             const agency = document.getElementById('reg-agency').value;
             const district = document.getElementById('reg-district');
             
@@ -999,6 +1882,7 @@
 
 </body>
 </html>
+
 
 
 
