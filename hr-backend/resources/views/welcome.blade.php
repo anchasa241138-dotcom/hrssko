@@ -253,11 +253,11 @@
                         </a>
                     </li>
                     <!-- Mock menus -->
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-tie w-6"></i><span>พนักงานราชการ</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user w-6"></i><span>ลูกจ้างประจำ</span></a></li>
-                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this)" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-md w-6"></i><span>พนักงานกระทรวงสาธารณสุข</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-clock w-6"></i><span>ลูกจ้างชั่วคราว (รายเดือน)</span></a></li>
-                    <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-users w-6"></i><span class="text-sm">ลูกจ้างชั่วคราวรายวัน/จ้างเหมา</span></a></li>
+                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'พนักงานราชการ')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-tie w-6"></i><span>พนักงานราชการ</span></a></li>
+                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'ลูกจ้างประจำ')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user w-6"></i><span>ลูกจ้างประจำ</span></a></li>
+                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'พนักงานกระทรวงสาธารณสุข')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-md w-6"></i><span>พนักงานกระทรวงสาธารณสุข</span></a></li>
+                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'ลูกจ้างชั่วคราว (รายเดือน)')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-clock w-6"></i><span>ลูกจ้างชั่วคราว (รายเดือน)</span></a></li>
+                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'ลูกจ้างชั่วคราวรายวัน/จ้างเหมา')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-users w-6"></i><span class="text-sm">ลูกจ้างชั่วคราวรายวัน/จ้างเหมา</span></a></li>
                     <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-bell w-6 relative"><span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-3 w-3 flex items-center justify-center">3</span></i><span>แจ้งเตือนใบประกอบฯ</span></a></li>
                 </ul>
             </nav>
@@ -1234,7 +1234,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'ข้อมูลพนักงานกระทรวงสาธารณสุข.csv';
+            a.download = (window.currentStaffType || 'ข้อมูลพนักงาน') + '.csv';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1279,7 +1279,7 @@
                     }
                     
                     const tbody = document.getElementById('staff-moph-table-body');
-                    if (tbody.innerHTML.includes('กำลังโหลดข้อมูล...')) {
+                    if (tbody.innerHTML.includes('กำลังโหลดข้อมูล...') || tbody.innerHTML.includes('ยังไม่มีข้อมูล')) {
                         tbody.innerHTML = '';
                     }
                     
@@ -1357,6 +1357,8 @@
                 }
             });
             
+            const stInput = document.getElementById('sm_staff_type');
+            if (stInput) stInput.value = window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข';
             toggleStaffModal();
         }
 
@@ -1377,7 +1379,7 @@
             const pos_level = getVal('sm_pos_level');
             const pos_name = getVal('sm_pos_name');
             const pos_status = getVal('sm_pos_status');
-            const staff_type = getVal('sm_staff_type');
+            const staff_type = window.currentStaffType || getVal('sm_staff_type') || 'พนักงานกระทรวงสาธารณสุข';
             
             const pers_title = getVal('sm_pers_title');
             const pers_fname = getVal('sm_pers_fname');
@@ -1436,7 +1438,7 @@
                 tr.innerHTML = trHtml;
             } else {
                 // If it's the dummy loading row, clear it
-                if (tbody.innerHTML.includes('กำลังโหลดข้อมูล...')) {
+                if (tbody.innerHTML.includes('กำลังโหลดข้อมูล...') || tbody.innerHTML.includes('ยังไม่มีข้อมูล')) {
                     tbody.innerHTML = '';
                 }
                 tr = document.createElement('tr');
@@ -1512,25 +1514,21 @@
         function saveStaffToStorage() {
             const tbody = document.getElementById('staff-moph-table-body');
             if (tbody) {
-                localStorage.setItem('staff_moph_data', tbody.innerHTML);
+                const type = window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข';
+                localStorage.setItem('staff_data_' + type, tbody.innerHTML);
             }
         }
         
         // Modify existing loadFromLocalStorage
         function loadStaffFromStorage() {
             const tbody = document.getElementById('staff-moph-table-body');
-            const savedData = localStorage.getItem('staff_moph_data');
-            if (tbody && savedData) {
-                if (savedData.includes('text-center')) {
-                    tbody.innerHTML = savedData;
-                }
-            } else if (tbody && !savedData) {
-                // Keep dummy row if nothing saved
-                const initDummy = localStorage.getItem('staff_dummy_init');
-                if (!initDummy) {
-                    localStorage.setItem('staff_dummy_init', 'true');
-                    saveStaffToStorage(); // save the initial dummy HTML so edit works
-                }
+            if (!tbody) return;
+            const type = window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข';
+            const savedData = localStorage.getItem('staff_data_' + type);
+            if (savedData && savedData.trim() !== '' && !savedData.includes('ยังไม่มีข้อมูล')) {
+                tbody.innerHTML = savedData;
+            } else {
+                tbody.innerHTML = '<tr><td colspan="25" class="text-center py-10 text-gray-400 font-medium"><i class="fas fa-inbox text-3xl mb-2 text-gray-300 block"></i>ยังไม่มีข้อมูล ' + type + '</td></tr>';
             }
             updateStaffRowNumbers();
         }
@@ -1766,28 +1764,49 @@
         }
 
         // === App Tabs (Sidebar Menus) ===
-        function switchAppTab(tabId, element) {
-            document.querySelectorAll('.app-tab-content').forEach(el => el.classList.remove('active'));
-            
-            document.querySelectorAll('.sidebar-item').forEach(el => {
-                el.classList.remove('active', 'text-white');
-                el.classList.add('text-green-50');
-            });
-            
-            document.getElementById(tabId).classList.add('active');
-            
-            element.classList.add('active', 'text-white');
-            element.classList.remove('text-green-50');
+        
+window.currentStaffType = 'พนักงานกระทรวงสาธารณสุข';
 
-            const titleMap = {
-                'tab-dashboard': 'แดชบอร์ดแสดงสถานการณ์อัตรากำลังคน',
-                'tab-vacant': 'การบริหารตำแหน่งว่าง',
-                'tab-staff-moph': 'พนักงานกระทรวงสาธารณสุข'
-            };
-            if(titleMap[tabId]) {
-                document.getElementById('page-title').innerText = titleMap[tabId];
-            }
-        }
+function switchAppTab(tabId, element, staffType = null) {
+    document.querySelectorAll('.app-tab-content').forEach(el => el.classList.remove('active'));
+    
+    document.querySelectorAll('.sidebar-item').forEach(el => {
+        el.classList.remove('active', 'text-white');
+        el.classList.add('text-green-50');
+    });
+    
+    document.getElementById(tabId).classList.add('active');
+    
+    element.classList.add('active', 'text-white');
+    element.classList.remove('text-green-50');
+
+    const titleMap = {
+        'tab-dashboard': 'แผงควบคุมแสดงสถานะอัตรากำลังคน',
+        'tab-vacant': 'การบริหารตำแหน่งว่าง',
+        'tab-staff-moph': 'พนักงานกระทรวงสาธารณสุข'
+    };
+    
+    if (staffType) {
+        window.currentStaffType = staffType;
+        document.getElementById('page-title').innerText = staffType;
+        
+        // Update table header title
+        const tableTitle = document.querySelector('#tab-staff-moph h3.font-bold');
+        if(tableTitle) tableTitle.innerText = 'รายชื่อ' + staffType + 'ทั้งหมด';
+        
+        // Update modal title
+        const modalTitle = document.querySelector('#staffModal h3.text-xl');
+        if(modalTitle) modalTitle.innerHTML = '<i class="fas fa-user-md text-moph mr-2"></i>บันทึกข้อมูล' + staffType;
+        const staffTypeInput = document.getElementById('sm_staff_type');
+        if(staffTypeInput) staffTypeInput.value = staffType;
+        
+        // Refresh data
+        if (typeof loadStaffFromStorage === 'function') loadStaffFromStorage();
+    } else if(titleMap[tabId]) {
+        document.getElementById('page-title').innerText = titleMap[tabId];
+    }
+}
+
 
         // === Modal Form ===
         function toggleModal() {
@@ -1880,18 +1899,16 @@
               </div>
           </div>
 
+<script>
+        // Initial setup for staff categories
+        document.addEventListener('DOMContentLoaded', () => {
+            // One-time cleanup of contaminated old staff_moph_data
+            if (!localStorage.getItem('staff_storage_v4_migrated')) {
+                localStorage.removeItem('staff_moph_data');
+                localStorage.removeItem('staff_dummy_init');
+                localStorage.setItem('staff_storage_v4_migrated', 'true');
+            }
+        });
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
