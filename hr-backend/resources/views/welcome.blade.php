@@ -666,16 +666,20 @@
                             <thead>
                                 <tr>
                                     <th class="w-16 text-center">ลำดับ</th>
-                                    <th class="text-center">วันที่บันทึก</th>
+                                    <th class="text-center">วันที่มีผล</th>
                                     <th class="text-center">ตำแหน่งเลขที่</th>
                                     <th>ตำแหน่งสายงาน</th>
                                     <th>ประเภทเจ้าหน้าที่</th>
                                     <th>สังกัดหน่วยงาน (จ.18)</th>
                                     <th>อำเภอ</th>
+                                    <th class="text-center">คำนำหน้า</th>
+                                    <th>ชื่อ</th>
+                                    <th>นามสกุล</th>
                                     <th class="text-center">ประเภทความเคลื่อนไหว</th>
-                                    <th>รายละเอียด / สาเหตุ</th>
+                                    <th>สาเหตุ</th>
+                                    <th class="text-center">เลขที่สัญญาจ้าง</th>
                                     <th>คำสั่ง / หนังสืออ้างอิง</th>
-                                    <th class="text-center">จัดการ</th>
+                                    <th class="text-center sticky right-0 bg-gray-100 shadow-sm border-l border-gray-200">จัดการ</th>
                                 </tr>
                             </thead>
                             <tbody id="movement-table-body">
@@ -1640,8 +1644,12 @@
                             staffType: payload.staff_type || '-',
                             agencyName: payload.agency_name || payload.actual_name || '-',
                             district: payload.agency_district || payload.actual_district || '-',
+                            prefix: getVal('sm_pers_title') || '-',
+                            fname: getVal('sm_pers_fname') || '-',
+                            lname: getVal('sm_pers_lname') || '-',
                             movementType: 'เปลี่ยนสถานะเป็นตำแหน่งว่าง',
-                            details: moveDetail,
+                            reason: 'ลาออก / พ้นจากตำแหน่ง (ปรับเปลี่ยนสถานะเป็นไม่มีคนครอง)',
+                            contractNo: '-',
                             orderNo: '-'
                         });
                     }
@@ -2028,6 +2036,8 @@ function switchAppTab(tabId, element, staffType = null) {
 
 
         // === Position Movement Logic ===
+        let editingMovementIndex = null;
+
         const defaultMovements = [
             {
                 date: "2025-08-15",
@@ -2036,8 +2046,12 @@ function switchAppTab(tabId, element, staffType = null) {
                 staffType: "พนักงานกระทรวงสาธารณสุข",
                 agencyName: "รพท.เมืองศรีสะเกษ",
                 district: "เมืองศรีสะเกษ",
+                prefix: "นางสาว",
+                fname: "สมพร",
+                lname: "รุ่งเรือง",
                 movementType: "เปลี่ยนสถานะเป็นตำแหน่งว่าง",
-                details: "ลาออกจากราชการ มีผล 15 ส.ค. 2568",
+                reason: "ลาออกจากราชการ มีผล 15 ส.ค. 2568",
+                contractNo: "45/2565",
                 orderNo: "คำสั่ง สสจ.ศก 142/2568"
             },
             {
@@ -2047,9 +2061,13 @@ function switchAppTab(tabId, element, staffType = null) {
                 staffType: "พนักงานกระทรวงสาธารณสุข",
                 agencyName: "สสจ. (กลุ่มงาน บค.)",
                 district: "เมืองศรีสะเกษ",
+                prefix: "นาย",
+                fname: "ทดสอบ",
+                lname: "ระบบ",
                 movementType: "บรรจุใหม่ / ทำสัญญาจ้าง",
-                details: "ผ่านการคัดเลือกสรรหาพนักงานกระทรวงสาธารณสุขทั่วไป",
-                orderNo: "สัญญาจ้างเลขที่ 45/2569"
+                reason: "ผ่านการคัดเลือกสรรหาพนักงานกระทรวงสาธารณสุขทั่วไป",
+                contractNo: "58/2569",
+                orderNo: "สัญญาจ้างเลขที่ 58/2569"
             },
             {
                 date: "2026-07-15",
@@ -2058,8 +2076,12 @@ function switchAppTab(tabId, element, staffType = null) {
                 staffType: "ลูกจ้างชั่วคราว (รายเดือน)",
                 agencyName: "รพช.ราษีไศล",
                 district: "ราษีไศล",
+                prefix: "นาย",
+                fname: "วิชัย",
+                lname: "มั่นคง",
                 movementType: "รับโอน / ย้าย",
-                details: "ย้ายช่วยราชการตามความประสงค์ของหน่วยงาน",
+                reason: "ย้ายช่วยราชการตามความประสงค์ของหน่วยงาน",
+                contractNo: "12/2568",
                 orderNo: "คำสั่ง สสจ.ศก 89/2569"
             },
             {
@@ -2069,16 +2091,20 @@ function switchAppTab(tabId, element, staffType = null) {
                 staffType: "พนักงานกระทรวงสาธารณสุข",
                 agencyName: "รพ.สต.บ้านตาอุด",
                 district: "ขุขันธ์",
+                prefix: "นาง",
+                fname: "ดวงใจ",
+                lname: "สุขเกษม",
                 movementType: "ขอเปลี่ยนตำแหน่ง/หน่วยงาน",
-                details: "หน่วยงานขอสรรหาทดแทน / ขอปรับเกลี่ยตำแหน่ง",
+                reason: "หน่วยงานขอสรรหาทดแทน / ขอปรับเกลี่ยตำแหน่ง",
+                contractNo: "88/2567",
                 orderNo: "หนังสือ สสจ.ศก 0032/512"
             }
         ];
 
         function getMovementData() {
-            let data = localStorage.getItem("position_movements");
+            let data = localStorage.getItem("position_movements_v2");
             if (!data) {
-                localStorage.setItem("position_movements", JSON.stringify(defaultMovements));
+                localStorage.setItem("position_movements_v2", JSON.stringify(defaultMovements));
                 return defaultMovements;
             }
             try {
@@ -2089,7 +2115,7 @@ function switchAppTab(tabId, element, staffType = null) {
         }
 
         function setMovementData(data) {
-            localStorage.setItem("position_movements", JSON.stringify(data));
+            localStorage.setItem("position_movements_v2", JSON.stringify(data));
         }
 
         function toggleMovementModal() {
@@ -2103,29 +2129,64 @@ function switchAppTab(tabId, element, staffType = null) {
             } else {
                 modal.classList.add("hidden");
                 modal.classList.remove("flex");
+                editingMovementIndex = null;
             }
         }
 
         function openAddMovementModal() {
+            editingMovementIndex = null;
             const form = document.getElementById("movementForm");
             if (form) form.reset();
+            const modalTitle = document.querySelector("#movementModal h3 span");
+            if (modalTitle) modalTitle.innerText = "บันทึกความเคลื่อนไหวตำแหน่ง";
+            toggleMovementModal();
+        }
+
+        function editMovement(index) {
+            const list = getMovementData();
+            if (!list || !list[index]) return;
+            const item = list[index];
+            editingMovementIndex = index;
+
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.value = (val === "-" || !val) ? "" : val;
+            };
+
+            setVal("mv_date", item.date);
+            setVal("mv_pos_no", item.posNo);
+            setVal("mv_pos_name", item.posName);
+            setVal("mv_staff_type", item.staffType);
+            setVal("mv_agency_name", item.agencyName);
+            setVal("mv_agency_district", item.district);
+            setVal("mv_pers_title", item.prefix || "นาย");
+            setVal("mv_pers_fname", item.fname);
+            setVal("mv_pers_lname", item.lname);
+            setVal("mv_movement_type", item.movementType);
+            setVal("mv_reason", item.reason || item.details);
+            setVal("mv_contract_no", item.contractNo);
+            setVal("mv_order_no", item.orderNo);
+
+            const modalTitle = document.querySelector("#movementModal h3 span");
+            if (modalTitle) modalTitle.innerText = "แก้ไขความเคลื่อนไหวตำแหน่ง";
+
             toggleMovementModal();
         }
 
         function getMovementBadge(type) {
             switch(type) {
                 case "เปลี่ยนสถานะเป็นตำแหน่งว่าง":
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200"><i class="fas fa-user-slash mr-1"></i>${type}</span>`;
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200 shadow-sm"><i class="fas fa-user-slash mr-1"></i>${type}</span>`;
                 case "บรรจุใหม่ / ทำสัญญาจ้าง":
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200"><i class="fas fa-user-plus mr-1"></i>${type}</span>`;
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200 shadow-sm"><i class="fas fa-user-plus mr-1"></i>${type}</span>`;
                 case "รับโอน / ย้าย":
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200"><i class="fas fa-random mr-1"></i>${type}</span>`;
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200 shadow-sm"><i class="fas fa-random mr-1"></i>${type}</span>`;
                 case "ขอเปลี่ยนตำแหน่ง/หน่วยงาน":
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200"><i class="fas fa-exchange-alt mr-1"></i>${type}</span>`;
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200 shadow-sm"><i class="fas fa-exchange-alt mr-1"></i>${type}</span>`;
                 case "ลาออก / สิ้นสุดสัญญา":
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200"><i class="fas fa-sign-out-alt mr-1"></i>${type}</span>`;
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200 shadow-sm"><i class="fas fa-sign-out-alt mr-1"></i>${type}</span>`;
                 default:
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 border border-purple-200"><i class="fas fa-arrow-up mr-1"></i>${type}</span>`;
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 border border-purple-200 shadow-sm"><i class="fas fa-arrow-up mr-1"></i>${type}</span>`;
             }
         }
 
@@ -2146,7 +2207,7 @@ function switchAppTab(tabId, element, staffType = null) {
             if (transferEl) transferEl.innerText = list.filter(m => m.movementType === "ขอเปลี่ยนตำแหน่ง/หน่วยงาน" || m.movementType === "เลื่อนระดับ").length;
 
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" class="text-center py-10 text-gray-400 font-medium"><i class="fas fa-history text-3xl mb-2 text-gray-300 block"></i>ยังไม่มีประวัติความเคลื่อนไหวตำแหน่งในระบบ</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="15" class="text-center py-10 text-gray-400 font-medium"><i class="fas fa-history text-3xl mb-2 text-gray-300 block"></i>ยังไม่มีประวัติความเคลื่อนไหวตำแหน่งในระบบ</td></tr>`;
                 return;
             }
 
@@ -2162,11 +2223,16 @@ function switchAppTab(tabId, element, staffType = null) {
                     <td><span class="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">${item.staffType || "-"}</span></td>
                     <td>${item.agencyName || "-"}</td>
                     <td>${item.district || "-"}</td>
+                    <td class="text-center">${item.prefix || "-"}</td>
+                    <td class="font-medium text-gray-800">${item.fname || "-"}</td>
+                    <td class="font-medium text-gray-800">${item.lname || "-"}</td>
                     <td class="text-center">${getMovementBadge(item.movementType)}</td>
-                    <td class="max-w-xs truncate" title="${item.details || ""}">${item.details || "-"}</td>
+                    <td class="max-w-xs truncate" title="${item.reason || item.details || ""}">${item.reason || item.details || "-"}</td>
+                    <td class="text-center font-medium text-gray-700">${item.contractNo || "-"}</td>
                     <td>${item.orderNo || "-"}</td>
-                    <td class="text-center">
-                        <button type="button" class="text-red-500 hover:text-red-700 mx-1" title="ลบรายการ" onclick="deleteMovement(${index})"><i class="fas fa-trash"></i></button>
+                    <td class="text-center sticky right-0 bg-white shadow-sm border-l border-gray-200 whitespace-nowrap">
+                        <button type="button" class="text-blue-500 hover:text-blue-700 mx-1" title="แก้ไขข้อมูล" onclick="editMovement(${index})"><i class="fas fa-edit"></i></button>
+                        <button type="button" class="text-red-500 hover:text-red-700 mx-1" title="ลบข้อมูล" onclick="deleteMovement(${index})"><i class="fas fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -2175,20 +2241,29 @@ function switchAppTab(tabId, element, staffType = null) {
 
         function saveMovement() {
             const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
-            const newMovement = {
+            const movementItem = {
                 date: getVal("mv_date"),
                 posNo: getVal("mv_pos_no"),
                 posName: getVal("mv_pos_name"),
                 staffType: getVal("mv_staff_type"),
                 agencyName: getVal("mv_agency_name") || "-",
                 district: getVal("mv_agency_district") || "-",
+                prefix: getVal("mv_pers_title") || "-",
+                fname: getVal("mv_pers_fname") || "-",
+                lname: getVal("mv_pers_lname") || "-",
                 movementType: getVal("mv_movement_type"),
-                details: getVal("mv_details") || "-",
+                reason: getVal("mv_reason") || "-",
+                contractNo: getVal("mv_contract_no") || "-",
                 orderNo: getVal("mv_order_no") || "-"
             };
 
             const list = getMovementData();
-            list.unshift(newMovement);
+            if (editingMovementIndex !== null && editingMovementIndex >= 0 && editingMovementIndex < list.length) {
+                list[editingMovementIndex] = movementItem;
+            } else {
+                list.unshift(movementItem);
+            }
+            
             setMovementData(list);
             toggleMovementModal();
             loadMovementHistory();
@@ -2196,7 +2271,7 @@ function switchAppTab(tabId, element, staffType = null) {
         }
 
         function deleteMovement(index) {
-            if (!confirm("คุณแน่ใจว่าต้องการลบประวัติความเคลื่อนไหวนี้?")) return;
+            if (!confirm("คุณแน่ใจว่าต้องการลบรายการความเคลื่อนไหวนี้ออกจากระบบ?")) return;
             const list = getMovementData();
             list.splice(index, 1);
             setMovementData(list);
@@ -2238,7 +2313,7 @@ function switchAppTab(tabId, element, staffType = null) {
             setMovementData(list);
         }
 
-        // === Modal Form ===
+                // === Modal Form ===
         function toggleModal() {
             const modal = document.getElementById('dataModal');
             if (modal.classList.contains('hidden')) {
@@ -2351,9 +2426,9 @@ function switchAppTab(tabId, element, staffType = null) {
             }
         });
 </script>
-    <!-- Movement Modal (Add Movement) -->
+    <!-- Movement Modal (Add / Edit Movement) -->
     <div id="movementModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col mx-4 overflow-hidden">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col mx-4 overflow-hidden">
             <div class="flex justify-between items-center p-5 border-b border-gray-200">
                 <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-exchange-alt text-moph"></i> <span>บันทึกความเคลื่อนไหวตำแหน่ง</span>
@@ -2362,9 +2437,11 @@ function switchAppTab(tabId, element, staffType = null) {
             </div>
             <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-gray-50">
                 <form id="movementForm" onsubmit="event.preventDefault(); saveMovement();" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Section A: ข้อมูลตำแหน่งและสังกัด -->
+                    <h4 class="font-bold text-moph text-sm flex items-center border-b pb-2"><i class="fas fa-building mr-2"></i> 1. ข้อมูลตำแหน่งและสังกัด (จ.18)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">วันที่เกิดความเคลื่อนไหว <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">วันที่มีผล <span class="text-red-500">*</span></label>
                             <input type="date" id="mv_date" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
                         </div>
                         <div>
@@ -2386,14 +2463,41 @@ function switchAppTab(tabId, element, staffType = null) {
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">สังกัดหน่วยงาน</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">สังกัดหน่วยงาน (จ.18)</label>
                             <input type="text" id="mv_agency_name" placeholder="เช่น รพ.สต.บ้านตาอุด" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">อำเภอ</label>
                             <input type="text" id="mv_agency_district" placeholder="เช่น ขุขันธ์" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
                         </div>
-                        <div class="md:col-span-2">
+                    </div>
+
+                    <!-- Section B: ข้อมูลบุคลากร -->
+                    <h4 class="font-bold text-moph text-sm flex items-center border-b pb-2 pt-2"><i class="fas fa-user mr-2"></i> 2. ข้อมูลเจ้าหน้าที่ที่เกี่ยวข้อง</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้า</label>
+                            <select id="mv_pers_title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                                <option value="นาย">นาย</option>
+                                <option value="นาง">นาง</option>
+                                <option value="นางสาว">นางสาว</option>
+                                <option value="-">-</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ</label>
+                            <input type="text" id="mv_pers_fname" placeholder="ชื่อเจ้าหน้าที่" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">นามสกุล</label>
+                            <input type="text" id="mv_pers_lname" placeholder="นามสกุล" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                        </div>
+                    </div>
+
+                    <!-- Section C: ความเคลื่อนไหวและเอกสารอ้างอิง -->
+                    <h4 class="font-bold text-moph text-sm flex items-center border-b pb-2 pt-2"><i class="fas fa-file-signature mr-2"></i> 3. รายละเอียดความเคลื่อนไหวและเอกสาร</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทความเคลื่อนไหว <span class="text-red-500">*</span></label>
                             <select id="mv_movement_type" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
                                 <option value="เปลี่ยนสถานะเป็นตำแหน่งว่าง">เปลี่ยนสถานะเป็นตำแหน่งว่าง</option>
@@ -2404,15 +2508,20 @@ function switchAppTab(tabId, element, staffType = null) {
                                 <option value="เลื่อนระดับ">เลื่อนระดับ</option>
                             </select>
                         </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">รายละเอียด / หมายเหตุ</label>
-                            <textarea id="mv_details" rows="2" placeholder="ระบุเหตุผล หรือรายละเอียดความเคลื่อนไหว..." class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph"></textarea>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">สาเหตุ</label>
+                            <input type="text" id="mv_reason" placeholder="เช่น ลาออกจากราชการ / ผ่านการสรรหา" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
                         </div>
-                        <div class="md:col-span-2">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">เลขที่สัญญาจ้าง</label>
+                            <input type="text" id="mv_contract_no" placeholder="เช่น 45/2569" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                        </div>
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">คำสั่ง / หนังสืออ้างอิง</label>
                             <input type="text" id="mv_order_no" placeholder="เช่น คำสั่ง สสจ.ศก 142/2568" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
                         </div>
                     </div>
+
                     <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
                         <button type="button" onclick="toggleMovementModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium text-sm">ยกเลิก</button>
                         <button type="submit" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium text-sm">บันทึกข้อมูล</button>
