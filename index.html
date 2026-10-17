@@ -1283,7 +1283,61 @@
                             return row[index].toString().trim() || '-';
                         };
                         
-                        const trHtml = `
+                        if (pos_status === "ไม่มีคนครอง") {
+                if (editingStaffRow) {
+                    editingStaffRow.remove();
+                }
+                
+                const vacantBody = document.getElementById("vacant-table-body");
+                if (vacantBody) {
+                    const rowCount = vacantBody.querySelectorAll("tr").length + 1;
+                    const vtr = document.createElement("tr");
+                    vtr.className = "hover:bg-amber-50/40 transition bg-amber-50/20";
+                    vtr.setAttribute("data-opstatus", "ไม่มีคนครอง");
+                    vtr.setAttribute("data-opresult", "-");
+                    vtr.innerHTML = `
+                        <td class="text-center">${rowCount}</td>
+                        <td>${agency_prefix || actual_prefix || "-"}</td>
+                        <td>${agency_district || actual_district || "-"}</td>
+                        <td>${agency_name || agency_internal || actual_name || "-"}</td>
+                        <td class="text-center font-semibold text-moph">${pos_no || "-"}</td>
+                        <td>${pos_name || "-"}</td>
+                        <td><span class="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">${staff_type || "-"}</span></td>
+                        <td class="text-center">${pers_startdate ? formatDateToThai(pers_startdate) : "-"}</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">
+                            <div class="leading-tight">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200 shadow-sm">
+                                    <i class="fas fa-user-slash mr-1"></i>ไม่มีคนครอง
+                                </span>
+                            </div>
+                        </td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center text-xs text-gray-500">ว่างเดิม</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">
+                            <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                            <button class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    vacantBody.appendChild(vtr);
+                    saveToLocalStorage();
+                }
+                
+                updateStaffRowNumbers();
+                saveStaffToStorage();
+                toggleStaffModal();
+                alert('บันทึกเรียบร้อย: เนื่องจากสถานะตำแหน่งเป็น "ไม่มีคนครอง" ข้อมูลจะถูกย้ายไปแสดงที่แท็บ "การบริหารตำแหน่งว่าง"');
+                return;
+            }
+
+            const trHtml = `
                             <td class="text-center sm-row-num"></td>
                             <td class="text-center">${safeGet(1)}</td>
                             <td class="text-center">${safeGet(2)}</td>
@@ -1391,6 +1445,60 @@
             const lic_issue = getVal("sm_lic_issue");
             const lic_expire = getVal("sm_lic_expire");
             const lic_org = getVal("sm_lic_org");
+
+            if (pos_status === "ไม่มีคนครอง") {
+                if (editingStaffRow) {
+                    editingStaffRow.remove();
+                }
+                
+                const vacantBody = document.getElementById("vacant-table-body");
+                if (vacantBody) {
+                    const rowCount = vacantBody.querySelectorAll("tr").length + 1;
+                    const vtr = document.createElement("tr");
+                    vtr.className = "hover:bg-amber-50/40 transition bg-amber-50/20";
+                    vtr.setAttribute("data-opstatus", "ไม่มีคนครอง");
+                    vtr.setAttribute("data-opresult", "-");
+                    vtr.innerHTML = `
+                        <td class="text-center">${rowCount}</td>
+                        <td>${agency_prefix || actual_prefix || "-"}</td>
+                        <td>${agency_district || actual_district || "-"}</td>
+                        <td>${agency_name || agency_internal || actual_name || "-"}</td>
+                        <td class="text-center font-semibold text-moph">${pos_no || "-"}</td>
+                        <td>${pos_name || "-"}</td>
+                        <td><span class="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">${staff_type || "-"}</span></td>
+                        <td class="text-center">${pers_startdate ? formatDateToThai(pers_startdate) : "-"}</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">
+                            <div class="leading-tight">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200 shadow-sm">
+                                    <i class="fas fa-user-slash mr-1"></i>ไม่มีคนครอง
+                                </span>
+                            </div>
+                        </td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center text-xs text-gray-500">ว่างเดิม</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">
+                            <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                            <button class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    vacantBody.appendChild(vtr);
+                    saveToLocalStorage();
+                }
+                
+                updateStaffRowNumbers();
+                saveStaffToStorage();
+                toggleStaffModal();
+                alert('บันทึกเรียบร้อย: เนื่องจากสถานะตำแหน่งเป็น "ไม่มีคนครอง" ข้อมูลจะถูกย้ายไปแสดงที่แท็บ "การบริหารตำแหน่งว่าง"');
+                return;
+            }
 
             const trHtml = `
                 <td class="text-center sm-row-num"></td>
@@ -1807,6 +1915,9 @@ function switchAppTab(tabId, element, staffType = null) {
         if (typeof loadStaffFromStorage === 'function') loadStaffFromStorage();
     } else if(titleMap[tabId]) {
         document.getElementById('page-title').innerText = titleMap[tabId];
+        if (tabId === 'tab-vacant' && typeof loadFromLocalStorage === 'function') {
+            loadFromLocalStorage();
+        }
     }
 }
 

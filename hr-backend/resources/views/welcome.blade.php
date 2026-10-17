@@ -1092,15 +1092,88 @@
         function saveToLocalStorage() {
             const tbody = document.getElementById('vacant-table-body');
             if (tbody) {
-                localStorage.setItem('vacant_table_data', tbody.innerHTML);
+                const clone = tbody.cloneNode(true);
+                clone.querySelectorAll('tr[data-source="staff-unoccupied"]').forEach(el => el.remove());
+                localStorage.setItem('vacant_table_data', clone.innerHTML);
             }
         }
 
-        function loadFromLocalStorage() {
+        async function loadFromLocalStorage() {
             const tbody = document.getElementById('vacant-table-body');
+            if (!tbody) return;
             const savedData = localStorage.getItem('vacant_table_data');
-            if (tbody && savedData) {
+            if (savedData) {
                 tbody.innerHTML = savedData;
+            }
+
+            try {
+                const res = await fetch('/api/moph-staff');
+                if (res.ok) {
+                    const allStaff = await res.json();
+                    const unoccupiedStaff = allStaff.filter(s => (s.position_status || '').trim() === 'ไม่มีคนครอง');
+                    
+                    // Remove existing dynamically synced unoccupied rows to prevent duplication
+                    tbody.querySelectorAll('tr[data-source="staff-unoccupied"]').forEach(r => r.remove());
+                    
+                    unoccupiedStaff.forEach(item => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-amber-50/40 transition bg-amber-50/20';
+                        tr.setAttribute('data-source', 'staff-unoccupied');
+                        tr.setAttribute('data-staff-id', item.id);
+                        tr.setAttribute('data-opstatus', 'ไม่มีคนครอง');
+                        tr.setAttribute('data-opresult', '-');
+                        
+                        const prefix = item.agency_prefix || item.actual_prefix || '-';
+                        const district = item.agency_district || item.actual_district || '-';
+                        const rpst = item.agency_name || item.agency_internal || item.actual_name || '-';
+                        const posNo = item.position_number || '-';
+                        const posLine = item.position_line || '-';
+                        const empType = item.staff_type || '-';
+                        const vDate = item.hire_date ? formatDateToThai(item.hire_date) : '-';
+                        
+                        tr.innerHTML = `
+                            <td class="text-center font-medium text-gray-500"></td>
+                            <td>${prefix}</td>
+                            <td>${district}</td>
+                            <td>${rpst}</td>
+                            <td class="text-center font-semibold text-moph">${posNo}</td>
+                            <td>${posLine}</td>
+                            <td><span class="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">${empType}</span></td>
+                            <td class="text-center">${vDate}</td>
+                            <td class="text-center">-</td>
+                            <td class="text-center">
+                                <div class="leading-tight">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200 shadow-sm">
+                                        <i class="fas fa-user-slash mr-1"></i>ไม่มีคนครอง
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="text-center">-</td>
+                            <td class="text-center">-</td>
+                            <td class="text-center">-</td>
+                            <td class="text-center">-</td>
+                            <td class="text-center">-</td>
+                            <td class="text-center">-</td>
+                            <td class="text-center">-</td>
+                            <td class="text-center text-xs text-gray-500">ว่างเดิม</td>
+                            <td class="text-center">-</td>
+                            <td class="text-center">
+                                <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" title="แก้ไขข้อมูลตำแหน่งนี้" onclick='editStaffMophById(${item.id}, ${JSON.stringify(item).replace(/'/g, "&#39;").replace(/"/g, "&quot;")})'><i class="fas fa-edit"></i></button>
+                                <button type="button" class="text-red-500 hover:text-red-700" title="ลบข้อมูล" onclick="deleteStaffById(${item.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    
+                    // Re-calculate row index numbers
+                    let idx = 1;
+                    tbody.querySelectorAll('tr').forEach(r => {
+                        const firstTd = r.querySelector('td');
+                        if (firstTd) firstTd.innerText = idx++;
+                    });
+                }
+            } catch (err) {
+                console.error('Error fetching unoccupied positions:', err);
             }
         }
 
@@ -1240,11 +1313,11 @@
                 if (!res.ok) throw new Error('API request failed');
                 let allStaff = await res.json();
                 
-                // Filter by selected staff type
-                const staffList = allStaff.filter(s => (s.staff_type || '').trim() === type.trim());
+                // Filter by selected staff type and position_status is NOT 'ไม่มีคนครอง'
+                const staffList = allStaff.filter(s => (s.staff_type || '').trim() === type.trim() && (s.position_status || '').trim() !== 'ไม่มีคนครอง');
                 
                 if (staffList.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="25" class="text-center py-10 text-gray-400 font-medium"><i class="fas fa-inbox text-3xl mb-2 text-gray-300 block"></i>ยังไม่มีข้อมูล ' + type + ' ในฐานข้อมูล</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="33" class="text-center py-10 text-gray-400 font-medium"><i class="fas fa-inbox text-3xl mb-2 text-gray-300 block"></i>ยังไม่มีข้อมูล ' + type + ' ในฐานข้อมูล</td></tr>';
                     return;
                 }
                 
@@ -1304,6 +1377,7 @@
             formInputs.forEach(el => {
                 if (el.tagName === 'SELECT') {
                     if (el.id === 'sm_pers_title') el.value = 'นาย';
+                    else if (el.id === 'sm_pos_status') el.value = 'มีคนครอง';
                     else el.value = '';
                 } else {
                     el.value = '';
@@ -1311,6 +1385,8 @@
             });
             const stInput = document.getElementById('sm_staff_type');
             if (stInput) stInput.value = window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข';
+            const modalTitle = document.querySelector('#staffModal h3.text-xl');
+            if (modalTitle) modalTitle.innerHTML = '<i class="fas fa-user-md text-moph mr-2"></i>บันทึกข้อมูล' + (window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข');
             toggleStaffModal();
         }
 
@@ -1356,6 +1432,10 @@
             setVal('sm_lic_expire', item.license_expire);
             setVal('sm_lic_org', item.license_org);
 
+            const modalTitle = document.querySelector('#staffModal h3.text-xl');
+            const currentType = item.staff_type || window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข';
+            if (modalTitle) modalTitle.innerHTML = '<i class="fas fa-user-md text-moph mr-2"></i>แก้ไขข้อมูล' + currentType;
+
             toggleStaffModal();
         }
 
@@ -1376,7 +1456,7 @@
                 position_line: getVal('sm_pos_name'),
                 position_type: getVal('sm_pos_type'),
                 position_level: getVal('sm_pos_level'),
-                staff_type: window.currentStaffType || getVal('sm_staff_type') || 'พนักงานกระทรวงสาธารณสุข',
+                staff_type: getVal('sm_staff_type') || window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข',
                 personal_prefix: getVal('sm_pers_title'),
                 personal_fname: getVal('sm_pers_fname'),
                 personal_lname: getVal('sm_pers_lname'),
@@ -1407,7 +1487,12 @@
                 });
                 if (!res.ok) throw new Error('Save failed');
                 toggleStaffModal();
-                loadStaffFromStorage();
+                await loadStaffFromStorage();
+                await loadFromLocalStorage();
+                
+                if (payload.position_status === 'ไม่มีคนครอง') {
+                    alert('บันทึกเรียบร้อย: เนื่องจากสถานะตำแหน่งเป็น "ไม่มีคนครอง" ข้อมูลจะถูกย้ายไปแสดงที่แท็บ "การบริหารตำแหน่งว่าง"');
+                }
             } catch (err) {
                 alert('เกิดข้อผิดพลาดในการบันทึกลงฐานข้อมูล: ' + err.message);
             }
@@ -1418,7 +1503,8 @@
             try {
                 const res = await fetch('/api/moph-staff/' + id, { method: 'DELETE' });
                 if (!res.ok) throw new Error('Delete failed');
-                loadStaffFromStorage();
+                await loadStaffFromStorage();
+                await loadFromLocalStorage();
             } catch (err) {
                 alert('เกิดข้อผิดพลาดในการลบ: ' + err.message);
             }
@@ -1777,6 +1863,9 @@ function switchAppTab(tabId, element, staffType = null) {
         if (typeof loadStaffFromStorage === 'function') loadStaffFromStorage();
     } else if(titleMap[tabId]) {
         document.getElementById('page-title').innerText = titleMap[tabId];
+        if (tabId === 'tab-vacant' && typeof loadFromLocalStorage === 'function') {
+            loadFromLocalStorage();
+        }
     }
 }
 
