@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -7,13 +7,13 @@
     <title>ระบบการจ้างทางเลือก - สสจ.ศรีสะเกษ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Sarabun', 'sans-serif'],
+                        sans: ['Prompt', 'sans-serif'],
                     },
                     colors: {
                         moph: {
@@ -28,7 +28,7 @@
         }
     </script>
     <style>
-        body { font-family: 'Sarabun', sans-serif; }
+        body { font-family: 'Prompt', sans-serif; }
         .bg-gradient-moph {
             background: linear-gradient(135deg, #065f46 0%, #022c22 100%);
         }
