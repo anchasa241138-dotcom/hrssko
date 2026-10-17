@@ -1270,9 +1270,7 @@
         function saveToLocalStorage() {
             const tbody = document.getElementById('vacant-table-body');
             if (tbody) {
-                const clone = tbody.cloneNode(true);
-                clone.querySelectorAll('tr[data-source="staff-unoccupied"]').forEach(el => el.remove());
-                localStorage.setItem('vacant_table_data', clone.innerHTML);
+                localStorage.setItem('vacant_table_data', tbody.innerHTML);
             }
         }
 
@@ -2320,9 +2318,15 @@ function switchAppTab(tabId, element, staffType = null) {
                 }
             });
 
+            // ป้องกันการบันทึกทับ: หากตำแหน่งนี้มีอยู่ในตารางบริหารตำแหน่งว่างแล้ว
+            // ให้คงข้อมูลล่าสุดของผู้ใช้ไว้เสมอ (สถานะการดำเนินงาน, เอกสารอนุมัติ, วันที่ ฯลฯ) ไม่เขียนทับ
+            if (existingRow) {
+                return;
+            }
+
             const prefix = movement.agencyPrefix || (movement.agencyName && movement.agencyName.includes("รพ.สต.") ? "รพ.สต." : (movement.agencyName && movement.agencyName.includes("รพท.") ? "รพท." : (movement.agencyName && movement.agencyName.includes("รพช.") ? "รพช." : "สสจ.")));
             const district = movement.district || "-";
-            const rpst = movement.agencyName || "-";
+            const rpst = prefix === "รพ.สต." ? (movement.agencyName || "-") : "-";
             const positionName = movement.posName || "-";
             const empType = movement.staffType || "-";
             const vacantDate = movement.date || new Date().toISOString().split("T")[0];
@@ -2334,15 +2338,10 @@ function switchAppTab(tabId, element, staffType = null) {
             const opStatusVal = "อัตราว่าง";
             const opResultVal = movement.reason || "ว่างจากการลงรายละเอียดความเคลื่อนไหว";
 
-            let tr = existingRow;
-            if (!tr) {
-                tr = document.createElement("tr");
-                tr.className = "hover:bg-gray-50 transition bg-amber-50/10";
-                tr.setAttribute("data-source", "movement-vacant");
-                tr.setAttribute("data-pos-no", posNo);
-                tbody.prepend(tr);
-            }
-
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-gray-50 transition bg-amber-50/10";
+            tr.setAttribute("data-source", "movement-vacant");
+            tr.setAttribute("data-pos-no", posNo);
             tr.setAttribute("data-opstatus", opStatusVal);
             tr.setAttribute("data-opresult", opResultVal);
 
@@ -2350,7 +2349,7 @@ function switchAppTab(tabId, element, staffType = null) {
                 <td class="text-center font-medium text-gray-500"></td>
                 <td>${prefix}</td>
                 <td>${district}</td>
-                <td>${prefix === "รพ.สต." ? rpst : rpst}</td>
+                <td>${rpst}</td>
                 <td class="text-center font-semibold text-moph">${posNo}</td>
                 <td>${positionName}</td>
                 <td><span class="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">${empType}</span></td>
@@ -2375,6 +2374,7 @@ function switchAppTab(tabId, element, staffType = null) {
                     <button class="text-red-500 hover:text-red-700" title="ลบข้อมูลตำแหน่งว่าง" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
                 </td>
             `;
+            tbody.prepend(tr);
 
             // Re-number rows in vacant table
             tbody.querySelectorAll("tr").forEach((r, idx) => {
