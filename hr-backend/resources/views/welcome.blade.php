@@ -1099,7 +1099,7 @@
             }
         }
 
-        function saveVacantPosition() {
+        async function saveVacantPosition() {
             const prefix = document.getElementById('modal_prefix') ? document.getElementById('modal_prefix').value : '-';
             const district = document.getElementById('modal_district') ? document.getElementById('modal_district').value : '-';
             const rpst = document.getElementById('modal_rpst') ? document.getElementById('modal_rpst').value : '-';
@@ -1212,6 +1212,10 @@
             editingRow = null;
             saveToLocalStorage();
             
+            if (opStatusVal === 'บันทึกในระบบ HROPH') {
+                await updateStaffToOccupied(positionNo, empType);
+            }
+            
             const form = document.querySelector('#dataModal form');
             if(form) form.reset();
             handleModalPrefixChange();
@@ -1219,6 +1223,86 @@
             toggleApprovalSection('ssj');
             toggleApprovalSection('chro');
             toggleApprovalSection('akp');
+        }
+
+        async function updateStaffToOccupied(posNo, empType) {
+            if (!posNo || posNo === '-') return;
+            const cleanPosNo = String(posNo).trim();
+            const cleanEmpType = String(empType || '').trim();
+
+            // 1. Update in backend database (SQLite via Laravel API if available)
+            try {
+                const res = await fetch('/api/moph-staff');
+                if (res.ok) {
+                    const allStaff = await res.json();
+                    const target = allStaff.find(s => 
+                        String(s.position_number || '').trim() === cleanPosNo &&
+                        (!cleanEmpType || cleanEmpType === '-' || (s.staff_type || '').trim() === cleanEmpType)
+                    );
+                    if (target) {
+                        await fetch('/api/moph-staff/' + target.id, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                ...target,
+                                position_status: 'มีคนครอง'
+                            })
+                        });
+                        console.log('Successfully updated position ' + cleanPosNo + ' to มีคนครอง via API');
+                    }
+                }
+            } catch (err) {
+                console.warn('API update not reachable:', err);
+            }
+
+            // 2. Update defaultStaffData if exists
+            const type = (cleanEmpType && cleanEmpType !== '-') ? cleanEmpType : (window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข');
+            if (typeof defaultStaffData !== 'undefined' && defaultStaffData[type]) {
+                const dItem = defaultStaffData[type].find(s => String(s.pos_no || '').trim() === cleanPosNo);
+                if (dItem) {
+                    dItem.pos_status = 'มีคนครอง';
+                }
+            }
+
+            // 3. Update in LocalStorage
+            const savedHtml = localStorage.getItem('staff_data_' + type);
+            if (savedHtml) {
+                const tmp = document.createElement('tbody');
+                tmp.innerHTML = savedHtml;
+                let updated = false;
+                tmp.querySelectorAll('tr').forEach(r => {
+                    const pCell = r.querySelector('td:nth-child(2)');
+                    if (pCell && pCell.innerText.trim() === cleanPosNo) {
+                        const statusCell = r.querySelector('td:nth-child(3)');
+                        if (statusCell) {
+                            statusCell.innerHTML = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-700 border border-green-200"><i class="fas fa-user-check mr-1"></i>มีคนครอง</span>';
+                        }
+                        r.className = 'hover:bg-gray-50 transition';
+                        updated = true;
+                    }
+                });
+                if (updated) {
+                    localStorage.setItem('staff_data_' + type, tmp.innerHTML);
+                }
+            }
+
+            // 4. Update live DOM table row if staff table is currently rendered
+            const liveTbody = document.getElementById('staff-moph-table-body');
+            if (liveTbody) {
+                liveTbody.querySelectorAll('tr').forEach(r => {
+                    const pCell = r.querySelector('td:nth-child(2)');
+                    if (pCell && pCell.innerText.trim() === cleanPosNo) {
+                        const statusCell = r.querySelector('td:nth-child(3)');
+                        if (statusCell) {
+                            statusCell.innerHTML = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-700 border border-green-200"><i class="fas fa-user-check mr-1"></i>มีคนครอง</span>';
+                        }
+                        r.className = 'hover:bg-gray-50 transition';
+                    }
+                });
+            }
         }
 
         function handleEmpTypeChange() {
@@ -1230,7 +1314,7 @@
             const currentValue = opStatus.value;
             opStatus.innerHTML = '<option value="" disabled selected>เลือกสถานะการดำเนินการ</option>';
             
-            if (empType === 'พนักงานกระทรวงสาธารณสุข') {
+            if (empType) {
                 const options = [
                     "อัตราว่าง",
                     "หน่วยงานขอสรรหาทดแทน",
