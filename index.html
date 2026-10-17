@@ -698,7 +698,7 @@
                                 <i class="fas fa-user-slash"></i>
                             </div>
                             <div>
-                                <p class="text-xs text-gray-500 font-medium">เปลี่ยนเป็นตำแหน่งว่าง</p>
+                                <p class="text-xs text-gray-500 font-medium">ลาออก/สิ้นสุดสัญญาจ้าง</p>
                                 <h4 id="stat-movement-vacant" class="text-2xl font-bold text-red-600">0</h4>
                             </div>
                         </div>
@@ -707,7 +707,7 @@
                                 <i class="fas fa-user-plus"></i>
                             </div>
                             <div>
-                                <p class="text-xs text-gray-500 font-medium">บรรจุ / รับโอนใหม่</p>
+                                <p class="text-xs text-gray-500 font-medium">จ้างใหม่</p>
                                 <h4 id="stat-movement-newhire" class="text-2xl font-bold text-emerald-600">0</h4>
                             </div>
                         </div>
@@ -716,7 +716,7 @@
                                 <i class="fas fa-random"></i>
                             </div>
                             <div>
-                                <p class="text-xs text-gray-500 font-medium">ขอเปลี่ยนตำแหน่ง/สังกัด</p>
+                                <p class="text-xs text-gray-500 font-medium">เปลี่ยน/ปรับตำแหน่ง</p>
                                 <h4 id="stat-movement-transfer" class="text-2xl font-bold text-amber-600">0</h4>
                             </div>
                         </div>
@@ -734,12 +734,10 @@
                             <label class="text-xs text-gray-500 font-medium">ประเภทการเคลื่อนไหว:</label>
                             <select id="movement-type-filter" onchange="filterMovementTable()" class="border border-gray-300 rounded-lg text-sm px-3 py-1.5 focus:ring-1 focus:ring-moph focus:border-moph">
                                 <option value="">ทั้งหมด</option>
-                                <option value="เปลี่ยนสถานะเป็นตำแหน่งว่าง">เปลี่ยนสถานะเป็นตำแหน่งว่าง</option>
-                                <option value="บรรจุใหม่ / ทำสัญญาจ้าง">บรรจุใหม่ / ทำสัญญาจ้าง</option>
-                                <option value="รับโอน / ย้าย">รับโอน / ย้าย</option>
-                                <option value="ขอเปลี่ยนตำแหน่ง/หน่วยงาน">ขอเปลี่ยนตำแหน่ง/หน่วยงาน</option>
-                                <option value="ลาออก / สิ้นสุดสัญญา">ลาออก / สิ้นสุดสัญญา</option>
-                                <option value="เลื่อนระดับ">เลื่อนระดับ</option>
+                                <option value="ลาออก/สิ้นสุดสัญญาจ้าง">ลาออก/สิ้นสุดสัญญาจ้าง</option>
+                                <option value="จ้างใหม่">จ้างใหม่</option>
+                                <option value="เปลี่ยนตำแหน่ง นร.ทุน">เปลี่ยนตำแหน่ง นร.ทุน</option>
+                                <option value="ปรับตำแหน่งเข้าสู่สายงานฯ">ปรับตำแหน่งเข้าสู่สายงานฯ</option>
                             </select>
                         </div>
                     </div>
@@ -2081,7 +2079,7 @@ function switchAppTab(tabId, element, staffType = null) {
                 prefix: "นางสาว",
                 fname: "สมพร",
                 lname: "รุ่งเรือง",
-                movementType: "เปลี่ยนสถานะเป็นตำแหน่งว่าง",
+                movementType: "ลาออก/สิ้นสุดสัญญาจ้าง",
                 reason: "ลาออกจากราชการ มีผล 15 ส.ค. 2568",
                 contractNo: "45/2565",
                 orderNo: "คำสั่ง สสจ.ศก 142/2568"
@@ -2096,7 +2094,7 @@ function switchAppTab(tabId, element, staffType = null) {
                 prefix: "นาย",
                 fname: "ทดสอบ",
                 lname: "ระบบ",
-                movementType: "บรรจุใหม่ / ทำสัญญาจ้าง",
+                movementType: "จ้างใหม่",
                 reason: "ผ่านการคัดเลือกสรรหาพนักงานกระทรวงสาธารณสุขทั่วไป",
                 contractNo: "58/2569",
                 orderNo: "สัญญาจ้างเลขที่ 58/2569"
@@ -2111,8 +2109,8 @@ function switchAppTab(tabId, element, staffType = null) {
                 prefix: "นาย",
                 fname: "วิชัย",
                 lname: "มั่นคง",
-                movementType: "รับโอน / ย้าย",
-                reason: "ย้ายช่วยราชการตามความประสงค์ของหน่วยงาน",
+                movementType: "เปลี่ยนตำแหน่ง นร.ทุน",
+                reason: "เปลี่ยนตำแหน่งนักเรียนทุนตามเงื่อนไขสัญญา",
                 contractNo: "12/2568",
                 orderNo: "คำสั่ง สสจ.ศก 89/2569"
             },
@@ -2126,24 +2124,42 @@ function switchAppTab(tabId, element, staffType = null) {
                 prefix: "นาง",
                 fname: "ดวงใจ",
                 lname: "สุขเกษม",
-                movementType: "ขอเปลี่ยนตำแหน่ง/หน่วยงาน",
-                reason: "หน่วยงานขอสรรหาทดแทน / ขอปรับเกลี่ยตำแหน่ง",
+                movementType: "ปรับตำแหน่งเข้าสู่สายงานฯ",
+                reason: "ผ่านเกณฑ์ประเมินปรับตำแหน่งเข้าสู่สายงานวิชาการ",
                 contractNo: "88/2567",
                 orderNo: "หนังสือ สสจ.ศก 0032/512"
             }
         ];
 
+        function normalizeMovementType(type) {
+            if (!type) return "ลาออก/สิ้นสุดสัญญาจ้าง";
+            if (type.includes("ลาออก") || type.includes("ตำแหน่งว่าง") || type.includes("สิ้นสุดสัญญา")) return "ลาออก/สิ้นสุดสัญญาจ้าง";
+            if (type.includes("จ้างใหม่") || type.includes("บรรจุ") || type.includes("โอน")) return "จ้างใหม่";
+            if (type.includes("นร.ทุน") || type.includes("ขอเปลี่ยนตำแหน่ง")) return "เปลี่ยนตำแหน่ง นร.ทุน";
+            if (type.includes("ปรับตำแหน่ง") || type.includes("เลื่อนระดับ")) return "ปรับตำแหน่งเข้าสู่สายงานฯ";
+            return type;
+        }
+
         function getMovementData() {
             let data = localStorage.getItem("position_movements_v2");
-            if (!data) {
-                localStorage.setItem("position_movements_v2", JSON.stringify(defaultMovements));
-                return defaultMovements;
+            let list = defaultMovements;
+            if (data) {
+                try {
+                    list = JSON.parse(data);
+                } catch(e) {
+                    list = defaultMovements;
+                }
             }
-            try {
-                return JSON.parse(data);
-            } catch(e) {
-                return defaultMovements;
+            // Normalize any legacy movement types to current 4 choices
+            if (Array.isArray(list)) {
+                list = list.map(item => {
+                    if (item.movementType) {
+                        item.movementType = normalizeMovementType(item.movementType);
+                    }
+                    return item;
+                });
             }
+            return list;
         }
 
         function setMovementData(data) {
@@ -2206,19 +2222,18 @@ function switchAppTab(tabId, element, staffType = null) {
         }
 
         function getMovementBadge(type) {
-            switch(type) {
-                case "เปลี่ยนสถานะเป็นตำแหน่งว่าง":
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200 shadow-sm"><i class="fas fa-user-slash mr-1"></i>${type}</span>`;
-                case "บรรจุใหม่ / ทำสัญญาจ้าง":
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200 shadow-sm"><i class="fas fa-user-plus mr-1"></i>${type}</span>`;
-                case "รับโอน / ย้าย":
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200 shadow-sm"><i class="fas fa-random mr-1"></i>${type}</span>`;
-                case "ขอเปลี่ยนตำแหน่ง/หน่วยงาน":
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200 shadow-sm"><i class="fas fa-exchange-alt mr-1"></i>${type}</span>`;
-                case "ลาออก / สิ้นสุดสัญญา":
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200 shadow-sm"><i class="fas fa-sign-out-alt mr-1"></i>${type}</span>`;
+            const cleanType = normalizeMovementType(type);
+            switch(cleanType) {
+                case "ลาออก/สิ้นสุดสัญญาจ้าง":
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 shadow-sm"><i class="fas fa-sign-out-alt mr-1 text-rose-500"></i>${cleanType}</span>`;
+                case "จ้างใหม่":
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm"><i class="fas fa-user-plus mr-1 text-emerald-500"></i>${cleanType}</span>`;
+                case "เปลี่ยนตำแหน่ง นร.ทุน":
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 shadow-sm"><i class="fas fa-graduation-cap mr-1 text-blue-500"></i>${cleanType}</span>`;
+                case "ปรับตำแหน่งเข้าสู่สายงานฯ":
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 shadow-sm"><i class="fas fa-level-up-alt mr-1 text-amber-500"></i>${cleanType}</span>`;
                 default:
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 border border-purple-200 shadow-sm"><i class="fas fa-arrow-up mr-1"></i>${type}</span>`;
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200 shadow-sm"><i class="fas fa-exchange-alt mr-1 text-purple-500"></i>${cleanType}</span>`;
             }
         }
 
@@ -2234,9 +2249,9 @@ function switchAppTab(tabId, element, staffType = null) {
             const transferEl = document.getElementById("stat-movement-transfer");
 
             if (totalEl) totalEl.innerText = list.length;
-            if (vacantEl) vacantEl.innerText = list.filter(m => m.movementType === "เปลี่ยนสถานะเป็นตำแหน่งว่าง" || m.movementType === "ลาออก / สิ้นสุดสัญญา").length;
-            if (newhireEl) newhireEl.innerText = list.filter(m => m.movementType === "บรรจุใหม่ / ทำสัญญาจ้าง" || m.movementType === "รับโอน / ย้าย").length;
-            if (transferEl) transferEl.innerText = list.filter(m => m.movementType === "ขอเปลี่ยนตำแหน่ง/หน่วยงาน" || m.movementType === "เลื่อนระดับ").length;
+            if (vacantEl) vacantEl.innerText = list.filter(m => normalizeMovementType(m.movementType) === "ลาออก/สิ้นสุดสัญญาจ้าง").length;
+            if (newhireEl) newhireEl.innerText = list.filter(m => normalizeMovementType(m.movementType) === "จ้างใหม่").length;
+            if (transferEl) transferEl.innerText = list.filter(m => normalizeMovementType(m.movementType) === "เปลี่ยนตำแหน่ง นร.ทุน" || normalizeMovementType(m.movementType) === "ปรับตำแหน่งเข้าสู่สายงานฯ").length;
 
             if (list.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="15" class="text-center py-10 text-gray-400 font-medium"><i class="fas fa-history text-3xl mb-2 text-gray-300 block"></i>ยังไม่มีประวัติความเคลื่อนไหวตำแหน่งในระบบ</td></tr>`;
@@ -2517,12 +2532,10 @@ function switchAppTab(tabId, element, staffType = null) {
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทความเคลื่อนไหว <span class="text-red-500">*</span></label>
                             <select id="mv_movement_type" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
-                                <option value="เปลี่ยนสถานะเป็นตำแหน่งว่าง">เปลี่ยนสถานะเป็นตำแหน่งว่าง</option>
-                                <option value="บรรจุใหม่ / ทำสัญญาจ้าง">บรรจุใหม่ / ทำสัญญาจ้าง</option>
-                                <option value="รับโอน / ย้าย">รับโอน / ย้าย</option>
-                                <option value="ขอเปลี่ยนตำแหน่ง/หน่วยงาน">ขอเปลี่ยนตำแหน่ง/หน่วยงาน</option>
-                                <option value="ลาออก / สิ้นสุดสัญญา">ลาออก / สิ้นสุดสัญญา</option>
-                                <option value="เลื่อนระดับ">เลื่อนระดับ</option>
+                                <option value="ลาออก/สิ้นสุดสัญญาจ้าง">ลาออก/สิ้นสุดสัญญาจ้าง</option>
+                                <option value="จ้างใหม่">จ้างใหม่</option>
+                                <option value="เปลี่ยนตำแหน่ง นร.ทุน">เปลี่ยนตำแหน่ง นร.ทุน</option>
+                                <option value="ปรับตำแหน่งเข้าสู่สายงานฯ">ปรับตำแหน่งเข้าสู่สายงานฯ</option>
                             </select>
                         </div>
                         <div>
