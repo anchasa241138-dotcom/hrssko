@@ -1107,7 +1107,7 @@
             const positionName = document.getElementById('modal_position_name') ? document.getElementById('modal_position_name').value : '-';
             const empType = document.getElementById('modal_emp_type') ? document.getElementById('modal_emp_type').value : '-';
             const vacantDate = document.getElementById('modal_vacant_date') ? document.getElementById('modal_vacant_date').value : '-';
-            const vacantDays = document.getElementById('modal_vacant_days_display') ? document.getElementById('modal_vacant_days_display').value : '-';
+            const vacantDays = calculateVacantDuration(vacantDate);
             const opStatusVal = document.getElementById('modal_operation_status') ? document.getElementById('modal_operation_status').value : '';
             const opResultVal = document.getElementById('modal_operation_result') ? document.getElementById('modal_operation_result').value : '-';
 
@@ -1307,6 +1307,9 @@
             } catch (err) {
                 console.error("Error syncing sent movements to vacant table:", err);
             }
+
+            // Dynamically recalculate "จำนวนวันที่ว่าง" for all rows from vacant date to today
+            updateAllVacantDaysInTable();
         }
 
 
@@ -1958,58 +1961,79 @@
             }
         }
 
+        function calculateVacantDuration(fromDateStr) {
+            if (!fromDateStr || fromDateStr === "-") return "-";
+            let vDate = null;
+            fromDateStr = fromDateStr.trim();
+            if (fromDateStr.includes("/")) {
+                const p = fromDateStr.split("/");
+                if (p.length === 3) {
+                    let y = parseInt(p[2]);
+                    if (y > 2400) y -= 543;
+                    vDate = new Date(y, parseInt(p[1]) - 1, parseInt(p[0]));
+                }
+            } else if (fromDateStr.includes("-")) {
+                const p = fromDateStr.split("-");
+                if (p.length === 3) {
+                    let y = parseInt(p[0]);
+                    if (y > 2400) y -= 543;
+                    vDate = new Date(y, parseInt(p[1]) - 1, parseInt(p[2]));
+                }
+            } else {
+                vDate = new Date(fromDateStr);
+            }
+
+            if (!vDate || isNaN(vDate.getTime())) return "-";
+
+            const today = new Date();
+            vDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            if (vDate > today) {
+                return "ล่วงหน้า (ยังไม่ว่าง)";
+            }
+
+            const diffTime = today - vDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) return "0 วัน";
+
+            let years = Math.floor(diffDays / 365);
+            let rem = diffDays % 365;
+            let months = Math.floor(rem / 30);
+            let days = rem % 30;
+
+            let parts = [];
+            if (years > 0) parts.push(years + " ปี");
+            if (months > 0) parts.push(months + " เดือน");
+            if (days > 0) parts.push(days + " วัน");
+
+            return parts.join(" ") || "0 วัน";
+        }
+
+        function updateAllVacantDaysInTable() {
+            const tbody = document.getElementById("vacant-table-body");
+            if (!tbody) return;
+            tbody.querySelectorAll("tr").forEach(r => {
+                const cells = r.querySelectorAll("td");
+                if (cells.length > 8 && cells[7]) {
+                    const vDateText = cells[7].innerText.trim();
+                    if (vDateText && vDateText !== "-") {
+                        const daysText = calculateVacantDuration(vDateText);
+                        if (cells[8]) {
+                            cells[8].innerText = daysText;
+                            cells[8].className = "text-center font-medium text-gray-700";
+                        }
+                    }
+                }
+            });
+        }
+
         function calculateVacantDays() {
             const dateInput = (document.getElementById("modal_vacant_date") ? document.getElementById("modal_vacant_date").value : "").trim();
             const displayInput = document.getElementById("modal_vacant_days_display");
-            
-            if (!dateInput || dateInput === "-") {
-                if (displayInput) displayInput.value = "";
-                return;
-            }
-
-            let vacantDate = null;
-            if (dateInput.includes("/")) {
-                const parts = dateInput.split("/");
-                let y = parseInt(parts[2]);
-                if (y > 2400) y -= 543;
-                vacantDate = new Date(y, parseInt(parts[1]) - 1, parseInt(parts[0]));
-            } else if (dateInput.includes("-")) {
-                const parts = dateInput.split("-");
-                let y = parseInt(parts[0]);
-                if (y > 2400) y -= 543;
-                vacantDate = new Date(y, parseInt(parts[1]) - 1, parseInt(parts[2]));
-            } else {
-                vacantDate = new Date(dateInput);
-            }
-
-            if (!vacantDate || isNaN(vacantDate.getTime())) {
-                if (displayInput) displayInput.value = "";
-                return;
-            }
-
-            const today = new Date();
-            vacantDate.setHours(0, 0, 0, 0);
-            today.setHours(0, 0, 0, 0);
-
-            if (vacantDate > today) {
-                if (displayInput) displayInput.value = "ล่วงหน้า (ยังไม่ว่าง)";
-                return;
-            }
-
-            const diffTime = Math.abs(today - vacantDate);
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays === 0) {
-                if (displayInput) displayInput.value = "0 วัน";
-            } else {
-                const months = Math.floor(diffDays / 30);
-                const days = diffDays % 30;
-                
-                let result = [];
-                if (months > 0) result.push(months + " เดือน");
-                if (days > 0) result.push(days + " วัน");
-                
-                if (displayInput) displayInput.value = (result.join(" ") || "0 วัน") + ` (${diffDays} วัน)`;
+            if (displayInput) {
+                displayInput.value = calculateVacantDuration(dateInput);
             }
         }
 
@@ -2304,26 +2328,8 @@ function switchAppTab(tabId, element, staffType = null) {
             const vacantDate = movement.date || new Date().toISOString().split("T")[0];
             const formattedDate = formatDateToThai(vacantDate);
 
-            // Calculate vacant days
-            let vacantDays = "-";
-            if (vacantDate) {
-                let vDate = null;
-                if (vacantDate.includes("/")) {
-                    const p = vacantDate.split("/");
-                    let y = parseInt(p[2]);
-                    if (y > 2400) y -= 543;
-                    vDate = new Date(`${y}-${p[1]}-${p[0]}`);
-                } else {
-                    vDate = new Date(vacantDate);
-                }
-                if (vDate && !isNaN(vDate.getTime())) {
-                    vDate.setHours(0,0,0,0);
-                    const today = new Date();
-                    today.setHours(0,0,0,0);
-                    const diffDays = Math.floor(Math.abs(today - vDate) / (1000 * 60 * 60 * 24));
-                    vacantDays = diffDays + " วัน";
-                }
-            }
+            // Calculate vacant days from vacant date to today
+            const vacantDays = calculateVacantDuration(vacantDate);
 
             const opStatusVal = "อัตราว่าง";
             const opResultVal = movement.reason || "ว่างจากการลงรายละเอียดความเคลื่อนไหว";
