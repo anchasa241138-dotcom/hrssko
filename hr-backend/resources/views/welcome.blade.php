@@ -513,6 +513,9 @@
                                            <th class="px-3 py-3 border-b border-r text-center">หน่วยงาน จ.18</th>
                                            <th class="px-3 py-3 border-b border-r text-center">กลุ่มงาน จ.18</th>
                                            <th class="px-3 py-3 border-b border-r text-center">หน่วยงานภายใน จ.18</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">อำเภอ (จริง)</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">คำนำหน้าหน่วยงาน (จริง)</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">หน่วยงาน (จริง)</th>
                                            <th class="px-3 py-3 border-b border-r text-center">ตำแหน่งสายงาน</th>
                                            <th class="px-3 py-3 border-b border-r text-center">ประเภทตำแหน่ง</th>
                                            <th class="px-3 py-3 border-b border-r text-center">ระดับ</th>
@@ -1183,8 +1186,9 @@
         function exportStaffExcel() {
             const headers = [
                 "ลำดับ", "ตำแหน่งเลขที่", "สถานะตำแหน่ง", "อำเภอ จ.18", "คำนำหน้าหน่วยงาน จ.18",
-                "หน่วยงาน จ.18", "กลุ่มงาน จ.18", "หน่วยงานภายใน จ.18", "ตำแหน่งสายงาน", "ประเภทตำแหน่ง",
-                "ระดับ", "ประเภทเจ้าหน้าที่", "คำนำหน้า", "ชื่อ", "นามสกุล",
+                "หน่วยงาน จ.18", "กลุ่มงาน จ.18", "หน่วยงานภายใน จ.18",
+                "อำเภอ (จริง)", "คำนำหน้าหน่วยงาน (จริง)", "หน่วยงาน (จริง)",
+                "ตำแหน่งสายงาน", "ประเภทตำแหน่ง", "ระดับ", "ประเภทเจ้าหน้าที่", "คำนำหน้า", "ชื่อ", "นามสกุล",
                 "เลขประจำตัวประชาชน", "สถานะการปฏิบัติราชการปัจจุบัน", "วัน เดือน ปี ที่บรรจุ", "วุฒิการศึกษาสูงสุด", "สาขาวิชาเอกของวุฒิสูงสุด",
                 "สาขาวุฒิบัตรความเชี่ยวชาญของวุฒิสูงสุด", "สถาบันการศึกษาของวุฒิสูงสุด", "วันที่สำเร็จการศึกษาของวุฒิสูงสุด", "เกรดเฉลี่ย",
                 "เลขใบประกอบ", "ใบประกอบ", "วันออกใบประกอบ", "วันหมดอายุ", "สถาบันออกใบประกอบ"
@@ -1197,12 +1201,12 @@
             rows.forEach(row => {
                 if (row.innerText.includes("กำลังโหลดข้อมูล") || row.innerText.includes("ยังไม่มีข้อมูล")) return;
                 const cols = row.querySelectorAll("td");
-                if (cols.length < 29) return;
+                if (cols.length < 32) return;
                 
                 let rowData = [];
-                for (let i = 0; i < 29; i++) {
+                for (let i = 0; i < 32; i++) {
                     let cellData = cols[i].innerText.trim();
-                    if (i === 15 || i === 24) {
+                    if (i === 18 || i === 27) { // เลขบัตรประชาชน หรือ เลขใบประกอบ
                         cellData = '="' + cellData + '"';
                     } else if (cellData.includes(",") || cellData.includes('"') || cellData.includes("\n")) {
                         cellData = '"' + cellData.replace(/"/g, '""') + '"';
@@ -1257,6 +1261,9 @@
                         <td class="text-center">${item.agency_name || '-'}</td>
                         <td class="text-center">${item.agency_group || '-'}</td>
                         <td class="text-center">${item.agency_internal || '-'}</td>
+                        <td class="text-center">${item.actual_district || '-'}</td>
+                        <td class="text-center">${item.actual_prefix || '-'}</td>
+                        <td class="text-center">${item.actual_name || '-'}</td>
                         <td class="text-center">${item.position_line || '-'}</td>
                         <td class="text-center">${item.position_type || '-'}</td>
                         <td class="text-center">${item.position_level || '-'}</td>
@@ -1321,6 +1328,9 @@
             setVal('sm_agency_name', item.agency_name);
             setVal('sm_agency_group', item.agency_group);
             setVal('sm_agency_internal', item.agency_internal);
+            setVal('sm_actual_district', item.actual_district);
+            setVal('sm_actual_prefix', item.actual_prefix);
+            setVal('sm_actual_name', item.actual_name);
             setVal('sm_pos_name', item.position_line);
             setVal('sm_pos_type', item.position_type);
             setVal('sm_pos_level', item.position_level);
@@ -1360,6 +1370,9 @@
                 agency_name: getVal('sm_agency_name'),
                 agency_group: getVal('sm_agency_group'),
                 agency_internal: getVal('sm_agency_internal'),
+                actual_district: getVal('sm_actual_district'),
+                actual_prefix: getVal('sm_actual_prefix'),
+                actual_name: getVal('sm_actual_name'),
                 position_line: getVal('sm_pos_name'),
                 position_type: getVal('sm_pos_type'),
                 position_level: getVal('sm_pos_level'),
@@ -1788,7 +1801,7 @@ function switchAppTab(tabId, element, staffType = null) {
                   </div>
                   <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-gray-50">
                       
-                      <!-- Section 1: ข้อมูลตำแหน่งและสังกัดหน่วยงาน -->
+                      <!-- Section 1: ข้อมูลตำแหน่งและสังกัดหน่วยงาน จ.18 -->
                       <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-building mr-2"></i> 1. ข้อมูลตำแหน่งและสังกัด (จ.18)</h4>
                       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งเลขที่</label><input type="text" id="sm_pos_no" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
@@ -1809,6 +1822,14 @@ function switchAppTab(tabId, element, staffType = null) {
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">ประเภทตำแหน่ง</label><input type="text" id="sm_pos_type" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">ระดับ</label><input type="text" id="sm_pos_level" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">ประเภทเจ้าหน้าที่</label><input type="text" id="sm_staff_type" value="พนักงานกระทรวงสาธารณสุข" readonly class="w-full border border-gray-300 bg-gray-100 rounded-md px-3 py-2 text-sm focus:outline-none"></div>
+                      </div>
+
+                      <!-- Section 1.1: สังกัดหน่วยงานที่ปฏิบัติงานจริง -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-map-marker-alt mr-2"></i> สังกัดหน่วยงาน (ปฏิบัติงานจริง)</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">อำเภอ (จริง)</label><input type="text" id="sm_actual_district" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้าหน่วยงาน (จริง)</label><input type="text" id="sm_actual_prefix" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">หน่วยงาน (จริง)</label><input type="text" id="sm_actual_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                       </div>
 
                       <!-- Section 2: ข้อมูลบุคคลและการปฏิบัติงาน -->
@@ -1851,6 +1872,12 @@ function switchAppTab(tabId, element, staffType = null) {
                       </div>
 
                   </div>
+                  <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                      <button onclick="toggleStaffModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium">ยกเลิก</button>
+                      <button onclick="saveStaffMoph()" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium">บันทึกข้อมูล</button>
+                  </div>
+              </div>
+          </div>
                   <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
                       <button onclick="toggleStaffModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium">ยกเลิก</button>
                       <button onclick="saveStaffMoph()" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium">บันทึกข้อมูล</button>

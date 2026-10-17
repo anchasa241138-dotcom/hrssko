@@ -513,6 +513,9 @@
                                            <th class="px-3 py-3 border-b border-r text-center">หน่วยงาน จ.18</th>
                                            <th class="px-3 py-3 border-b border-r text-center">กลุ่มงาน จ.18</th>
                                            <th class="px-3 py-3 border-b border-r text-center">หน่วยงานภายใน จ.18</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">อำเภอ (จริง)</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">คำนำหน้าหน่วยงาน (จริง)</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">หน่วยงาน (จริง)</th>
                                            <th class="px-3 py-3 border-b border-r text-center">ตำแหน่งสายงาน</th>
                                            <th class="px-3 py-3 border-b border-r text-center">ประเภทตำแหน่ง</th>
                                            <th class="px-3 py-3 border-b border-r text-center">ระดับ</th>
@@ -547,6 +550,9 @@
                                            <td class="text-center">บ้านหนอง</td>
                                            <td class="text-center">บริการ</td>
                                            <td class="text-center">พยาบาล</td>
+                                           <td class="text-center">เมือง</td>
+                                           <td class="text-center">รพ.สต.</td>
+                                           <td class="text-center">บ้านหนอง</td>
                                            <td class="text-center">พยาบาลวิชาชีพ</td>
                                            <td class="text-center">วิชาการ</td>
                                            <td class="text-center">ปฏิบัติการ</td>
@@ -1187,8 +1193,9 @@
         function exportStaffExcel() {
             const headers = [
                 "ลำดับ", "ตำแหน่งเลขที่", "สถานะตำแหน่ง", "อำเภอ จ.18", "คำนำหน้าหน่วยงาน จ.18",
-                "หน่วยงาน จ.18", "กลุ่มงาน จ.18", "หน่วยงานภายใน จ.18", "ตำแหน่งสายงาน", "ประเภทตำแหน่ง",
-                "ระดับ", "ประเภทเจ้าหน้าที่", "คำนำหน้า", "ชื่อ", "นามสกุล",
+                "หน่วยงาน จ.18", "กลุ่มงาน จ.18", "หน่วยงานภายใน จ.18",
+                "อำเภอ (จริง)", "คำนำหน้าหน่วยงาน (จริง)", "หน่วยงาน (จริง)",
+                "ตำแหน่งสายงาน", "ประเภทตำแหน่ง", "ระดับ", "ประเภทเจ้าหน้าที่", "คำนำหน้า", "ชื่อ", "นามสกุล",
                 "เลขประจำตัวประชาชน", "สถานะการปฏิบัติราชการปัจจุบัน", "วัน เดือน ปี ที่บรรจุ", "วุฒิการศึกษาสูงสุด", "สาขาวิชาเอกของวุฒิสูงสุด",
                 "สาขาวุฒิบัตรความเชี่ยวชาญของวุฒิสูงสุด", "สถาบันการศึกษาของวุฒิสูงสุด", "วันที่สำเร็จการศึกษาของวุฒิสูงสุด", "เกรดเฉลี่ย",
                 "เลขใบประกอบ", "ใบประกอบ", "วันออกใบประกอบ", "วันหมดอายุ", "สถาบันออกใบประกอบ"
@@ -1201,12 +1208,12 @@
             rows.forEach(row => {
                 if (row.innerText.includes("กำลังโหลดข้อมูล") || row.innerText.includes("ยังไม่มีข้อมูล")) return;
                 const cols = row.querySelectorAll("td");
-                if (cols.length < 29) return;
+                if (cols.length < 32) return;
                 
                 let rowData = [];
-                for (let i = 0; i < 29; i++) {
+                for (let i = 0; i < 32; i++) {
                     let cellData = cols[i].innerText.trim();
-                    if (i === 15 || i === 24) {
+                    if (i === 18 || i === 27) { // เลขบัตรประชาชน หรือ เลขใบประกอบ
                         cellData = '="' + cellData + '"';
                     } else if (cellData.includes(",") || cellData.includes('"') || cellData.includes("\n")) {
                         cellData = '"' + cellData.replace(/"/g, '""') + '"';
@@ -1220,7 +1227,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = "ข้อมูลพนักงานกระทรวงสาธารณสุข.csv";
+            a.download = (window.currentStaffType || "ข้อมูลพนักงาน") + ".csv";
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1357,6 +1364,9 @@
             const agency_name = getVal("sm_agency_name");
             const agency_group = getVal("sm_agency_group");
             const agency_internal = getVal("sm_agency_internal");
+            const actual_district = getVal("sm_actual_district");
+            const actual_prefix = getVal("sm_actual_prefix");
+            const actual_name = getVal("sm_actual_name");
             const pos_name = getVal("sm_pos_name");
             const pos_type = getVal("sm_pos_type");
             const pos_level = getVal("sm_pos_level");
@@ -1391,6 +1401,9 @@
                 <td class="text-center">${agency_name || "-"}</td>
                 <td class="text-center">${agency_group || "-"}</td>
                 <td class="text-center">${agency_internal || "-"}</td>
+                <td class="text-center">${actual_district || "-"}</td>
+                <td class="text-center">${actual_prefix || "-"}</td>
+                <td class="text-center">${actual_name || "-"}</td>
                 <td class="text-center">${pos_name || "-"}</td>
                 <td class="text-center">${pos_type || "-"}</td>
                 <td class="text-center">${pos_level || "-"}</td>
@@ -1472,30 +1485,33 @@
             setVal("sm_agency_name", tds[5].innerText.trim());
             setVal("sm_agency_group", tds[6].innerText.trim());
             setVal("sm_agency_internal", tds[7].innerText.trim());
-            setVal("sm_pos_name", tds[8].innerText.trim());
-            setVal("sm_pos_type", tds[9].innerText.trim());
-            setVal("sm_pos_level", tds[10].innerText.trim());
-            setVal("sm_staff_type", tds[11].innerText.trim());
+            setVal("sm_actual_district", tds[8].innerText.trim());
+            setVal("sm_actual_prefix", tds[9].innerText.trim());
+            setVal("sm_actual_name", tds[10].innerText.trim());
+            setVal("sm_pos_name", tds[11].innerText.trim());
+            setVal("sm_pos_type", tds[12].innerText.trim());
+            setVal("sm_pos_level", tds[13].innerText.trim());
+            setVal("sm_staff_type", tds[14].innerText.trim());
             
-            setVal("sm_pers_title", tds[12].innerText.trim());
-            setVal("sm_pers_fname", tds[13].innerText.trim());
-            setVal("sm_pers_lname", tds[14].innerText.trim());
-            setVal("sm_pers_idcard", tds[15].innerText.trim());
-            setVal("sm_duty_status", tds[16].innerText.trim());
+            setVal("sm_pers_title", tds[15].innerText.trim());
+            setVal("sm_pers_fname", tds[16].innerText.trim());
+            setVal("sm_pers_lname", tds[17].innerText.trim());
+            setVal("sm_pers_idcard", tds[18].innerText.trim());
+            setVal("sm_duty_status", tds[19].innerText.trim());
             setVal("sm_pers_startdate", tr.getAttribute("data-pers-startdate") || "");
 
-            setVal("sm_pers_degree", tds[18].innerText.trim());
-            setVal("sm_major", tds[19].innerText.trim());
-            setVal("sm_specialist_cert", tds[20].innerText.trim());
-            setVal("sm_institution", tds[21].innerText.trim());
+            setVal("sm_pers_degree", tds[21].innerText.trim());
+            setVal("sm_major", tds[22].innerText.trim());
+            setVal("sm_specialist_cert", tds[23].innerText.trim());
+            setVal("sm_institution", tds[24].innerText.trim());
             setVal("sm_pers_graddate", tr.getAttribute("data-pers-graddate") || "");
-            setVal("sm_pers_gpa", tds[23].innerText.trim());
+            setVal("sm_pers_gpa", tds[26].innerText.trim());
 
-            setVal("sm_lic_no", tds[24].innerText.trim());
-            setVal("sm_lic_name", tds[25].innerText.trim());
+            setVal("sm_lic_no", tds[27].innerText.trim());
+            setVal("sm_lic_name", tds[28].innerText.trim());
             setVal("sm_lic_issue", tr.getAttribute("data-lic-issue") || "");
             setVal("sm_lic_expire", tr.getAttribute("data-lic-expire") || "");
-            setVal("sm_lic_org", tds[28].innerText.trim());
+            setVal("sm_lic_org", tds[31].innerText.trim());
             
             toggleStaffModal();
         }
@@ -1800,7 +1816,7 @@
                   </div>
                   <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-gray-50">
                       
-                      <!-- Section 1: ข้อมูลตำแหน่งและสังกัดหน่วยงาน -->
+                      <!-- Section 1: ข้อมูลตำแหน่งและสังกัดหน่วยงาน จ.18 -->
                       <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-building mr-2"></i> 1. ข้อมูลตำแหน่งและสังกัด (จ.18)</h4>
                       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งเลขที่</label><input type="text" id="sm_pos_no" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
@@ -1821,6 +1837,14 @@
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">ประเภทตำแหน่ง</label><input type="text" id="sm_pos_type" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">ระดับ</label><input type="text" id="sm_pos_level" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">ประเภทเจ้าหน้าที่</label><input type="text" id="sm_staff_type" value="พนักงานกระทรวงสาธารณสุข" readonly class="w-full border border-gray-300 bg-gray-100 rounded-md px-3 py-2 text-sm focus:outline-none"></div>
+                      </div>
+
+                      <!-- Section 1.1: สังกัดหน่วยงานที่ปฏิบัติงานจริง -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-map-marker-alt mr-2"></i> สังกัดหน่วยงาน (ปฏิบัติงานจริง)</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">อำเภอ (จริง)</label><input type="text" id="sm_actual_district" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้าหน่วยงาน (จริง)</label><input type="text" id="sm_actual_prefix" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">หน่วยงาน (จริง)</label><input type="text" id="sm_actual_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                       </div>
 
                       <!-- Section 2: ข้อมูลบุคคลและการปฏิบัติงาน -->
@@ -1863,6 +1887,12 @@
                       </div>
 
                   </div>
+                  <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                      <button onclick="toggleStaffModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium">ยกเลิก</button>
+                      <button onclick="saveStaffMoph()" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium">บันทึกข้อมูล</button>
+                  </div>
+              </div>
+          </div>
                   <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
                       <button onclick="toggleStaffModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium">ยกเลิก</button>
                       <button onclick="saveStaffMoph()" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium">บันทึกข้อมูล</button>
