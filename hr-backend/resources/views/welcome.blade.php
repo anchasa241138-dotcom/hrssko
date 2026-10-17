@@ -258,6 +258,7 @@
                     <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'พนักงานกระทรวงสาธารณสุข')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-md w-6"></i><span>พนักงานกระทรวงสาธารณสุข</span></a></li>
                     <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'ลูกจ้างชั่วคราว (รายเดือน)')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-clock w-6"></i><span>ลูกจ้างชั่วคราว (รายเดือน)</span></a></li>
                     <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'ลูกจ้างชั่วคราวรายวัน/จ้างเหมา')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-users w-6"></i><span class="text-sm">ลูกจ้างชั่วคราวรายวัน/จ้างเหมา</span></a></li>
+                    <li><a href="#" onclick="switchAppTab('tab-movement', this)" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-exchange-alt w-6"></i><span>ความเคลื่อนไหวตำแหน่ง</span></a></li>
                     <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-bell w-6 relative"><span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-3 w-3 flex items-center justify-center">3</span></i><span>แจ้งเตือนใบประกอบฯ</span></a></li>
                 </ul>
             </nav>
@@ -577,6 +578,112 @@
                           </div>
                       </div>
                   </div>
+
+                <!-- APP TAB 4: POSITION MOVEMENT (ความเคลื่อนไหวตำแหน่ง) -->
+                <div id="tab-movement" class="app-tab-content">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                <i class="fas fa-exchange-alt text-moph"></i> ความเคลื่อนไหวตำแหน่ง (Position Movements)
+                            </h3>
+                            <p class="text-xs text-gray-500 mt-0.5">บันทึกและติดตามประวัติการเคลื่อนไหวตำแหน่ง การโอนย้าย การปรับเปลี่ยนสถานะ และการสรรหาทดแทน</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="openAddMovementModal()" class="bg-moph hover:bg-moph-dark text-white px-4 py-2 rounded-lg shadow-sm transition flex items-center gap-2 text-sm font-medium">
+                                <i class="fas fa-plus"></i> บันทึกความเคลื่อนไหว
+                            </button>
+                            <button onclick="exportMovementExcel()" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg shadow-sm transition flex items-center gap-2 text-sm font-medium">
+                                <i class="fas fa-file-excel text-green-600"></i> ส่งออก Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Movement Stat Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">ความเคลื่อนไหวทั้งหมด</p>
+                                <h4 id="stat-movement-total" class="text-2xl font-bold text-gray-800">0</h4>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-xl shrink-0">
+                                <i class="fas fa-user-slash"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">เปลี่ยนเป็นตำแหน่งว่าง</p>
+                                <h4 id="stat-movement-vacant" class="text-2xl font-bold text-red-600">0</h4>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">บรรจุ / รับโอนใหม่</p>
+                                <h4 id="stat-movement-newhire" class="text-2xl font-bold text-emerald-600">0</h4>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
+                                <i class="fas fa-random"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">ขอเปลี่ยนตำแหน่ง/สังกัด</p>
+                                <h4 id="stat-movement-transfer" class="text-2xl font-bold text-amber-600">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter & Search Bar -->
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm mb-6 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 flex-1 min-w-[280px]">
+                            <div class="relative w-full max-w-md">
+                                <i class="fas fa-search absolute left-3 top-2.5 text-gray-400 text-sm"></i>
+                                <input type="text" id="movement-search" onkeyup="filterMovementTable()" placeholder="ค้นหาตำแหน่งเลขที่, สายงาน, หรือหน่วยงาน..." class="w-full pl-9 pr-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-1 focus:ring-moph focus:border-moph">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label class="text-xs text-gray-500 font-medium">ประเภทการเคลื่อนไหว:</label>
+                            <select id="movement-type-filter" onchange="filterMovementTable()" class="border border-gray-300 rounded-lg text-sm px-3 py-1.5 focus:ring-1 focus:ring-moph focus:border-moph">
+                                <option value="">ทั้งหมด</option>
+                                <option value="เปลี่ยนสถานะเป็นตำแหน่งว่าง">เปลี่ยนสถานะเป็นตำแหน่งว่าง</option>
+                                <option value="บรรจุใหม่ / ทำสัญญาจ้าง">บรรจุใหม่ / ทำสัญญาจ้าง</option>
+                                <option value="รับโอน / ย้าย">รับโอน / ย้าย</option>
+                                <option value="ขอเปลี่ยนตำแหน่ง/หน่วยงาน">ขอเปลี่ยนตำแหน่ง/หน่วยงาน</option>
+                                <option value="ลาออก / สิ้นสุดสัญญา">ลาออก / สิ้นสุดสัญญา</option>
+                                <option value="เลื่อนระดับ">เลื่อนระดับ</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Movement Table -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 table-container overflow-x-auto">
+                        <table class="w-full complex-table whitespace-nowrap text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="w-16 text-center">ลำดับ</th>
+                                    <th class="text-center">วันที่บันทึก</th>
+                                    <th class="text-center">ตำแหน่งเลขที่</th>
+                                    <th>ตำแหน่งสายงาน</th>
+                                    <th>ประเภทเจ้าหน้าที่</th>
+                                    <th>สังกัดหน่วยงาน (จ.18)</th>
+                                    <th>อำเภอ</th>
+                                    <th class="text-center">ประเภทความเคลื่อนไหว</th>
+                                    <th>รายละเอียด / สาเหตุ</th>
+                                    <th>คำสั่ง / หนังสืออ้างอิง</th>
+                                    <th class="text-center">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="movement-table-body">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
             </div>
         </main>
@@ -1491,7 +1598,20 @@
                 await loadFromLocalStorage();
                 
                 if (payload.position_status === 'ไม่มีคนครอง') {
-                    alert('บันทึกเรียบร้อย: เนื่องจากสถานะตำแหน่งเป็น "ไม่มีคนครอง" ข้อมูลจะถูกย้ายไปแสดงที่แท็บ "การบริหารตำแหน่งว่าง"');
+                    if (typeof logPositionMovement === 'function') {
+                        logPositionMovement({
+                            date: new Date().toISOString().split('T')[0],
+                            posNo: payload.position_number || '-',
+                            posName: payload.position_line || '-',
+                            staffType: payload.staff_type || '-',
+                            agencyName: payload.agency_name || '-',
+                            district: payload.agency_district || '-',
+                            movementType: 'เปลี่ยนสถานะเป็นตำแหน่งว่าง',
+                            details: 'ปรับเปลี่ยนสถานะตำแหน่งเป็นไม่มีคนครองจากระบบบริหารบุคลากร',
+                            orderNo: '-'
+                        });
+                    }
+                    alert('บันทึกเรียบร้อย: เนื่องจากสถานะตำแหน่งเป็น "ไม่มีคนครอง" ข้อมูลจะถูกย้ายไปแสดงที่แท็บ "การบริหารตำแหน่งว่าง" และบันทึกลงใน "ความเคลื่อนไหวตำแหน่ง"');
                 }
             } catch (err) {
                 alert('เกิดข้อผิดพลาดในการบันทึกลงฐานข้อมูล: ' + err.message);
@@ -1842,7 +1962,8 @@ function switchAppTab(tabId, element, staffType = null) {
     const titleMap = {
         'tab-dashboard': 'แผงควบคุมแสดงสถานะอัตรากำลังคน',
         'tab-vacant': 'การบริหารตำแหน่งว่าง',
-        'tab-staff-moph': 'พนักงานกระทรวงสาธารณสุข'
+        'tab-staff-moph': 'พนักงานกระทรวงสาธารณสุข',
+        'tab-movement': 'ความเคลื่อนไหวตำแหน่ง'
     };
     
     if (staffType) {
@@ -1865,10 +1986,223 @@ function switchAppTab(tabId, element, staffType = null) {
         document.getElementById('page-title').innerText = titleMap[tabId];
         if (tabId === 'tab-vacant' && typeof loadFromLocalStorage === 'function') {
             loadFromLocalStorage();
+        } else if (tabId === 'tab-movement' && typeof loadMovementHistory === 'function') {
+            loadMovementHistory();
         }
     }
 }
 
+
+        // === Position Movement Logic ===
+        const defaultMovements = [
+            {
+                date: "2025-08-15",
+                posNo: "685412",
+                posName: "พยาบาลวิชาชีพ",
+                staffType: "พนักงานกระทรวงสาธารณสุข",
+                agencyName: "รพท.เมืองศรีสะเกษ",
+                district: "เมืองศรีสะเกษ",
+                movementType: "เปลี่ยนสถานะเป็นตำแหน่งว่าง",
+                details: "ลาออกจากราชการ มีผล 15 ส.ค. 2568",
+                orderNo: "คำสั่ง สสจ.ศก 142/2568"
+            },
+            {
+                date: "2026-06-29",
+                posNo: "11",
+                posName: "นักวิชาการสาธารณสุข",
+                staffType: "พนักงานกระทรวงสาธารณสุข",
+                agencyName: "สสจ. (กลุ่มงาน บค.)",
+                district: "เมืองศรีสะเกษ",
+                movementType: "บรรจุใหม่ / ทำสัญญาจ้าง",
+                details: "ผ่านการคัดเลือกสรรหาพนักงานกระทรวงสาธารณสุขทั่วไป",
+                orderNo: "สัญญาจ้างเลขที่ 45/2569"
+            },
+            {
+                date: "2026-07-15",
+                posNo: "998877",
+                posName: "เภสัชกร",
+                staffType: "ลูกจ้างชั่วคราว (รายเดือน)",
+                agencyName: "รพช.ราษีไศล",
+                district: "ราษีไศล",
+                movementType: "รับโอน / ย้าย",
+                details: "ย้ายช่วยราชการตามความประสงค์ของหน่วยงาน",
+                orderNo: "คำสั่ง สสจ.ศก 89/2569"
+            },
+            {
+                date: "2026-09-01",
+                posNo: "112233",
+                posName: "นักวิชาการสาธารณสุข",
+                staffType: "พนักงานกระทรวงสาธารณสุข",
+                agencyName: "รพ.สต.บ้านตาอุด",
+                district: "ขุขันธ์",
+                movementType: "ขอเปลี่ยนตำแหน่ง/หน่วยงาน",
+                details: "หน่วยงานขอสรรหาทดแทน / ขอปรับเกลี่ยตำแหน่ง",
+                orderNo: "หนังสือ สสจ.ศก 0032/512"
+            }
+        ];
+
+        function getMovementData() {
+            let data = localStorage.getItem("position_movements");
+            if (!data) {
+                localStorage.setItem("position_movements", JSON.stringify(defaultMovements));
+                return defaultMovements;
+            }
+            try {
+                return JSON.parse(data);
+            } catch(e) {
+                return defaultMovements;
+            }
+        }
+
+        function setMovementData(data) {
+            localStorage.setItem("position_movements", JSON.stringify(data));
+        }
+
+        function toggleMovementModal() {
+            const modal = document.getElementById("movementModal");
+            if (modal.classList.contains("hidden")) {
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+                const today = new Date().toISOString().split("T")[0];
+                const dateInp = document.getElementById("mv_date");
+                if (dateInp && !dateInp.value) dateInp.value = today;
+            } else {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+            }
+        }
+
+        function openAddMovementModal() {
+            const form = document.getElementById("movementForm");
+            if (form) form.reset();
+            toggleMovementModal();
+        }
+
+        function getMovementBadge(type) {
+            switch(type) {
+                case "เปลี่ยนสถานะเป็นตำแหน่งว่าง":
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200"><i class="fas fa-user-slash mr-1"></i>${type}</span>`;
+                case "บรรจุใหม่ / ทำสัญญาจ้าง":
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200"><i class="fas fa-user-plus mr-1"></i>${type}</span>`;
+                case "รับโอน / ย้าย":
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200"><i class="fas fa-random mr-1"></i>${type}</span>`;
+                case "ขอเปลี่ยนตำแหน่ง/หน่วยงาน":
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200"><i class="fas fa-exchange-alt mr-1"></i>${type}</span>`;
+                case "ลาออก / สิ้นสุดสัญญา":
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200"><i class="fas fa-sign-out-alt mr-1"></i>${type}</span>`;
+                default:
+                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 border border-purple-200"><i class="fas fa-arrow-up mr-1"></i>${type}</span>`;
+            }
+        }
+
+        function loadMovementHistory() {
+            const tbody = document.getElementById("movement-table-body");
+            if (!tbody) return;
+            const list = getMovementData();
+
+            // Update stats
+            const totalEl = document.getElementById("stat-movement-total");
+            const vacantEl = document.getElementById("stat-movement-vacant");
+            const newhireEl = document.getElementById("stat-movement-newhire");
+            const transferEl = document.getElementById("stat-movement-transfer");
+
+            if (totalEl) totalEl.innerText = list.length;
+            if (vacantEl) vacantEl.innerText = list.filter(m => m.movementType === "เปลี่ยนสถานะเป็นตำแหน่งว่าง" || m.movementType === "ลาออก / สิ้นสุดสัญญา").length;
+            if (newhireEl) newhireEl.innerText = list.filter(m => m.movementType === "บรรจุใหม่ / ทำสัญญาจ้าง" || m.movementType === "รับโอน / ย้าย").length;
+            if (transferEl) transferEl.innerText = list.filter(m => m.movementType === "ขอเปลี่ยนตำแหน่ง/หน่วยงาน" || m.movementType === "เลื่อนระดับ").length;
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="11" class="text-center py-10 text-gray-400 font-medium"><i class="fas fa-history text-3xl mb-2 text-gray-300 block"></i>ยังไม่มีประวัติความเคลื่อนไหวตำแหน่งในระบบ</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = "";
+            list.forEach((item, index) => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-gray-50 transition";
+                tr.innerHTML = `
+                    <td class="text-center font-medium text-gray-500">${index + 1}</td>
+                    <td class="text-center">${item.date ? formatDateToThai(item.date) : "-"}</td>
+                    <td class="text-center font-semibold text-moph">${item.posNo || "-"}</td>
+                    <td>${item.posName || "-"}</td>
+                    <td><span class="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">${item.staffType || "-"}</span></td>
+                    <td>${item.agencyName || "-"}</td>
+                    <td>${item.district || "-"}</td>
+                    <td class="text-center">${getMovementBadge(item.movementType)}</td>
+                    <td class="max-w-xs truncate" title="${item.details || ""}">${item.details || "-"}</td>
+                    <td>${item.orderNo || "-"}</td>
+                    <td class="text-center">
+                        <button type="button" class="text-red-500 hover:text-red-700 mx-1" title="ลบรายการ" onclick="deleteMovement(${index})"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function saveMovement() {
+            const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
+            const newMovement = {
+                date: getVal("mv_date"),
+                posNo: getVal("mv_pos_no"),
+                posName: getVal("mv_pos_name"),
+                staffType: getVal("mv_staff_type"),
+                agencyName: getVal("mv_agency_name") || "-",
+                district: getVal("mv_agency_district") || "-",
+                movementType: getVal("mv_movement_type"),
+                details: getVal("mv_details") || "-",
+                orderNo: getVal("mv_order_no") || "-"
+            };
+
+            const list = getMovementData();
+            list.unshift(newMovement);
+            setMovementData(list);
+            toggleMovementModal();
+            loadMovementHistory();
+            alert("บันทึกข้อมูลความเคลื่อนไหวตำแหน่งเรียบร้อยแล้ว");
+        }
+
+        function deleteMovement(index) {
+            if (!confirm("คุณแน่ใจว่าต้องการลบประวัติความเคลื่อนไหวนี้?")) return;
+            const list = getMovementData();
+            list.splice(index, 1);
+            setMovementData(list);
+            loadMovementHistory();
+        }
+
+        function filterMovementTable() {
+            const search = (document.getElementById("movement-search") ? document.getElementById("movement-search").value : "").toLowerCase();
+            const filterType = document.getElementById("movement-type-filter") ? document.getElementById("movement-type-filter").value : "";
+            const tbody = document.getElementById("movement-table-body");
+            if (!tbody) return;
+            const rows = tbody.querySelectorAll("tr");
+            rows.forEach(r => {
+                const text = r.innerText.toLowerCase();
+                const matchSearch = !search || text.includes(search);
+                const matchType = !filterType || text.includes(filterType.toLowerCase());
+                if (matchSearch && matchType) {
+                    r.style.display = "";
+                } else {
+                    r.style.display = "none";
+                }
+            });
+        }
+
+        function exportMovementExcel() {
+            if (typeof XLSX === "undefined") {
+                alert("กำลังโหลดโมดูล Excel กรุณารอสักครู่");
+                return;
+            }
+            const table = document.querySelector("#tab-movement table");
+            if (!table) return;
+            const wb = XLSX.utils.table_to_book(table, { sheet: "ความเคลื่อนไหวตำแหน่ง" });
+            XLSX.writeFile(wb, "position_movements_" + new Date().toISOString().split("T")[0] + ".xlsx");
+        }
+
+        function logPositionMovement(movement) {
+            const list = getMovementData();
+            list.unshift(movement);
+            setMovementData(list);
+        }
 
         // === Modal Form ===
         function toggleModal() {
@@ -1979,5 +2313,75 @@ function switchAppTab(tabId, element, staffType = null) {
             }
         });
 </script>
+    <!-- Movement Modal (Add Movement) -->
+    <div id="movementModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col mx-4 overflow-hidden">
+            <div class="flex justify-between items-center p-5 border-b border-gray-200">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fas fa-exchange-alt text-moph"></i> <span>บันทึกความเคลื่อนไหวตำแหน่ง</span>
+                </h3>
+                <button onclick="toggleMovementModal()" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-gray-50">
+                <form id="movementForm" onsubmit="event.preventDefault(); saveMovement();" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">วันที่เกิดความเคลื่อนไหว <span class="text-red-500">*</span></label>
+                            <input type="date" id="mv_date" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งเลขที่ <span class="text-red-500">*</span></label>
+                            <input type="text" id="mv_pos_no" required placeholder="เช่น 685412" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งสายงาน <span class="text-red-500">*</span></label>
+                            <input type="text" id="mv_pos_name" required placeholder="เช่น พยาบาลวิชาชีพ" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทเจ้าหน้าที่</label>
+                            <select id="mv_staff_type" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                                <option value="พนักงานกระทรวงสาธารณสุข">พนักงานกระทรวงสาธารณสุข</option>
+                                <option value="พนักงานราชการ">พนักงานราชการ</option>
+                                <option value="ลูกจ้างประจำ">ลูกจ้างประจำ</option>
+                                <option value="ลูกจ้างชั่วคราว (รายเดือน)">ลูกจ้างชั่วคราว (รายเดือน)</option>
+                                <option value="ลูกจ้างชั่วคราวรายวัน/จ้างเหมา">ลูกจ้างชั่วคราวรายวัน/จ้างเหมา</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">สังกัดหน่วยงาน</label>
+                            <input type="text" id="mv_agency_name" placeholder="เช่น รพ.สต.บ้านตาอุด" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">อำเภอ</label>
+                            <input type="text" id="mv_agency_district" placeholder="เช่น ขุขันธ์" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทความเคลื่อนไหว <span class="text-red-500">*</span></label>
+                            <select id="mv_movement_type" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                                <option value="เปลี่ยนสถานะเป็นตำแหน่งว่าง">เปลี่ยนสถานะเป็นตำแหน่งว่าง</option>
+                                <option value="บรรจุใหม่ / ทำสัญญาจ้าง">บรรจุใหม่ / ทำสัญญาจ้าง</option>
+                                <option value="รับโอน / ย้าย">รับโอน / ย้าย</option>
+                                <option value="ขอเปลี่ยนตำแหน่ง/หน่วยงาน">ขอเปลี่ยนตำแหน่ง/หน่วยงาน</option>
+                                <option value="ลาออก / สิ้นสุดสัญญา">ลาออก / สิ้นสุดสัญญา</option>
+                                <option value="เลื่อนระดับ">เลื่อนระดับ</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">รายละเอียด / หมายเหตุ</label>
+                            <textarea id="mv_details" rows="2" placeholder="ระบุเหตุผล หรือรายละเอียดความเคลื่อนไหว..." class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">คำสั่ง / หนังสืออ้างอิง</label>
+                            <input type="text" id="mv_order_no" placeholder="เช่น คำสั่ง สสจ.ศก 142/2568" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                        <button type="button" onclick="toggleMovementModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium text-sm">ยกเลิก</button>
+                        <button type="submit" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium text-sm">บันทึกข้อมูล</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
