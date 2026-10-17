@@ -1294,74 +1294,18 @@
                 }
             });
 
+            // Sync any positions from movement tab that were sent to vacant table
             try {
-                const res = await fetch('/api/moph-staff');
-                if (res.ok) {
-                    const allStaff = await res.json();
-                    const unoccupiedStaff = allStaff.filter(s => (s.position_status || '').trim() === 'ไม่มีคนครอง');
-                    
-                    // Remove existing dynamically synced unoccupied rows to prevent duplication
-                    tbody.querySelectorAll('tr[data-source="staff-unoccupied"]').forEach(r => r.remove());
-                    
-                    unoccupiedStaff.forEach(item => {
-                        const tr = document.createElement('tr');
-                        tr.className = 'hover:bg-amber-50/40 transition bg-amber-50/20';
-                        tr.setAttribute('data-source', 'staff-unoccupied');
-                        tr.setAttribute('data-staff-id', item.id);
-                        tr.setAttribute('data-opstatus', 'ไม่มีคนครอง');
-                        tr.setAttribute('data-opresult', '-');
-                        
-                        const prefix = item.agency_prefix || item.actual_prefix || '-';
-                        const district = item.agency_district || item.actual_district || '-';
-                        const rpst = item.agency_name || item.agency_internal || item.actual_name || '-';
-                        const posNo = item.position_number || '-';
-                        const posLine = item.position_line || '-';
-                        const empType = item.staff_type || '-';
-                        const vDate = item.hire_date ? formatDateToThai(item.hire_date) : '-';
-                        
-                        tr.innerHTML = `
-                            <td class="text-center font-medium text-gray-500"></td>
-                            <td>${prefix}</td>
-                            <td>${district}</td>
-                            <td>${rpst}</td>
-                            <td class="text-center font-semibold text-moph">${posNo}</td>
-                            <td>${posLine}</td>
-                            <td><span class="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">${empType}</span></td>
-                            <td class="text-center">${vDate}</td>
-                            <td class="text-center">-</td>
-                            <td class="text-center">
-                                <div class="leading-tight">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200 shadow-sm">
-                                        <i class="fas fa-user-slash mr-1"></i>ไม่มีคนครอง
-                                    </span>
-                                </div>
-                            </td>
-                            <td class="text-center">-</td>
-                            <td class="text-center">-</td>
-                            <td class="text-center">-</td>
-                            <td class="text-center">-</td>
-                            <td class="text-center">-</td>
-                            <td class="text-center">-</td>
-                            <td class="text-center">-</td>
-                            <td class="text-center text-xs text-gray-500">ว่างเดิม</td>
-                            <td class="text-center">-</td>
-                            <td class="text-center">
-                                <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" title="แก้ไขข้อมูลตำแหน่งนี้" onclick='editStaffMophById(${item.id}, ${JSON.stringify(item).replace(/'/g, "&#39;").replace(/"/g, "&quot;")})'><i class="fas fa-edit"></i></button>
-                                <button type="button" class="text-red-500 hover:text-red-700" title="ลบข้อมูล" onclick="deleteStaffById(${item.id})"><i class="fas fa-trash"></i></button>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                    
-                    // Re-calculate row index numbers
-                    let idx = 1;
-                    tbody.querySelectorAll('tr').forEach(r => {
-                        const firstTd = r.querySelector('td');
-                        if (firstTd) firstTd.innerText = idx++;
-                    });
+                if (typeof getMovementData === "function") {
+                    const movementList = getMovementData();
+                    if (Array.isArray(movementList)) {
+                        movementList.filter(m => m.sentToVacant === true).forEach(m => {
+                            addOrUpdateVacantFromMovement(m);
+                        });
+                    }
                 }
             } catch (err) {
-                console.error('Error fetching unoccupied positions:', err);
+                console.error("Error syncing sent movements to vacant table:", err);
             }
         }
 
@@ -1749,7 +1693,7 @@
                             orderNo: '-'
                         });
                     }
-                    alert('บันทึกเรียบร้อย: สถานะตำแหน่งเป็น "ไม่มีคนครอง" ข้อมูลส่วนบุคคลจะถูกย้ายไปบันทึกที่แท็บ "ความเคลื่อนไหวตำแหน่ง" โดยข้อมูลตำแหน่งจะยังคงอยู่คงเดิมในตาราง');
+                    alert('บันทึกเรียบร้อย: ปรับสถานะตำแหน่งเป็น "ไม่มีคนครอง" แล้ว\n- ข้อมูลของคนๆ นี้ได้ถูกส่งไปที่แท็บ "ความเคลื่อนไหวตำแหน่ง" เรียบร้อยแล้ว\n- เมื่อเจ้าหน้าที่ลงรายละเอียดในแท็บความเคลื่อนไหวเสร็จ ข้อมูลจะส่งต่อไปยังแท็บ "การบริหารตำแหน่งว่าง" โดยประวัติในแท็บความเคลื่อนไหวจะคงอยู่ถาวร');
                 }
             } catch (err) {
                 alert('เกิดข้อผิดพลาดในการบันทึกลงฐานข้อมูล: ' + err.message);
@@ -2325,6 +2269,8 @@ function switchAppTab(tabId, element, staffType = null) {
             setVal("mv_reason", item.reason || item.details);
             setVal("mv_contract_no", item.contractNo);
             setVal("mv_order_no", item.orderNo);
+            const sendChk = document.getElementById("mv_send_to_vacant");
+            if (sendChk) sendChk.checked = (item.sentToVacant !== undefined ? item.sentToVacant : true);
 
             const modalTitle = document.querySelector("#movementModal h3 span");
             if (modalTitle) modalTitle.innerText = "แก้ไขความเคลื่อนไหวตำแหน่ง";
@@ -2346,6 +2292,115 @@ function switchAppTab(tabId, element, staffType = null) {
                 default:
                     return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200 shadow-sm"><i class="fas fa-exchange-alt mr-1 text-purple-500"></i>${cleanType}</span>`;
             }
+        }
+
+        function addOrUpdateVacantFromMovement(movement) {
+            const tbody = document.getElementById("vacant-table-body");
+            if (!tbody) return;
+            
+            const posNo = (movement.posNo || "").trim();
+            if (!posNo || posNo === "-") return;
+            
+            let existingRow = null;
+            tbody.querySelectorAll("tr").forEach(r => {
+                const pCell = r.querySelector("td:nth-child(5)");
+                if (pCell && pCell.innerText.trim() === posNo) {
+                    existingRow = r;
+                }
+            });
+
+            const prefix = movement.agencyPrefix || (movement.agencyName && movement.agencyName.includes("รพ.สต.") ? "รพ.สต." : (movement.agencyName && movement.agencyName.includes("รพท.") ? "รพท." : (movement.agencyName && movement.agencyName.includes("รพช.") ? "รพช." : "สสจ.")));
+            const district = movement.district || "-";
+            const rpst = movement.agencyName || "-";
+            const positionName = movement.posName || "-";
+            const empType = movement.staffType || "-";
+            const vacantDate = movement.date || new Date().toISOString().split("T")[0];
+            const formattedDate = formatDateToThai(vacantDate);
+
+            // Calculate vacant days
+            let vacantDays = "-";
+            if (vacantDate) {
+                let vDate = null;
+                if (vacantDate.includes("/")) {
+                    const p = vacantDate.split("/");
+                    let y = parseInt(p[2]);
+                    if (y > 2400) y -= 543;
+                    vDate = new Date(`${y}-${p[1]}-${p[0]}`);
+                } else {
+                    vDate = new Date(vacantDate);
+                }
+                if (vDate && !isNaN(vDate.getTime())) {
+                    vDate.setHours(0,0,0,0);
+                    const today = new Date();
+                    today.setHours(0,0,0,0);
+                    const diffDays = Math.floor(Math.abs(today - vDate) / (1000 * 60 * 60 * 24));
+                    vacantDays = diffDays + " วัน";
+                }
+            }
+
+            const opStatusVal = "อัตราว่าง";
+            const opResultVal = movement.reason || "ว่างจากการลงรายละเอียดความเคลื่อนไหว";
+
+            let tr = existingRow;
+            if (!tr) {
+                tr = document.createElement("tr");
+                tr.className = "hover:bg-gray-50 transition bg-amber-50/10";
+                tr.setAttribute("data-source", "movement-vacant");
+                tr.setAttribute("data-pos-no", posNo);
+                tbody.prepend(tr);
+            }
+
+            tr.setAttribute("data-opstatus", opStatusVal);
+            tr.setAttribute("data-opresult", opResultVal);
+
+            tr.innerHTML = `
+                <td class="text-center font-medium text-gray-500"></td>
+                <td>${prefix}</td>
+                <td>${district}</td>
+                <td>${prefix === "รพ.สต." ? rpst : rpst}</td>
+                <td class="text-center font-semibold text-moph">${posNo}</td>
+                <td>${positionName}</td>
+                <td><span class="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">${empType}</span></td>
+                <td class="text-center font-medium">${formattedDate}</td>
+                <td class="text-center font-medium text-amber-700">${vacantDays}</td>
+                <td class="text-center">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200 shadow-sm">
+                        <i class="fas fa-user-slash mr-1"></i>อัตราว่าง
+                    </span>
+                </td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+                <td class="text-center">
+                    <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" title="แก้ไขข้อมูลตำแหน่งว่าง" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                    <button class="text-red-500 hover:text-red-700" title="ลบข้อมูลตำแหน่งว่าง" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+
+            // Re-number rows in vacant table
+            tbody.querySelectorAll("tr").forEach((r, idx) => {
+                const c = r.querySelector("td:first-child");
+                if (c) c.innerText = idx + 1;
+            });
+
+            saveToLocalStorage();
+        }
+
+        function sendMovementIndexToVacant(index) {
+            const list = getMovementData();
+            if (!list || !list[index]) return;
+            const item = list[index];
+            item.sentToVacant = true;
+            setMovementData(list);
+            addOrUpdateVacantFromMovement(item);
+            loadMovementHistory();
+            alert(`ส่งตำแหน่งเลขที่ ${item.posNo} (${item.posName}) ไปยังแท็บ "การบริหารตำแหน่งว่าง" เรียบร้อยแล้ว\n(ข้อมูลความเคลื่อนไหวยังคงถูกบันทึกเก็บไว้เป็นประวัติในแท็บนี้ ไม่สูญหาย)`);
         }
 
         function loadMovementHistory() {
@@ -2389,7 +2444,10 @@ function switchAppTab(tabId, element, staffType = null) {
                     <td class="text-center font-medium text-gray-700">${item.contractNo || "-"}</td>
                     <td>${item.orderNo || "-"}</td>
                     <td class="text-center sticky right-0 bg-white shadow-sm border-l border-gray-200 whitespace-nowrap">
-                        <button type="button" class="text-blue-500 hover:text-blue-700 mx-1" title="แก้ไขข้อมูล" onclick="editMovement(${index})"><i class="fas fa-edit"></i></button>
+                        <button type="button" class="mx-1 px-2 py-1 rounded text-xs transition shadow-sm ${item.sentToVacant ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-300 hover:bg-amber-100 font-medium animate-pulse'}" title="${item.sentToVacant ? 'ส่งข้อมูลไปการบริหารตำแหน่งว่างแล้ว (คลิกเพื่อส่งซ้ำ)' : 'ลงรายละเอียดเสร็จแล้ว ส่งไปการบริหารตำแหน่งว่าง'}" onclick="sendMovementIndexToVacant(${index})">
+                            <i class="fas ${item.sentToVacant ? 'fa-check-double text-emerald-600 mr-1' : 'fa-paper-plane text-amber-600 mr-1'}"></i>${item.sentToVacant ? 'ส่งแล้ว' : 'ส่งตำแหน่งว่าง'}
+                        </button>
+                        <button type="button" class="text-blue-500 hover:text-blue-700 mx-1" title="ลงรายละเอียด / แก้ไขข้อมูล" onclick="editMovement(${index})"><i class="fas fa-edit"></i></button>
                         <button type="button" class="text-red-500 hover:text-red-700 mx-1" title="ลบข้อมูล" onclick="deleteMovement(${index})"><i class="fas fa-trash"></i></button>
                     </td>
                 `;
@@ -2399,6 +2457,7 @@ function switchAppTab(tabId, element, staffType = null) {
 
         function saveMovement() {
             const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
+            const sendToVacant = document.getElementById("mv_send_to_vacant") ? document.getElementById("mv_send_to_vacant").checked : true;
             const movementItem = {
                 date: getVal("mv_date"),
                 posNo: getVal("mv_pos_no"),
@@ -2412,7 +2471,8 @@ function switchAppTab(tabId, element, staffType = null) {
                 movementType: getVal("mv_movement_type"),
                 reason: getVal("mv_reason") || "-",
                 contractNo: getVal("mv_contract_no") || "-",
-                orderNo: getVal("mv_order_no") || "-"
+                orderNo: getVal("mv_order_no") || "-",
+                sentToVacant: sendToVacant
             };
 
             const list = getMovementData();
@@ -2423,9 +2483,20 @@ function switchAppTab(tabId, element, staffType = null) {
             }
             
             setMovementData(list);
+            
+            // เมื่อลงรายละเอียดในแท็บนี้เสร็จ ส่งข้อมูลไปที่แท็บการบริหารตำแหน่งว่าง โดยประวัติในแท็บนี้คงอยู่ถาวร
+            if (sendToVacant) {
+                addOrUpdateVacantFromMovement(movementItem);
+            }
+
             toggleMovementModal();
             loadMovementHistory();
-            alert("บันทึกข้อมูลความเคลื่อนไหวตำแหน่งเรียบร้อยแล้ว");
+            
+            if (sendToVacant) {
+                alert(`บันทึกข้อมูลความเคลื่อนไหวเรียบร้อยแล้ว\n- บันทึกเก็บประวัติย้อนหลังในแท็บนี้เรียบร้อย (ไม่สูญหาย)\n- ส่งข้อมูลตำแหน่งเลขที่ ${movementItem.posNo} เข้าสู่ "แท็บเมนูการบริหารตำแหน่งว่าง" เรียบร้อยแล้ว`);
+            } else {
+                alert("บันทึกข้อมูลความเคลื่อนไหวตำแหน่งเรียบร้อยแล้ว (เก็บเป็นประวัติในระบบ)");
+            }
         }
 
         function deleteMovement(index) {
@@ -2678,9 +2749,23 @@ function switchAppTab(tabId, element, staffType = null) {
                         </div>
                     </div>
 
+                    <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-200 flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-share-square text-emerald-600 text-xl"></i>
+                            <div>
+                                <span class="font-semibold text-sm text-gray-800">ส่งข้อมูลไปยังแท็บ "การบริหารตำแหน่งว่าง"</span>
+                                <p class="text-xs text-gray-500">เมื่อลงรายละเอียดเสร็จ ข้อมูลจะส่งไปแท็บการบริหารตำแหน่งว่าง และข้อมูลความเคลื่อนไหวจะคงอยู่ในแท็บนี้เป็นประวัติ ไม่สูญหาย</p>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="mv_send_to_vacant" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-moph"></div>
+                        </label>
+                    </div>
+
                     <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
                         <button type="button" onclick="toggleMovementModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium text-sm">ยกเลิก</button>
-                        <button type="submit" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium text-sm">บันทึกข้อมูล</button>
+                        <button type="submit" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium text-sm"><i class="fas fa-save mr-1.5"></i>บันทึกและส่งข้อมูล</button>
                     </div>
                 </form>
             </div>
