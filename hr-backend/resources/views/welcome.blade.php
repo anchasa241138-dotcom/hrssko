@@ -1420,8 +1420,8 @@
                 if (!res.ok) throw new Error('API request failed');
                 let allStaff = await res.json();
                 
-                // Filter by selected staff type and position_status is NOT 'ไม่มีคนครอง'
-                const staffList = allStaff.filter(s => (s.staff_type || '').trim() === type.trim() && (s.position_status || '').trim() !== 'ไม่มีคนครอง');
+                // Filter by selected staff type - ALL positions (both มีคนครอง and ไม่มีคนครอง) are shown in table
+                const staffList = allStaff.filter(s => (s.staff_type || '').trim() === type.trim());
                 
                 if (staffList.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="33" class="text-center py-10 text-gray-400 font-medium"><i class="fas fa-inbox text-3xl mb-2 text-gray-300 block"></i>ยังไม่มีข้อมูล ' + type + ' ในฐานข้อมูล</td></tr>';
@@ -1430,12 +1430,18 @@
                 
                 tbody.innerHTML = '';
                 staffList.forEach((item, index) => {
+                    const isUnoccupied = (item.position_status || '').trim() === 'ไม่มีคนครอง';
                     const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-gray-50 transition';
+                    tr.className = isUnoccupied ? 'hover:bg-amber-50/40 bg-amber-50/15 transition' : 'hover:bg-gray-50 transition';
+                    
+                    const posStatusHtml = isUnoccupied 
+                        ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-red-100 text-red-700 border border-red-200 shadow-sm"><i class="fas fa-user-slash mr-1"></i>ไม่มีคนครอง</span>'
+                        : '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-700 border border-green-200"><i class="fas fa-user-check mr-1"></i>มีคนครอง</span>';
+
                     tr.innerHTML = `
                         <td class="text-center sm-row-num">${index + 1}</td>
-                        <td class="text-center">${item.position_number || '-'}</td>
-                        <td class="text-center">${item.position_status || '-'}</td>
+                        <td class="text-center font-semibold text-moph">${item.position_number || '-'}</td>
+                        <td class="text-center">${posStatusHtml}</td>
                         <td class="text-center">${item.agency_district || '-'}</td>
                         <td class="text-center">${item.agency_prefix || '-'}</td>
                         <td class="text-center">${item.agency_name || '-'}</td>
@@ -1448,26 +1454,26 @@
                         <td class="text-center">${item.position_type || '-'}</td>
                         <td class="text-center">${item.position_level || '-'}</td>
                         <td class="text-center font-semibold text-gray-700">${item.staff_type || type}</td>
-                        <td class="text-center">${item.personal_prefix || '-'}</td>
-                        <td class="text-center">${item.personal_fname || '-'}</td>
-                        <td class="text-center">${item.personal_lname || '-'}</td>
-                        <td class="text-center">${item.personal_id_card || '-'}</td>
-                        <td class="text-center">${item.duty_status || '-'}</td>
-                        <td class="text-center">${item.hire_date ? formatDateToThai(item.hire_date) : '-'}</td>
-                        <td class="text-center">${item.hire_qual || '-'}</td>
-                        <td class="text-center">${item.major || '-'}</td>
-                        <td class="text-center">${item.specialist_cert || '-'}</td>
-                        <td class="text-center">${item.institution || '-'}</td>
-                        <td class="text-center">${item.grad_date ? formatDateToThai(item.grad_date) : '-'}</td>
-                        <td class="text-center">${item.gpa || '-'}</td>
-                        <td class="text-center">${item.license_no || '-'}</td>
-                        <td class="text-center">${item.license_name || '-'}</td>
-                        <td class="text-center">${item.license_issue ? formatDateToThai(item.license_issue) : '-'}</td>
-                        <td class="text-center">${item.license_expire ? formatDateToThai(item.license_expire) : '-'}</td>
-                        <td class="text-center">${item.license_org || '-'}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.personal_prefix || '-')}</td>
+                        <td class="text-center font-medium ${isUnoccupied ? 'text-gray-400' : 'text-gray-800'}">${isUnoccupied ? '-' : (item.personal_fname || '-')}</td>
+                        <td class="text-center font-medium ${isUnoccupied ? 'text-gray-400' : 'text-gray-800'}">${isUnoccupied ? '-' : (item.personal_lname || '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.personal_id_card || '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.duty_status || '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.hire_date ? formatDateToThai(item.hire_date) : '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.hire_qual || '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.major || '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.specialist_cert || '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.institution || '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.grad_date ? formatDateToThai(item.grad_date) : '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.gpa || '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.license_no || '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.license_name || '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.license_issue ? formatDateToThai(item.license_issue) : '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.license_expire ? formatDateToThai(item.license_expire) : '-')}</td>
+                        <td class="text-center ${isUnoccupied ? 'text-gray-400' : ''}">${isUnoccupied ? '-' : (item.license_org || '-')}</td>
                         <td class="text-center sticky right-0 bg-white shadow-sm border-l border-gray-200">
-                            <button type="button" class="text-blue-500 hover:text-blue-700 mx-1" onclick="editStaffMophById(${item.id}, ${JSON.stringify(item).replace(/"/g, '&quot;')})"><i class="fas fa-edit"></i></button>
-                            <button type="button" class="text-red-500 hover:text-red-700 mx-1" onclick="deleteStaffById(${item.id})"><i class="fas fa-trash"></i></button>
+                            <button type="button" class="text-blue-500 hover:text-blue-700 mx-1" title="แก้ไขข้อมูลตำแหน่ง" onclick="editStaffMophById(${item.id}, ${JSON.stringify(item).replace(/"/g, '&quot;')})"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="text-red-500 hover:text-red-700 mx-1" title="ลบข้อมูล" onclick="deleteStaffById(${item.id})"><i class="fas fa-trash"></i></button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -1475,6 +1481,16 @@
             } catch (err) {
                 console.error(err);
                 tbody.innerHTML = '<tr><td colspan="25" class="text-center py-6 text-red-500"><i class="fas fa-exclamation-triangle mr-2"></i>เกิดข้อผิดพลาดในการโหลดข้อมูลจากฐานข้อมูล</td></tr>';
+            }
+        }
+
+        function handleModalPosStatusChange() {
+            const status = document.getElementById("sm_pos_status") ? document.getElementById("sm_pos_status").value : "";
+            const personalBanner = document.getElementById("unoccupied-notice-banner");
+            if (status === "ไม่มีคนครอง") {
+                if (personalBanner) personalBanner.classList.remove("hidden");
+            } else {
+                if (personalBanner) personalBanner.classList.add("hidden");
             }
         }
 
@@ -1495,6 +1511,7 @@
             const modalTitle = document.querySelector('#staffModal h3.text-xl');
             if (modalTitle) modalTitle.innerHTML = '<i class="fas fa-user-md text-moph mr-2"></i>บันทึกข้อมูล' + (window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข');
             toggleStaffModal();
+            if (typeof handleModalPosStatusChange === 'function') handleModalPosStatusChange();
         }
 
         function editStaffMophById(id, item) {
@@ -1544,10 +1561,19 @@
             if (modalTitle) modalTitle.innerHTML = '<i class="fas fa-user-md text-moph mr-2"></i>แก้ไขข้อมูล' + currentType;
 
             toggleStaffModal();
+            if (typeof handleModalPosStatusChange === 'function') handleModalPosStatusChange();
         }
 
         async function saveStaffMoph() {
             const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
+
+            const isUnoccupiedChoice = getVal('sm_pos_status') === 'ไม่มีคนครอง';
+
+            // Capture occupant details before clearing if selecting "ไม่มีคนครอง"
+            const occupantFullName = [getVal('sm_pers_title'), getVal('sm_pers_fname'), getVal('sm_pers_lname')].filter(Boolean).join(' ');
+            const occupantIdCard = getVal('sm_pers_idcard');
+            const occupantDegree = getVal('sm_pers_degree');
+            const occupantMajor = getVal('sm_major');
 
             const payload = {
                 position_number: getVal('sm_pos_no'),
@@ -1564,23 +1590,24 @@
                 position_type: getVal('sm_pos_type'),
                 position_level: getVal('sm_pos_level'),
                 staff_type: getVal('sm_staff_type') || window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข',
-                personal_prefix: getVal('sm_pers_title'),
-                personal_fname: getVal('sm_pers_fname'),
-                personal_lname: getVal('sm_pers_lname'),
-                personal_id_card: getVal('sm_pers_idcard'),
-                duty_status: getVal('sm_duty_status'),
-                hire_date: getVal('sm_pers_startdate'),
-                hire_qual: getVal('sm_pers_degree'),
-                major: getVal('sm_major'),
-                specialist_cert: getVal('sm_specialist_cert'),
-                institution: getVal('sm_institution'),
-                grad_date: getVal('sm_pers_graddate'),
-                gpa: getVal('sm_pers_gpa'),
-                license_no: getVal('sm_lic_no'),
-                license_name: getVal('sm_lic_name'),
-                license_issue: getVal('sm_lic_issue'),
-                license_expire: getVal('sm_lic_expire'),
-                license_org: getVal('sm_lic_org')
+                // If unoccupied, all 17 personal & qualification fields are set to null
+                personal_prefix: isUnoccupiedChoice ? null : getVal('sm_pers_title'),
+                personal_fname: isUnoccupiedChoice ? null : getVal('sm_pers_fname'),
+                personal_lname: isUnoccupiedChoice ? null : getVal('sm_pers_lname'),
+                personal_id_card: isUnoccupiedChoice ? null : getVal('sm_pers_idcard'),
+                duty_status: isUnoccupiedChoice ? null : getVal('sm_duty_status'),
+                hire_date: isUnoccupiedChoice ? null : getVal('sm_pers_startdate'),
+                hire_qual: isUnoccupiedChoice ? null : getVal('sm_pers_degree'),
+                major: isUnoccupiedChoice ? null : getVal('sm_major'),
+                specialist_cert: isUnoccupiedChoice ? null : getVal('sm_specialist_cert'),
+                institution: isUnoccupiedChoice ? null : getVal('sm_institution'),
+                grad_date: isUnoccupiedChoice ? null : getVal('sm_pers_graddate'),
+                gpa: isUnoccupiedChoice ? null : getVal('sm_pers_gpa'),
+                license_no: isUnoccupiedChoice ? null : getVal('sm_lic_no'),
+                license_name: isUnoccupiedChoice ? null : getVal('sm_lic_name'),
+                license_issue: isUnoccupiedChoice ? null : getVal('sm_lic_issue'),
+                license_expire: isUnoccupiedChoice ? null : getVal('sm_lic_expire'),
+                license_org: isUnoccupiedChoice ? null : getVal('sm_lic_org')
             };
 
             const url = editingStaffId ? ('/api/moph-staff/' + editingStaffId) : '/api/moph-staff';
@@ -1598,20 +1625,27 @@
                 await loadFromLocalStorage();
                 
                 if (payload.position_status === 'ไม่มีคนครอง') {
+                    let moveDetail = 'ปรับเปลี่ยนสถานะตำแหน่งเป็น "ไม่มีคนครอง"';
+                    if (occupantFullName) {
+                        moveDetail = `พ้นจากตำแหน่ง: ${occupantFullName}`;
+                        if (occupantIdCard) moveDetail += ` (เลข ปชช. ${occupantIdCard})`;
+                        if (occupantDegree) moveDetail += ` วุฒิ: ${occupantDegree}`;
+                        if (occupantMajor) moveDetail += ` (${occupantMajor})`;
+                    }
                     if (typeof logPositionMovement === 'function') {
                         logPositionMovement({
                             date: new Date().toISOString().split('T')[0],
                             posNo: payload.position_number || '-',
                             posName: payload.position_line || '-',
                             staffType: payload.staff_type || '-',
-                            agencyName: payload.agency_name || '-',
-                            district: payload.agency_district || '-',
+                            agencyName: payload.agency_name || payload.actual_name || '-',
+                            district: payload.agency_district || payload.actual_district || '-',
                             movementType: 'เปลี่ยนสถานะเป็นตำแหน่งว่าง',
-                            details: 'ปรับเปลี่ยนสถานะตำแหน่งเป็นไม่มีคนครองจากระบบบริหารบุคลากร',
+                            details: moveDetail,
                             orderNo: '-'
                         });
                     }
-                    alert('บันทึกเรียบร้อย: เนื่องจากสถานะตำแหน่งเป็น "ไม่มีคนครอง" ข้อมูลจะถูกย้ายไปแสดงที่แท็บ "การบริหารตำแหน่งว่าง" และบันทึกลงใน "ความเคลื่อนไหวตำแหน่ง"');
+                    alert('บันทึกเรียบร้อย: สถานะตำแหน่งเป็น "ไม่มีคนครอง" ข้อมูลส่วนบุคคลจะถูกย้ายไปบันทึกที่แท็บ "ความเคลื่อนไหวตำแหน่ง" โดยข้อมูลตำแหน่งจะยังคงอยู่คงเดิมในตาราง');
                 }
             } catch (err) {
                 alert('เกิดข้อผิดพลาดในการบันทึกลงฐานข้อมูล: ' + err.message);
@@ -2230,7 +2264,7 @@ function switchAppTab(tabId, element, staffType = null) {
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งเลขที่</label><input type="text" id="sm_pos_no" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div>
                               <label class="block text-sm font-medium text-gray-700 mb-1">สถานะตำแหน่ง</label>
-                              <select id="sm_pos_status" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph">
+                              <select id="sm_pos_status" onchange="handleModalPosStatusChange()" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph">
                                   <option value="">-เลือก-</option>
                                   <option value="มีคนครอง">มีคนครอง</option>
                                   <option value="ไม่มีคนครอง">ไม่มีคนครอง</option>
@@ -2255,6 +2289,10 @@ function switchAppTab(tabId, element, staffType = null) {
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">หน่วยงาน (จริง)</label><input type="text" id="sm_actual_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                       </div>
 
+                      <div id="unoccupied-notice-banner" class="hidden mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-xs flex items-center gap-2">
+                          <i class="fas fa-info-circle text-amber-500 text-sm"></i>
+                          <span><strong>หมายเหตุ:</strong> เมื่อเลือกสถานะเป็น <strong>"ไม่มีคนครอง"</strong> ข้อมูลบุคคลและการศึกษาจะถูกย้ายไปบันทึกที่แท็บ <strong>"ความเคลื่อนไหวตำแหน่ง"</strong> โดยข้อมูลตำแหน่งทั้ง 15 ฟิลด์จะยังคงอยู่ในตารางคงเดิม</span>
+                      </div>
                       <!-- Section 2: ข้อมูลบุคคลและการปฏิบัติงาน -->
                       <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-user mr-2"></i> 2. ข้อมูลบุคคลและการปฏิบัติงาน</h4>
                       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
