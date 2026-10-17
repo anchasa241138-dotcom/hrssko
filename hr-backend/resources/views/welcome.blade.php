@@ -45,9 +45,55 @@
         .app-tab-content { display: none; }
         .app-tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
 
-        .sidebar-item { transition: all 0.3s ease; }
+        .sidebar-item { transition: all 0.3s ease; border-left: 4px solid transparent; }
         .sidebar-item:hover { background: rgba(255, 255, 255, 0.1); transform: translateX(5px); }
         .sidebar-item.active { background: rgba(255, 255, 255, 0.2); border-left: 4px solid #fff; color: white; }
+
+        /* แถบสีแยกประเภทการจ้าง 5 ประเภท */
+        .sidebar-item-yellow {
+            border-left: 5px solid #facc15 !important; /* สีเหลือง - พนักงานราชการ */
+        }
+        .sidebar-item-yellow:hover, .sidebar-item-yellow.active {
+            background: linear-gradient(90deg, rgba(250, 204, 21, 0.25) 0%, rgba(250, 204, 21, 0.05) 100%) !important;
+            border-left: 6px solid #fde047 !important;
+            color: #fef08a !important;
+        }
+
+        .sidebar-item-orange {
+            border-left: 5px solid #f97316 !important; /* สีส้ม - ลูกจ้างประจำ */
+        }
+        .sidebar-item-orange:hover, .sidebar-item-orange.active {
+            background: linear-gradient(90deg, rgba(249, 115, 22, 0.25) 0%, rgba(249, 115, 22, 0.05) 100%) !important;
+            border-left: 6px solid #fb923c !important;
+            color: #fed7aa !important;
+        }
+
+        .sidebar-item-green {
+            border-left: 5px solid #10b981 !important; /* สีเขียว - พนักงานกระทรวงฯ */
+        }
+        .sidebar-item-green:hover, .sidebar-item-green.active {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.05) 100%) !important;
+            border-left: 6px solid #34d399 !important;
+            color: #a7f3d0 !important;
+        }
+
+        .sidebar-item-sky {
+            border-left: 5px solid #0ea5e9 !important; /* สีฟ้า - ลูกจ้างชั่วคราว (รายเดือน) */
+        }
+        .sidebar-item-sky:hover, .sidebar-item-sky.active {
+            background: linear-gradient(90deg, rgba(14, 165, 233, 0.25) 0%, rgba(14, 165, 233, 0.05) 100%) !important;
+            border-left: 6px solid #38bdf8 !important;
+            color: #bae6fd !important;
+        }
+
+        .sidebar-item-pink {
+            border-left: 5px solid #ec4899 !important; /* สีชมพู - ลูกจ้างรายวัน/จ้างเหมา */
+        }
+        .sidebar-item-pink:hover, .sidebar-item-pink.active {
+            background: linear-gradient(90deg, rgba(236, 72, 153, 0.25) 0%, rgba(236, 72, 153, 0.05) 100%) !important;
+            border-left: 6px solid #f472b6 !important;
+            color: #fbcfe8 !important;
+        }
         
         /* Table Styles */
         .table-container { overflow-x: auto; }
@@ -252,12 +298,42 @@
                             <span>การบริหารตำแหน่งว่าง</span>
                         </a>
                     </li>
-                    <!-- Mock menus -->
-                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'พนักงานราชการ')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-tie w-6"></i><span>พนักงานราชการ</span></a></li>
-                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'ลูกจ้างประจำ')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user w-6"></i><span>ลูกจ้างประจำ</span></a></li>
-                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'พนักงานกระทรวงสาธารณสุข')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-md w-6"></i><span>พนักงานกระทรวงสาธารณสุข</span></a></li>
-                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'ลูกจ้างชั่วคราว (รายเดือน)')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-user-clock w-6"></i><span>ลูกจ้างชั่วคราว (รายเดือน)</span></a></li>
-                    <li><a href="#" onclick="switchAppTab('tab-staff-moph', this, 'ลูกจ้างชั่วคราวรายวัน/จ้างเหมา')" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-users w-6"></i><span class="text-sm">ลูกจ้างชั่วคราวรายวัน/จ้างเหมา</span></a></li>
+                    <!-- เมนูประเภทการจ้าง แยกประเภทด้วยแถบสี 5 ประเภท -->
+                    <li>
+                        <a href="#" onclick="switchAppTab('tab-staff-moph', this, 'พนักงานราชการ')" class="sidebar-item sidebar-item-yellow flex items-center px-6 py-3 text-green-50 group">
+                            <i class="fas fa-user-tie w-6 text-yellow-400 group-hover:scale-110 transition-transform"></i>
+                            <span class="font-medium">พนักงานราชการ</span>
+                            <span class="ml-auto w-2.5 h-2.5 rounded-full bg-yellow-400 shadow-sm shadow-yellow-400/80" title="แถบสีเหลือง"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="switchAppTab('tab-staff-moph', this, 'ลูกจ้างประจำ')" class="sidebar-item sidebar-item-orange flex items-center px-6 py-3 text-green-50 group">
+                            <i class="fas fa-user w-6 text-orange-400 group-hover:scale-110 transition-transform"></i>
+                            <span class="font-medium">ลูกจ้างประจำ</span>
+                            <span class="ml-auto w-2.5 h-2.5 rounded-full bg-orange-400 shadow-sm shadow-orange-400/80" title="แถบสีส้ม"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="switchAppTab('tab-staff-moph', this, 'พนักงานกระทรวงสาธารณสุข')" class="sidebar-item sidebar-item-green flex items-center px-6 py-3 text-green-50 group">
+                            <i class="fas fa-user-md w-6 text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                            <span class="font-medium">พนักงานกระทรวงสาธารณสุข</span>
+                            <span class="ml-auto w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/80" title="แถบสีเขียว"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="switchAppTab('tab-staff-moph', this, 'ลูกจ้างชั่วคราว (รายเดือน)')" class="sidebar-item sidebar-item-sky flex items-center px-6 py-3 text-green-50 group">
+                            <i class="fas fa-user-clock w-6 text-sky-400 group-hover:scale-110 transition-transform"></i>
+                            <span class="font-medium">ลูกจ้างชั่วคราว (รายเดือน)</span>
+                            <span class="ml-auto w-2.5 h-2.5 rounded-full bg-sky-400 shadow-sm shadow-sky-400/80" title="แถบสีฟ้า"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="switchAppTab('tab-staff-moph', this, 'ลูกจ้างชั่วคราวรายวัน/จ้างเหมา')" class="sidebar-item sidebar-item-pink flex items-center px-6 py-3 text-green-50 group">
+                            <i class="fas fa-users w-6 text-pink-400 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-sm font-medium">ลูกจ้างรายวัน/จ้างเหมา</span>
+                            <span class="ml-auto w-2.5 h-2.5 rounded-full bg-pink-400 shadow-sm shadow-pink-400/80" title="แถบสีชมพู"></span>
+                        </a>
+                    </li>
                     <li><a href="#" onclick="switchAppTab('tab-movement', this)" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-exchange-alt w-6"></i><span>ความเคลื่อนไหวตำแหน่ง</span></a></li>
                     <li><a href="#" class="sidebar-item flex items-center px-6 py-3 text-green-50"><i class="fas fa-bell w-6 relative"><span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-3 w-3 flex items-center justify-center">3</span></i><span>แจ้งเตือนใบประกอบฯ</span></a></li>
                 </ul>
@@ -2012,9 +2088,16 @@ function switchAppTab(tabId, element, staffType = null) {
         window.currentStaffType = staffType;
         document.getElementById('page-title').innerText = staffType;
         
-        // Update table header title
+        // Update table header title with matching color badge
+        const colorBadges = {
+            'พนักงานราชการ': '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-300 ml-2 shadow-sm"><span class="w-2 h-2 rounded-full bg-yellow-500 mr-1.5"></span>สีเหลือง</span>',
+            'ลูกจ้างประจำ': '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-800 border border-orange-300 ml-2 shadow-sm"><span class="w-2 h-2 rounded-full bg-orange-500 mr-1.5"></span>สีส้ม</span>',
+            'พนักงานกระทรวงสาธารณสุข': '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 ml-2 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>สีเขียว</span>',
+            'ลูกจ้างชั่วคราว (รายเดือน)': '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-100 text-sky-800 border border-sky-300 ml-2 shadow-sm"><span class="w-2 h-2 rounded-full bg-sky-500 mr-1.5"></span>สีฟ้า</span>',
+            'ลูกจ้างชั่วคราวรายวัน/จ้างเหมา': '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-pink-100 text-pink-800 border border-pink-300 ml-2 shadow-sm"><span class="w-2 h-2 rounded-full bg-pink-500 mr-1.5"></span>สีชมพู</span>'
+        };
         const tableTitle = document.querySelector('#tab-staff-moph h3.font-bold');
-        if(tableTitle) tableTitle.innerText = 'รายชื่อ' + staffType + 'ทั้งหมด';
+        if(tableTitle) tableTitle.innerHTML = 'รายชื่อ' + staffType + 'ทั้งหมด ' + (colorBadges[staffType] || '');
         
         // Update modal title
         const modalTitle = document.querySelector('#staffModal h3.text-xl');
