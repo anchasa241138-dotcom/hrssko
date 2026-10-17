@@ -850,7 +850,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">วันที่ตำแหน่งว่าง</label>
-                                <input type="date" id="modal_vacant_date" onchange="calculateVacantDays()" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-moph">
+                                <input type="text" id="modal_vacant_date" onchange="calculateVacantDays()" class="thai-datepicker w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-moph" placeholder="วว/ดด/ปปปป (พ.ศ.)" maxlength="10">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">จำนวนวันที่ว่าง</label>
@@ -889,8 +889,8 @@
                                         <input type="text" class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-moph">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">วันที่อนุมัติ</label>
-                                        <input type="date" class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-moph">
+                                        <label class="block text-xs font-medium text-gray-600 mb-1">วันที่อนุมัติ (พ.ศ.)</label>
+                                        <input type="text" class="thai-datepicker w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-moph" placeholder="วว/ดด/ปปปป (พ.ศ.)" maxlength="10">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-medium text-gray-600 mb-1">เอกสารแนบ (.pdf)</label>
@@ -919,8 +919,8 @@
                                         <input type="text" class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-moph">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">วันที่อนุมัติ</label>
-                                        <input type="date" class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-moph">
+                                        <label class="block text-xs font-medium text-gray-600 mb-1">วันที่อนุมัติ (พ.ศ.)</label>
+                                        <input type="text" class="thai-datepicker w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-moph" placeholder="วว/ดด/ปปปป (พ.ศ.)" maxlength="10">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-medium text-gray-600 mb-1">เอกสารแนบ (.pdf)</label>
@@ -949,8 +949,8 @@
                                         <input type="text" class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-moph">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">วันที่อนุมัติ</label>
-                                        <input type="date" class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-moph">
+                                        <label class="block text-xs font-medium text-gray-600 mb-1">วันที่อนุมัติ (พ.ศ.)</label>
+                                        <input type="text" class="thai-datepicker w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-moph" placeholder="วว/ดด/ปปปป (พ.ศ.)" maxlength="10">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-medium text-gray-600 mb-1">เอกสารแนบ (.pdf)</label>
@@ -994,8 +994,8 @@
                                 <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">วันที่มีผลบังคับใช้</label>
-                                <input type="date" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">วันที่มีผลบังคับใช้ (พ.ศ.)</label>
+                                <input type="text" class="thai-datepicker w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="วว/ดด/ปปปป (พ.ศ.)" maxlength="10">
                             </div>
                         </div>
                     </div>
@@ -1125,7 +1125,7 @@
 
               const sectSsj = document.getElementById('section_ssj');
               const ssjDoc = sectSsj.querySelector('input[type="text"]').value;
-              const ssjDate = sectSsj.querySelector('input[type="date"]').value;
+              const ssjDate = sectSsj.querySelector('input.thai-datepicker').value;
               const ssjFileInput = sectSsj.querySelector('input[type="file"]');
               const ssjFileUrl = ssjFileInput.getAttribute('data-fileurl') || '';
               const ssjFileName = ssjFileInput.getAttribute('data-filename') || '';
@@ -1133,7 +1133,7 @@
 
               const sectChro = document.getElementById('section_chro');
               const chroDoc = sectChro.querySelector('input[type="text"]').value;
-              const chroDate = sectChro.querySelector('input[type="date"]').value;
+              const chroDate = sectChro.querySelector('input.thai-datepicker').value;
               const chroFileInput = sectChro.querySelector('input[type="file"]');
               const chroFileUrl = chroFileInput.getAttribute('data-fileurl') || '';
               const chroFileName = chroFileInput.getAttribute('data-filename') || '';
@@ -1141,7 +1141,7 @@
 
               const sectAkp = document.getElementById('section_akp');
               const akpDoc = sectAkp.querySelector('input[type="text"]').value;
-              const akpDate = sectAkp.querySelector('input[type="date"]').value;
+              const akpDate = sectAkp.querySelector('input.thai-datepicker').value;
               const akpFileInput = sectAkp.querySelector('input[type="file"]');
               const akpFileUrl = akpFileInput.getAttribute('data-fileurl') || '';
               const akpFileName = akpFileInput.getAttribute('data-filename') || '';
@@ -1383,6 +1383,7 @@
         let editingStaffRow = null;
 
         function toggleStaffModal() {
+            setTimeout(() => ThaiDatePicker.init(), 50);
             const modal = document.getElementById('staffModal');
             if (modal.classList.contains('hidden')) {
                 modal.classList.remove('hidden');
@@ -1761,19 +1762,7 @@
                 const el = document.getElementById(id);
                 if (!el) return;
                 if (!val || val === "-") { el.value = ""; return; }
-                if (val.includes("/")) {
-                    const p = val.split("/");
-                    let y = parseInt(p[2]);
-                    if (y > 2400) y -= 543;
-                    el.value = `${y}-${p[1].padStart(2, "0")}-${p[0].padStart(2, "0")}`;
-                } else if (val.includes("-")) {
-                    const p = val.split("-");
-                    let y = parseInt(p[0]);
-                    if (y > 2400) y -= 543;
-                    el.value = `${y}-${p[1].padStart(2, "0")}-${p[2].padStart(2, "0")}`;
-                } else {
-                    el.value = val;
-                }
+                el.value = formatDateToThai(val);
             };
 
             setVal("sm_duty_status", tds[19].innerText.trim());
@@ -1919,17 +1908,17 @@
 
               const sectSsj = document.getElementById('section_ssj');
               sectSsj.querySelector('input[type="text"]').value = tr.getAttribute('data-ssj-doc') || '';
-              sectSsj.querySelector('input[type="date"]').value = tr.getAttribute('data-ssj-date') || '';
+              sectSsj.querySelector('input.thai-datepicker').value = formatDateToThai(tr.getAttribute('data-ssj-date') || '');
               restoreFileInputUI(sectSsj.querySelector('input[type="file"]'), tr.getAttribute('data-ssj-fileurl'), tr.getAttribute('data-ssj-filename'));
 
               const sectChro = document.getElementById('section_chro');
               sectChro.querySelector('input[type="text"]').value = tr.getAttribute('data-chro-doc') || '';
-              sectChro.querySelector('input[type="date"]').value = tr.getAttribute('data-chro-date') || '';
+              sectChro.querySelector('input.thai-datepicker').value = formatDateToThai(tr.getAttribute('data-chro-date') || '');
               restoreFileInputUI(sectChro.querySelector('input[type="file"]'), tr.getAttribute('data-chro-fileurl'), tr.getAttribute('data-chro-filename'));
 
               const sectAkp = document.getElementById('section_akp');
               sectAkp.querySelector('input[type="text"]').value = tr.getAttribute('data-akp-doc') || '';
-              sectAkp.querySelector('input[type="date"]').value = tr.getAttribute('data-akp-date') || '';
+              sectAkp.querySelector('input.thai-datepicker').value = formatDateToThai(tr.getAttribute('data-akp-date') || '');
               restoreFileInputUI(sectAkp.querySelector('input[type="file"]'), tr.getAttribute('data-akp-fileurl'), tr.getAttribute('data-akp-filename'));
                 
                 if(document.getElementById('chk_ssj')) document.getElementById('chk_ssj').checked = ssj;
@@ -1960,21 +1949,7 @@
             setVal('modal_operation_result', opResultVal);
 
             if (formattedDate && formattedDate !== '-') {
-                const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-                if (formattedDate.includes("/")) {
-                    const parts = formattedDate.split("/");
-                    let y = parseInt(parts[2]);
-                    if (y > 2400) y -= 543;
-                    document.getElementById('modal_vacant_date').value = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
-                } else {
-                    const parts = formattedDate.split(' ');
-                    if(parts.length === 3) {
-                        const d = parts[0].padStart(2, '0');
-                        const m = String(thaiMonths.indexOf(parts[1]) + 1).padStart(2, '0');
-                        const y = String(parseInt(parts[2]) - 543);
-                        document.getElementById('modal_vacant_date').value = y + '-' + m + '-' + d;
-                    }
-                }
+                document.getElementById('modal_vacant_date').value = formatDateToThai(formattedDate);
             } else {
                 document.getElementById('modal_vacant_date').value = '';
             }
@@ -2006,22 +1981,40 @@
         }
 
         function calculateVacantDays() {
-            const dateInput = document.getElementById('modal_vacant_date').value;
-            const displayInput = document.getElementById('modal_vacant_days_display');
+            const dateInput = (document.getElementById("modal_vacant_date") ? document.getElementById("modal_vacant_date").value : "").trim();
+            const displayInput = document.getElementById("modal_vacant_days_display");
             
-            if (!dateInput) {
-                displayInput.value = "";
+            if (!dateInput || dateInput === "-") {
+                if (displayInput) displayInput.value = "";
                 return;
             }
 
-            const vacantDate = new Date(dateInput);
+            let vacantDate = null;
+            if (dateInput.includes("/")) {
+                const parts = dateInput.split("/");
+                let y = parseInt(parts[2]);
+                if (y > 2400) y -= 543;
+                vacantDate = new Date(y, parseInt(parts[1]) - 1, parseInt(parts[0]));
+            } else if (dateInput.includes("-")) {
+                const parts = dateInput.split("-");
+                let y = parseInt(parts[0]);
+                if (y > 2400) y -= 543;
+                vacantDate = new Date(y, parseInt(parts[1]) - 1, parseInt(parts[2]));
+            } else {
+                vacantDate = new Date(dateInput);
+            }
+
+            if (!vacantDate || isNaN(vacantDate.getTime())) {
+                if (displayInput) displayInput.value = "";
+                return;
+            }
+
             const today = new Date();
-            
             vacantDate.setHours(0, 0, 0, 0);
             today.setHours(0, 0, 0, 0);
 
             if (vacantDate > today) {
-                displayInput.value = "ล่วงหน้า (ยังไม่ว่าง)";
+                if (displayInput) displayInput.value = "ล่วงหน้า (ยังไม่ว่าง)";
                 return;
             }
 
@@ -2029,7 +2022,7 @@
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             
             if (diffDays === 0) {
-                displayInput.value = "0 วัน";
+                if (displayInput) displayInput.value = "0 วัน";
             } else {
                 const months = Math.floor(diffDays / 30);
                 const days = diffDays % 30;
@@ -2038,7 +2031,7 @@
                 if (months > 0) result.push(months + " เดือน");
                 if (days > 0) result.push(days + " วัน");
                 
-                displayInput.value = result.join(" ");
+                if (displayInput) displayInput.value = (result.join(" ") || "0 วัน") + ` (${diffDays} วัน)`;
             }
         }
 
@@ -2235,6 +2228,7 @@ function switchAppTab(tabId, element, staffType = null) {
         }
 
         function toggleMovementModal() {
+            setTimeout(() => ThaiDatePicker.init(), 50);
             const modal = document.getElementById("movementModal");
             if (modal.classList.contains("hidden")) {
                 modal.classList.remove("hidden");
@@ -2269,14 +2263,7 @@ function switchAppTab(tabId, element, staffType = null) {
                 if (el) el.value = (val === "-" || !val) ? "" : val;
             };
 
-            if (item.date && item.date.includes("/")) {
-                const p = item.date.split("/");
-                let y = parseInt(p[2]);
-                if (y > 2400) y -= 543;
-                setVal("mv_date", `${y}-${p[1].padStart(2, "0")}-${p[0].padStart(2, "0")}`);
-            } else {
-                setVal("mv_date", item.date);
-            }
+            setVal("mv_date", item.date ? formatDateToThai(item.date) : "");
             setVal("mv_pos_no", item.posNo);
             setVal("mv_pos_name", item.posName);
             setVal("mv_staff_type", item.staffType);
@@ -2564,6 +2551,7 @@ function switchAppTab(tabId, element, staffType = null) {
 
                 // === Modal Form ===
         function toggleModal() {
+            setTimeout(() => ThaiDatePicker.init(), 50);
             const modal = document.getElementById('dataModal');
             if (modal.classList.contains('hidden')) {
                 modal.classList.remove('hidden');
@@ -2628,7 +2616,7 @@ function switchAppTab(tabId, element, staffType = null) {
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">นามสกุล</label><input type="text" id="sm_pers_lname" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">เลขประจำตัวประชาชน</label><input type="text" id="sm_pers_idcard" maxlength="13" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">สถานะการปฏิบัติราชการปัจจุบัน</label><input type="text" id="sm_duty_status" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วัน เดือน ปี ที่บรรจุ</label><input type="date" id="sm_pers_startdate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วัน เดือน ปี ที่บรรจุ (พ.ศ.)</label><input type="text" id="sm_pers_startdate" class="thai-datepicker w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph" placeholder="วว/ดด/ปปปป (พ.ศ.)" maxlength="10"></div>
                       </div>
 
                       <!-- Section 3: ข้อมูลวุฒิการศึกษา -->
@@ -2638,7 +2626,7 @@ function switchAppTab(tabId, element, staffType = null) {
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">สาขาวิชาเอกของวุฒิสูงสุด</label><input type="text" id="sm_major" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">สาขาวุฒิบัตรความเชี่ยวชาญของวุฒิสูงสุด</label><input type="text" id="sm_specialist_cert" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">สถาบันการศึกษาของวุฒิสูงสุด</label><input type="text" id="sm_institution" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่สำเร็จการศึกษาของวุฒิสูงสุด</label><input type="date" id="sm_pers_graddate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่สำเร็จการศึกษาของวุฒิสูงสุด (พ.ศ.)</label><input type="text" id="sm_pers_graddate" class="thai-datepicker w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph" placeholder="วว/ดด/ปปปป (พ.ศ.)" maxlength="10"></div>
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">เกรดเฉลี่ย</label><input type="text" id="sm_pers_gpa" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                       </div>
 
@@ -2647,8 +2635,8 @@ function switchAppTab(tabId, element, staffType = null) {
                       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">เลขใบประกอบ</label><input type="text" id="sm_lic_no" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">ใบประกอบ (ชื่อใบประกอบ)</label><input type="text" id="sm_lic_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันออกใบประกอบ</label><input type="date" id="sm_lic_issue" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันหมดอายุ</label><input type="date" id="sm_lic_expire" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันออกใบประกอบ (พ.ศ.)</label><input type="text" id="sm_lic_issue" class="thai-datepicker w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph" placeholder="วว/ดด/ปปปป (พ.ศ.)" maxlength="10"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันหมดอายุ (พ.ศ.)</label><input type="text" id="sm_lic_expire" class="thai-datepicker w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph" placeholder="วว/ดด/ปปปป (พ.ศ.)" maxlength="10"></div>
                           <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">สถาบันออกใบประกอบ</label><input type="text" id="sm_lic_org" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                       </div>
 
@@ -2676,7 +2664,7 @@ function switchAppTab(tabId, element, staffType = null) {
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">วันที่มีผล <span class="text-red-500">*</span></label>
-                            <input type="date" id="mv_date" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph">
+                            <input type="text" id="mv_date" required class="thai-datepicker w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph focus:border-moph" placeholder="วว/ดด/ปปปป (พ.ศ.)" maxlength="10">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งเลขที่ <span class="text-red-500">*</span></label>
@@ -2776,6 +2764,283 @@ function switchAppTab(tabId, element, staffType = null) {
             </div>
         </div>
     </div>
+
+    <!-- Thai Buddhist Era DatePicker Component -->
+    <script>
+    const ThaiDatePicker = {
+        months: [
+            "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+            "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+        ],
+        daysShort: ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"],
+        activeInput: null,
+        pickerEl: null,
+        viewYearBE: 2569,
+        viewMonth: 9,
+
+        init() {
+            if (!this.pickerEl) {
+                this.createPickerDOM();
+            }
+            document.querySelectorAll(".thai-datepicker").forEach(input => {
+                if (input.dataset.thaiPickerInit) return;
+                input.dataset.thaiPickerInit = "true";
+                
+                if (input.value && input.value !== "-") {
+                    input.value = formatDateToThai(input.value);
+                }
+
+                if (!input.parentElement.classList.contains("thai-date-wrapper")) {
+                    const wrapper = document.createElement("div");
+                    wrapper.className = "relative w-full thai-date-wrapper";
+                    input.parentNode.insertBefore(wrapper, input);
+                    wrapper.appendChild(input);
+
+                    const icon = document.createElement("button");
+                    icon.type = "button";
+                    icon.tabIndex = -1;
+                    icon.className = "absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-moph transition";
+                    icon.innerHTML = '<i class="far fa-calendar-alt text-base"></i>';
+                    icon.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.open(input);
+                    };
+                    wrapper.appendChild(icon);
+                }
+
+                input.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    this.open(input);
+                });
+
+                input.addEventListener("input", () => {
+                    let v = input.value.replace(/\D/g, "");
+                    if (v.length > 8) v = v.substring(0, 8);
+                    let formatted = "";
+                    if (v.length > 0) formatted += v.substring(0, 2);
+                    if (v.length >= 3) formatted += "/" + v.substring(2, 4);
+                    if (v.length >= 5) formatted += "/" + v.substring(4, 8);
+                    input.value = formatted;
+                });
+            });
+
+            document.addEventListener("click", (e) => {
+                if (this.pickerEl && !this.pickerEl.contains(e.target) && (!this.activeInput || !this.activeInput.contains(e.target))) {
+                    this.close();
+                }
+            });
+        },
+
+        createPickerDOM() {
+            const el = document.createElement("div");
+            el.id = "thai-datepicker-popup";
+            el.className = "fixed bg-white rounded-xl shadow-2xl border border-emerald-500/30 p-4 z-[9999] hidden text-gray-800 font-prompt w-80 text-sm select-none";
+            el.innerHTML = `
+                <div class="flex items-center justify-between gap-1 mb-3 pb-2 border-b border-gray-100">
+                    <button type="button" id="thai-dp-prev" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-600 transition"><i class="fas fa-chevron-left text-xs"></i></button>
+                    <div class="flex items-center gap-1 font-semibold text-moph">
+                        <select id="thai-dp-month" class="bg-transparent text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer py-1"></select>
+                        <select id="thai-dp-year" class="bg-transparent text-sm font-semibold text-moph focus:outline-none cursor-pointer py-1"></select>
+                    </div>
+                    <button type="button" id="thai-dp-next" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-600 transition"><i class="fas fa-chevron-right text-xs"></i></button>
+                </div>
+                <div class="grid grid-cols-7 gap-1 text-center font-medium text-xs text-gray-400 mb-2">
+                    <span>อา</span><span>จ</span><span>อ</span><span>พ</span><span>พฤ</span><span>ศ</span><span>ส</span>
+                </div>
+                <div id="thai-dp-days" class="grid grid-cols-7 gap-1 text-center text-sm"></div>
+                <div class="flex items-center justify-between pt-3 mt-3 border-t border-gray-100 text-xs">
+                    <button type="button" id="thai-dp-clear" class="text-red-500 hover:text-red-700 font-medium">ล้าง</button>
+                    <div class="flex gap-2">
+                        <button type="button" id="thai-dp-today" class="text-moph hover:underline font-semibold">วันนี้</button>
+                        <button type="button" id="thai-dp-close" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-600 font-medium transition">ปิด</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(el);
+            this.pickerEl = el;
+
+            const mSel = el.querySelector("#thai-dp-month");
+            this.months.forEach((m, idx) => {
+                const opt = document.createElement("option");
+                opt.value = idx;
+                opt.innerText = m;
+                mSel.appendChild(opt);
+            });
+            mSel.onchange = () => {
+                this.viewMonth = parseInt(mSel.value);
+                this.renderDays();
+            };
+
+            const ySel = el.querySelector("#thai-dp-year");
+            const currentYearBE = new Date().getFullYear() + 543;
+            for (let y = currentYearBE + 15; y >= currentYearBE - 60; y--) {
+                const opt = document.createElement("option");
+                opt.value = y;
+                opt.innerText = y;
+                ySel.appendChild(opt);
+            }
+            ySel.onchange = () => {
+                this.viewYearBE = parseInt(ySel.value);
+                this.renderDays();
+            };
+
+            el.querySelector("#thai-dp-prev").onclick = () => {
+                this.viewMonth--;
+                if (this.viewMonth < 0) {
+                    this.viewMonth = 11;
+                    this.viewYearBE--;
+                }
+                this.render();
+            };
+            el.querySelector("#thai-dp-next").onclick = () => {
+                this.viewMonth++;
+                if (this.viewMonth > 11) {
+                    this.viewMonth = 0;
+                    this.viewYearBE++;
+                }
+                this.render();
+            };
+
+            el.querySelector("#thai-dp-today").onclick = () => {
+                const now = new Date();
+                const d = String(now.getDate()).padStart(2, "0");
+                const m = String(now.getMonth() + 1).padStart(2, "0");
+                const y = now.getFullYear() + 543;
+                this.selectDate(`${d}/${m}/${y}`);
+            };
+            el.querySelector("#thai-dp-clear").onclick = () => {
+                if (this.activeInput) {
+                    this.activeInput.value = "";
+                    this.activeInput.dispatchEvent(new Event("change", { bubbles: true }));
+                    this.activeInput.dispatchEvent(new Event("input", { bubbles: true }));
+                }
+                this.close();
+            };
+            el.querySelector("#thai-dp-close").onclick = () => this.close();
+        },
+
+        open(input) {
+            this.activeInput = input;
+            let val = (input.value || "").trim();
+            const now = new Date();
+            let selectedD = null;
+
+            if (val && val.includes("/")) {
+                const p = val.split("/");
+                if (p.length === 3) {
+                    selectedD = parseInt(p[0]);
+                    this.viewMonth = parseInt(p[1]) - 1;
+                    let y = parseInt(p[2]);
+                    if (y < 2400) y += 543;
+                    this.viewYearBE = y;
+                }
+            } else if (val && val.includes("-")) {
+                const p = val.split("-");
+                if (p.length === 3) {
+                    selectedD = parseInt(p[2]);
+                    this.viewMonth = parseInt(p[1]) - 1;
+                    let y = parseInt(p[0]);
+                    if (y < 2400) y += 543;
+                    this.viewYearBE = y;
+                }
+            } else {
+                this.viewMonth = now.getMonth();
+                this.viewYearBE = now.getFullYear() + 543;
+            }
+
+            this.selectedDay = selectedD;
+            this.render();
+
+            const rect = input.getBoundingClientRect();
+            const popupHeight = 330;
+            let top = rect.bottom + window.scrollY + 6;
+            if (rect.bottom + popupHeight > window.innerHeight) {
+                top = rect.top + window.scrollY - popupHeight - 6;
+            }
+            let left = rect.left + window.scrollX;
+            if (left + 320 > window.innerWidth) {
+                left = window.innerWidth - 330;
+            }
+
+            this.pickerEl.style.top = `${top}px`;
+            this.pickerEl.style.left = `${left}px`;
+            this.pickerEl.classList.remove("hidden");
+        },
+
+        close() {
+            if (this.pickerEl) {
+                this.pickerEl.classList.add("hidden");
+            }
+            this.activeInput = null;
+        },
+
+        render() {
+            const mSel = this.pickerEl.querySelector("#thai-dp-month");
+            const ySel = this.pickerEl.querySelector("#thai-dp-year");
+            if (mSel) mSel.value = this.viewMonth;
+            if (ySel) ySel.value = this.viewYearBE;
+            this.renderDays();
+        },
+
+        renderDays() {
+            const container = this.pickerEl.querySelector("#thai-dp-days");
+            container.innerHTML = "";
+
+            const yearCE = this.viewYearBE - 543;
+            const firstDay = new Date(yearCE, this.viewMonth, 1).getDay();
+            const daysInMonth = new Date(yearCE, this.viewMonth + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                const blank = document.createElement("div");
+                container.appendChild(blank);
+            }
+
+            const today = new Date();
+            const isCurrentMonthToday = (today.getFullYear() + 543 === this.viewYearBE && today.getMonth() === this.viewMonth);
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayBtn = document.createElement("button");
+                dayBtn.type = "button";
+                dayBtn.className = "h-8 w-8 mx-auto rounded-lg flex items-center justify-center transition font-medium ";
+                
+                const isSelected = (this.selectedDay === day);
+                const isToday = (isCurrentMonthToday && today.getDate() === day);
+
+                if (isSelected) {
+                    dayBtn.className += " bg-moph text-white shadow-md font-bold";
+                } else if (isToday) {
+                    dayBtn.className += " border border-moph text-moph font-bold hover:bg-emerald-50";
+                } else {
+                    dayBtn.className += " text-gray-700 hover:bg-emerald-50 hover:text-moph";
+                }
+
+                dayBtn.innerText = day;
+                dayBtn.onclick = () => {
+                    const dStr = String(day).padStart(2, "0");
+                    const mStr = String(this.viewMonth + 1).padStart(2, "0");
+                    const formatted = `${dStr}/${mStr}/${this.viewYearBE}`;
+                    this.selectDate(formatted);
+                };
+                container.appendChild(dayBtn);
+            }
+        },
+
+        selectDate(dateStr) {
+            if (this.activeInput) {
+                this.activeInput.value = dateStr;
+                this.activeInput.dispatchEvent(new Event("change", { bubbles: true }));
+                this.activeInput.dispatchEvent(new Event("input", { bubbles: true }));
+            }
+            this.close();
+        }
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        ThaiDatePicker.init();
+    });
+    </script>
+
 </body>
 </html>
 
