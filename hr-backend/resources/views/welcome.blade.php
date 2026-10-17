@@ -1878,18 +1878,6 @@ function switchAppTab(tabId, element, staffType = null) {
                   </div>
               </div>
           </div>
-                  <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-                      <button onclick="toggleStaffModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium">ยกเลิก</button>
-                      <button onclick="saveStaffMoph()" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium">บันทึกข้อมูล</button>
-                  </div>
-              </div>
-          </div>
-                  <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-                      <button onclick="toggleStaffModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium">ยกเลิก</button>
-                      <button onclick="saveStaffMoph()" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium">บันทึกข้อมูล</button>
-                  </div>
-              </div>
-          </div>
 
 <script>
         // Initial setup for staff categories
