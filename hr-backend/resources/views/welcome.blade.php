@@ -462,7 +462,7 @@
                                       <td class="text-center">685412</td>
                                       <td>พยาบาลวิชาชีพ</td>
                                       <td>พนักงาน กสธ.</td>
-                                      <td class="text-center">15 ส.ค. 2568</td>
+                                      <td class="text-center">15/08/2568</td>
                                       <td class="text-center">45 วัน</td>
                                       <td class="text-center"><div class="leading-tight">อัตราว่าง</div></td>
                                       <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
@@ -473,7 +473,7 @@
                                       <td class="text-center">-</td>
                                       <td class="text-center">-</td>
                                       <td class="text-center">ว่างเดิม</td>
-                                      <td class="text-center">1 ต.ค. 2568</td>
+                                      <td class="text-center">01/10/2568</td>
                                       <td class="text-center">
                                           <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
                                           <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
@@ -487,7 +487,7 @@
                                       <td class="text-center">112233</td>
                                       <td>นักวิชาการสาธารณสุข</td>
                                       <td>พนักงานกระทรวงสาธารณสุข</td>
-                                      <td class="text-center">1 ก.ย. 2569</td>
+                                      <td class="text-center">01/09/2569</td>
                                       <td class="text-center">1 เดือน 3 วัน</td>
                                       <td class="text-center"><div class="leading-tight">หน่วยงานขอสรรหาทดแทน<div class="text-xs text-yellow-600 font-medium mt-1"><i class="fas fa-clock"></i> รอพิจารณา</div></div></td>
                                       <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
@@ -512,7 +512,7 @@
                                       <td class="text-center">998877</td>
                                       <td>เภสัชกร</td>
                                       <td>ลูกจ้างชั่วคราว</td>
-                                      <td class="text-center">15 ก.ค. 2569</td>
+                                      <td class="text-center">15/07/2569</td>
                                       <td class="text-center">2 เดือน 19 วัน</td>
                                       <td class="text-center"><div class="leading-tight">นพ.สสจ. พิจารณาผลการสรรหา<div class="text-xs text-green-600 font-medium mt-1"><i class="fas fa-check-circle"></i> ผ่าน</div></div></td>
                                       <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
@@ -537,7 +537,7 @@
                                       <td class="text-center">554433</td>
                                       <td>เจ้าพนักงานสาธารณสุข</td>
                                       <td>พนักงานกระทรวงสาธารณสุข</td>
-                                      <td class="text-center">10 มิ.ย. 2569</td>
+                                      <td class="text-center">10/06/2569</td>
                                       <td class="text-center">3 เดือน 24 วัน</td>
                                       <td class="text-center"><div class="leading-tight">ไม่มีผู้สมัคร/ไม่มีผู้ผ่านการคัดเลือก/เปลี่ยนเงื่อนไข<div class="text-xs text-red-600 font-medium mt-1"><i class="fas fa-times-circle"></i> ไม่ผ่าน</div></div></td>
                                       <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
@@ -636,14 +636,14 @@
                                           <td>สมหญิง</td>
                                           <td>ใจดี</td>
                                           <td class="text-center">1234567890123</td>
-                                          <td class="text-center">1 ม.ค. 2565</td>
+                                          <td class="text-center">01/01/2565</td>
                                           <td>ป.ตรี</td>
-                                          <td class="text-center">1 พ.ค. 2564</td>
+                                          <td class="text-center">01/05/2564</td>
                                           <td class="text-center">3.50</td>
                                           <td>พยาบาลศาสตร์</td>
                                           <td class="text-center">998877</td>
-                                          <td class="text-center">1 มิ.ย. 2564</td>
-                                          <td class="text-center">1 มิ.ย. 2569</td>
+                                          <td class="text-center">01/06/2564</td>
+                                          <td class="text-center">01/06/2569</td>
                                           <td class="text-center sticky right-0 bg-white">
                                               <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editStaffMoph(this)"><i class="fas fa-edit"></i></button>
                                               <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button>
@@ -1153,14 +1153,7 @@
 
             const rowCount = editingRow ? editingRow.querySelector('td').innerText : (tbody.querySelectorAll('tr').length + 1);
             
-            let formattedDate = vacantDate;
-            if(vacantDate && vacantDate !== '-') {
-                const d = new Date(vacantDate);
-                const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-                if(!isNaN(d)) {
-                    formattedDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
-                }
-            }
+            let formattedDate = formatDateToThai(vacantDate);
 
             let tr;
             if (editingRow) {
@@ -1290,6 +1283,16 @@
             if (savedData) {
                 tbody.innerHTML = savedData;
             }
+            // Auto format all date cells in vacant table to DD/MM/YYYY
+            tbody.querySelectorAll('tr').forEach(r => {
+                const cells = r.querySelectorAll('td');
+                if (cells.length > 7 && cells[7]) {
+                    const txt = cells[7].innerText.trim();
+                    if (txt && txt !== '-' && !txt.includes('/')) {
+                        cells[7].innerText = formatDateToThai(txt);
+                    }
+                }
+            });
 
             try {
                 const res = await fetch('/api/moph-staff');
@@ -1620,18 +1623,37 @@
             setVal('sm_pers_idcard', item.personal_id_card);
             setVal('sm_duty_status', item.duty_status);
 
-            setVal('sm_pers_startdate', item.hire_date);
+            const setDateVal = (fieldId, val) => {
+                const el = document.getElementById(fieldId);
+                if (!el) return;
+                if (!val || val === "-") { el.value = ""; return; }
+                if (val.includes("/")) {
+                    const p = val.split("/");
+                    let y = parseInt(p[2]);
+                    if (y > 2400) y -= 543;
+                    el.value = `${y}-${p[1].padStart(2, "0")}-${p[0].padStart(2, "0")}`;
+                } else if (val.includes("-")) {
+                    const p = val.split("-");
+                    let y = parseInt(p[0]);
+                    if (y > 2400) y -= 543;
+                    el.value = `${y}-${p[1].padStart(2, "0")}-${p[2].padStart(2, "0")}`;
+                } else {
+                    el.value = val;
+                }
+            };
+
+            setDateVal('sm_pers_startdate', item.hire_date);
             setVal('sm_pers_degree', item.hire_qual);
             setVal('sm_major', item.major);
             setVal('sm_specialist_cert', item.specialist_cert);
             setVal('sm_institution', item.institution);
-            setVal('sm_pers_graddate', item.grad_date);
+            setDateVal('sm_pers_graddate', item.grad_date);
             setVal('sm_pers_gpa', item.gpa);
 
             setVal('sm_lic_no', item.license_no);
             setVal('sm_lic_name', item.license_name);
-            setVal('sm_lic_issue', item.license_issue);
-            setVal('sm_lic_expire', item.license_expire);
+            setDateVal('sm_lic_issue', item.license_issue);
+            setDateVal('sm_lic_expire', item.license_expire);
             setVal('sm_lic_org', item.license_org);
 
             const modalTitle = document.querySelector('#staffModal h3.text-xl');
@@ -1829,14 +1851,34 @@
 
         
         function formatDateToThai(dateStr) {
-            if (!dateStr) return '-';
-            const parts = dateStr.split('-');
-            if (parts.length !== 3) return dateStr;
-            const year = parseInt(parts[0]) + 543;
-            const monthNames = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-            const month = monthNames[parseInt(parts[1]) - 1];
-            const day = parseInt(parts[2]);
-            return `${day} ${month} ${year}`;
+            if (!dateStr || dateStr === "-") return "-";
+            // If already in DD/MM/YYYY
+            if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateStr.trim())) {
+                const p = dateStr.trim().split("/");
+                let y = parseInt(p[2]);
+                if (y < 2400) y += 543;
+                return `${p[0].padStart(2, "0")}/${p[1].padStart(2, "0")}/${y}`;
+            }
+            // If Thai month text like "15 ส.ค. 2568"
+            const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+            const spaceParts = dateStr.trim().split(/\s+/);
+            if (spaceParts.length === 3 && thaiMonths.indexOf(spaceParts[1]) !== -1) {
+                const d = spaceParts[0].padStart(2, "0");
+                const m = String(thaiMonths.indexOf(spaceParts[1]) + 1).padStart(2, "0");
+                let y = parseInt(spaceParts[2]);
+                if (y < 2400) y += 543;
+                return `${d}/${m}/${y}`;
+            }
+            // If ISO date YYYY-MM-DD
+            const parts = dateStr.trim().split("-");
+            if (parts.length === 3) {
+                let year = parseInt(parts[0]);
+                if (year < 2400) year += 543;
+                const month = String(parts[1]).padStart(2, "0");
+                const day = String(parts[2]).padStart(2, "0");
+                return `${day}/${month}/${year}`;
+            }
+            return dateStr;
         }
 
         function openAddModal() {
@@ -1953,12 +1995,19 @@
 
             if (formattedDate && formattedDate !== '-') {
                 const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-                const parts = formattedDate.split(' ');
-                if(parts.length === 3) {
-                    const d = parts[0].padStart(2, '0');
-                    const m = String(thaiMonths.indexOf(parts[1]) + 1).padStart(2, '0');
-                    const y = String(parseInt(parts[2]) - 543);
-                    document.getElementById('modal_vacant_date').value = y + '-' + m + '-' + d;
+                if (formattedDate.includes("/")) {
+                    const parts = formattedDate.split("/");
+                    let y = parseInt(parts[2]);
+                    if (y > 2400) y -= 543;
+                    document.getElementById('modal_vacant_date').value = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
+                } else {
+                    const parts = formattedDate.split(' ');
+                    if(parts.length === 3) {
+                        const d = parts[0].padStart(2, '0');
+                        const m = String(thaiMonths.indexOf(parts[1]) + 1).padStart(2, '0');
+                        const y = String(parseInt(parts[2]) - 543);
+                        document.getElementById('modal_vacant_date').value = y + '-' + m + '-' + d;
+                    }
                 }
             } else {
                 document.getElementById('modal_vacant_date').value = '';
@@ -2192,20 +2241,7 @@ function switchAppTab(tabId, element, staffType = null) {
         }
 
         function formatDateSlashThai(dateStr) {
-            if (!dateStr || dateStr === "-") return "-";
-            if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateStr)) {
-                const p = dateStr.split("/");
-                return `${p[0].padStart(2, "0")}/${p[1].padStart(2, "0")}/${p[2]}`;
-            }
-            const parts = dateStr.split("-");
-            if (parts.length === 3) {
-                let year = parseInt(parts[0]);
-                if (year < 2400) year += 543;
-                const month = String(parts[1]).padStart(2, "0");
-                const day = String(parts[2]).padStart(2, "0");
-                return `${day}/${month}/${year}`;
-            }
-            return dateStr;
+            return formatDateToThai(dateStr);
         }
 
         function getMovementData() {
