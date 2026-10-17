@@ -504,42 +504,39 @@
                           <div class="overflow-x-auto overflow-y-auto flex-1 rounded-lg border border-gray-200">
                               <table class="w-full text-sm text-left whitespace-nowrap">
                                   <thead class="text-xs text-gray-700 uppercase bg-gray-100 sticky top-0 z-10">
-                                      <tr>
-                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ลำดับ</th>
-                                          <th colspan="6" class="px-4 py-2 border-b border-r text-center">สังกัดหน่วยงาน</th>
-                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ตำแหน่งเลขที่</th>
-                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ระดับ</th>
-                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ตำแหน่งสายงาน</th>
-                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">สถานะตำแหน่ง</th>
-                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">ประเภทเจ้าหน้าที่</th>
-                                          <th colspan="4" class="px-4 py-2 border-b border-r text-center">ข้อมูลบุคคล</th>
-                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">วันที่เริ่มจ้าง</th>
-                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">วุฒิที่จ้าง</th>
-                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">วันที่จบการศึกษา</th>
-                                          <th rowspan="2" class="px-4 py-3 border-b border-r text-center">เกรดเฉลี่ย</th>
-                                          <th colspan="4" class="px-4 py-2 border-b border-r text-center">ใบประกอบวิชาชีพ</th>
-                                          <th rowspan="2" class="px-4 py-3 border-b text-center sticky right-0 bg-gray-100">จัดการ</th>
-                                      </tr>
-                                      <tr>
-                                          <!-- Agency -->
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">คำนำหน้า</th>
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">อำเภอ</th>
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">รพ.สต.</th>
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">กลุ่มงาน</th>
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">งาน</th>
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">ตรง จ. / ไม่ตรง จ.</th>
-                                          <!-- Personal -->
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">คำนำหน้า</th>
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">ชื่อ</th>
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">สกุล</th>
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">เลขบัตรประชาชน</th>
-                                          <!-- License -->
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">ชื่อใบประกอบฯ</th>
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">เลขที่ใบประกอบฯ</th>
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">วันออก</th>
-                                          <th class="px-4 py-2 border-b border-r text-center font-medium bg-gray-50">วันหมดอายุ</th>
-                                      </tr>
-                                  </thead>
+                                       <tr>
+                                           <th class="px-3 py-3 border-b border-r text-center">ลำดับ</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">ตำแหน่งเลขที่</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">สถานะตำแหน่ง</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">อำเภอ จ.18</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">คำนำหน้าหน่วยงาน จ.18</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">หน่วยงาน จ.18</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">กลุ่มงาน จ.18</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">หน่วยงานภายใน จ.18</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">ตำแหน่งสายงาน</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">ประเภทตำแหน่ง</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">ระดับ</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">ประเภทเจ้าหน้าที่</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">คำนำหน้า</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">ชื่อ</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">นามสกุล</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">เลขประจำตัวประชาชน</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">สถานะการปฏิบัติราชการปัจจุบัน</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">วัน เดือน ปี ที่บรรจุ</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">วุฒิการศึกษาสูงสุด</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">สาขาวิชาเอกของวุฒิสูงสุด</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">สาขาวุฒิบัตรความเชี่ยวชาญของวุฒิสูงสุด</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">สถาบันการศึกษาของวุฒิสูงสุด</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">วันที่สำเร็จการศึกษาของวุฒิสูงสุด</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">เกรดเฉลี่ย</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">เลขใบประกอบ</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">ใบประกอบ</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">วันออกใบประกอบ</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">วันหมดอายุ</th>
+                                           <th class="px-3 py-3 border-b border-r text-center">สถาบันออกใบประกอบ</th>
+                                           <th class="px-3 py-3 border-b text-center sticky right-0 bg-gray-100 shadow-sm">จัดการ</th>
+                                       </tr>
+                                   </thead>
                                   <tbody id="staff-moph-table-body">
                                       <!-- Dummy Row -->
                                       <tr class="hover:bg-gray-50 transition">
@@ -1184,57 +1181,42 @@
 
         
         function exportStaffExcel() {
-            // ส่วนหัวคอลัมน์ทั้งหมด 24 คอลัมน์ (ข้ามคอลัมน์ "จัดการ")
-            // สร้างหัวตาราง 2 ชั้นให้เหมือนหน้าจอเป๊ะๆ
-            const headerRow1 = [
-                "ลำดับ", 
-                "สังกัดหน่วยงาน", "", "", "", "", "", 
-                "ตำแหน่งเลขที่", "ระดับ", "ตำแหน่งสายงาน", "สถานะตำแหน่ง", "ประเภทเจ้าหน้าที่",
-                "ข้อมูลบุคคล", "", "", "", 
-                "วันที่เริ่มจ้าง", "วุฒิที่จ้าง", "วันที่จบการศึกษา", "เกรดเฉลี่ย",
-                "ใบประกอบวิชาชีพ", "", "", ""
-            ];
-            const headerRow2 = [
-                "", 
-                "คำนำหน้า", "อำเภอ", "รพ.สต.", "กลุ่มงาน", "งาน", "ตรง จ. / ไม่ตรง จ.",
-                "", "", "", "", "",
-                "คำนำหน้า", "ชื่อ", "สกุล", "เลขบัตรประชาชน",
-                "", "", "", "",
-                "ชื่อใบประกอบฯ", "เลขที่ใบประกอบฯ", "วันออก", "วันหมดอายุ"
+            const headers = [
+                "ลำดับ", "ตำแหน่งเลขที่", "สถานะตำแหน่ง", "อำเภอ จ.18", "คำนำหน้าหน่วยงาน จ.18",
+                "หน่วยงาน จ.18", "กลุ่มงาน จ.18", "หน่วยงานภายใน จ.18", "ตำแหน่งสายงาน", "ประเภทตำแหน่ง",
+                "ระดับ", "ประเภทเจ้าหน้าที่", "คำนำหน้า", "ชื่อ", "นามสกุล",
+                "เลขประจำตัวประชาชน", "สถานะการปฏิบัติราชการปัจจุบัน", "วัน เดือน ปี ที่บรรจุ", "วุฒิการศึกษาสูงสุด", "สาขาวิชาเอกของวุฒิสูงสุด",
+                "สาขาวุฒิบัตรความเชี่ยวชาญของวุฒิสูงสุด", "สถาบันการศึกษาของวุฒิสูงสุด", "วันที่สำเร็จการศึกษาของวุฒิสูงสุด", "เกรดเฉลี่ย",
+                "เลขใบประกอบ", "ใบประกอบ", "วันออกใบประกอบ", "วันหมดอายุ", "สถาบันออกใบประกอบ"
             ];
             
-            let csvContent = '\uFEFF' + headerRow1.join(',') + '\n' + headerRow2.join(',') + '\n';
-            
-            const tbody = document.getElementById('staff-moph-table-body');
-            const rows = tbody.querySelectorAll('tr');
+            let csvContent = "\uFEFF" + headers.join(",") + "\n";
+            const tbody = document.getElementById("staff-moph-table-body");
+            const rows = tbody.querySelectorAll("tr");
             
             rows.forEach(row => {
-                // ถ้าเป็นแถว "กำลังโหลดข้อมูล..." ให้ข้ามไป
-                if (row.innerText.includes('กำลังโหลดข้อมูล')) return;
-                
-                const cols = row.querySelectorAll('td');
-                if (cols.length < 24) return;
+                if (row.innerText.includes("กำลังโหลดข้อมูล") || row.innerText.includes("ยังไม่มีข้อมูล")) return;
+                const cols = row.querySelectorAll("td");
+                if (cols.length < 29) return;
                 
                 let rowData = [];
-                for (let i = 0; i < 24; i++) {
+                for (let i = 0; i < 29; i++) {
                     let cellData = cols[i].innerText.trim();
-                    // ป้องกัน Excel แปลงเลขบัตรประชาชน/เลขที่ใบประกอบวิชาชีพ เป็น E+ (วิทยาศาสตร์)
-                    if (i === 15 || i === 21) {
+                    if (i === 15 || i === 24) {
                         cellData = '="' + cellData + '"';
-                    } else if (cellData.includes(',') || cellData.includes('"')) {
-                        // Escape quotes and wrap in quotes for CSV safety
+                    } else if (cellData.includes(",") || cellData.includes('"') || cellData.includes("\n")) {
                         cellData = '"' + cellData.replace(/"/g, '""') + '"';
                     }
                     rowData.push(cellData);
                 }
-                csvContent += rowData.join(',') + '\n';
+                csvContent += rowData.join(",") + "\n";
             });
 
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
+            const a = document.createElement("a");
             a.href = url;
-            a.download = (window.currentStaffType || 'ข้อมูลพนักงาน') + '.csv';
+            a.download = (window.currentStaffType || "ข้อมูลพนักงาน") + ".csv";
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1268,29 +1250,34 @@
                     tr.className = 'hover:bg-gray-50 transition';
                     tr.innerHTML = `
                         <td class="text-center sm-row-num">${index + 1}</td>
-                        <td class="text-center">${item.agency_prefix || '-'}</td>
-                        <td class="text-center">${item.agency_district || '-'}</td>
-                        <td class="text-center">${item.agency_sub_district || '-'}</td>
-                        <td class="text-center">${item.agency_group || '-'}</td>
-                        <td class="text-center">${item.agency_work || '-'}</td>
-                        <td class="text-center">${item.agency_match || '-'}</td>
                         <td class="text-center">${item.position_number || '-'}</td>
-                        <td class="text-center">${item.position_level || '-'}</td>
-                        <td class="text-center">${item.position_line || '-'}</td>
                         <td class="text-center">${item.position_status || '-'}</td>
+                        <td class="text-center">${item.agency_district || '-'}</td>
+                        <td class="text-center">${item.agency_prefix || '-'}</td>
+                        <td class="text-center">${item.agency_name || '-'}</td>
+                        <td class="text-center">${item.agency_group || '-'}</td>
+                        <td class="text-center">${item.agency_internal || '-'}</td>
+                        <td class="text-center">${item.position_line || '-'}</td>
+                        <td class="text-center">${item.position_type || '-'}</td>
+                        <td class="text-center">${item.position_level || '-'}</td>
                         <td class="text-center font-semibold text-gray-700">${item.staff_type || type}</td>
                         <td class="text-center">${item.personal_prefix || '-'}</td>
                         <td class="text-center">${item.personal_fname || '-'}</td>
                         <td class="text-center">${item.personal_lname || '-'}</td>
                         <td class="text-center">${item.personal_id_card || '-'}</td>
+                        <td class="text-center">${item.duty_status || '-'}</td>
                         <td class="text-center">${item.hire_date ? formatDateToThai(item.hire_date) : '-'}</td>
                         <td class="text-center">${item.hire_qual || '-'}</td>
+                        <td class="text-center">${item.major || '-'}</td>
+                        <td class="text-center">${item.specialist_cert || '-'}</td>
+                        <td class="text-center">${item.institution || '-'}</td>
                         <td class="text-center">${item.grad_date ? formatDateToThai(item.grad_date) : '-'}</td>
                         <td class="text-center">${item.gpa || '-'}</td>
-                        <td class="text-center">${item.license_name || '-'}</td>
                         <td class="text-center">${item.license_no || '-'}</td>
+                        <td class="text-center">${item.license_name || '-'}</td>
                         <td class="text-center">${item.license_issue ? formatDateToThai(item.license_issue) : '-'}</td>
                         <td class="text-center">${item.license_expire ? formatDateToThai(item.license_expire) : '-'}</td>
+                        <td class="text-center">${item.license_org || '-'}</td>
                         <td class="text-center sticky right-0 bg-white shadow-sm border-l border-gray-200">
                             <button type="button" class="text-blue-500 hover:text-blue-700 mx-1" onclick="editStaffMophById(${item.id}, ${JSON.stringify(item).replace(/"/g, '&quot;')})"><i class="fas fa-edit"></i></button>
                             <button type="button" class="text-red-500 hover:text-red-700 mx-1" onclick="deleteStaffById(${item.id})"><i class="fas fa-trash"></i></button>
@@ -1327,33 +1314,37 @@
                 if (el) el.value = (val === '-' || !val) ? '' : val;
             };
 
-            setVal('sm_agency_prefix', item.agency_prefix);
-            setVal('sm_agency_district', item.agency_district);
-            setVal('sm_agency_rpst', item.agency_sub_district);
-            setVal('sm_agency_group', item.agency_group);
-            setVal('sm_agency_task', item.agency_work);
-            setVal('sm_agency_match', item.agency_match);
-
             setVal('sm_pos_no', item.position_number);
-            setVal('sm_pos_level', item.position_level);
-            setVal('sm_pos_name', item.position_line);
             setVal('sm_pos_status', item.position_status);
+            setVal('sm_agency_district', item.agency_district);
+            setVal('sm_agency_prefix', item.agency_prefix);
+            setVal('sm_agency_name', item.agency_name);
+            setVal('sm_agency_group', item.agency_group);
+            setVal('sm_agency_internal', item.agency_internal);
+            setVal('sm_pos_name', item.position_line);
+            setVal('sm_pos_type', item.position_type);
+            setVal('sm_pos_level', item.position_level);
             setVal('sm_staff_type', item.staff_type || window.currentStaffType);
 
             setVal('sm_pers_title', item.personal_prefix || 'นาย');
             setVal('sm_pers_fname', item.personal_fname);
             setVal('sm_pers_lname', item.personal_lname);
             setVal('sm_pers_idcard', item.personal_id_card);
+            setVal('sm_duty_status', item.duty_status);
 
             setVal('sm_pers_startdate', item.hire_date);
             setVal('sm_pers_degree', item.hire_qual);
+            setVal('sm_major', item.major);
+            setVal('sm_specialist_cert', item.specialist_cert);
+            setVal('sm_institution', item.institution);
             setVal('sm_pers_graddate', item.grad_date);
             setVal('sm_pers_gpa', item.gpa);
 
-            setVal('sm_lic_name', item.license_name);
             setVal('sm_lic_no', item.license_no);
+            setVal('sm_lic_name', item.license_name);
             setVal('sm_lic_issue', item.license_issue);
             setVal('sm_lic_expire', item.license_expire);
+            setVal('sm_lic_org', item.license_org);
 
             toggleStaffModal();
         }
@@ -1362,29 +1353,34 @@
             const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
 
             const payload = {
-                agency_prefix: getVal('sm_agency_prefix'),
-                agency_district: getVal('sm_agency_district'),
-                agency_sub_district: getVal('sm_agency_rpst'),
-                agency_group: getVal('sm_agency_group'),
-                agency_work: getVal('sm_agency_task'),
-                agency_match: getVal('sm_agency_match'),
                 position_number: getVal('sm_pos_no'),
-                position_level: getVal('sm_pos_level'),
-                position_line: getVal('sm_pos_name'),
                 position_status: getVal('sm_pos_status'),
+                agency_district: getVal('sm_agency_district'),
+                agency_prefix: getVal('sm_agency_prefix'),
+                agency_name: getVal('sm_agency_name'),
+                agency_group: getVal('sm_agency_group'),
+                agency_internal: getVal('sm_agency_internal'),
+                position_line: getVal('sm_pos_name'),
+                position_type: getVal('sm_pos_type'),
+                position_level: getVal('sm_pos_level'),
                 staff_type: window.currentStaffType || getVal('sm_staff_type') || 'พนักงานกระทรวงสาธารณสุข',
                 personal_prefix: getVal('sm_pers_title'),
                 personal_fname: getVal('sm_pers_fname'),
                 personal_lname: getVal('sm_pers_lname'),
                 personal_id_card: getVal('sm_pers_idcard'),
+                duty_status: getVal('sm_duty_status'),
                 hire_date: getVal('sm_pers_startdate'),
                 hire_qual: getVal('sm_pers_degree'),
+                major: getVal('sm_major'),
+                specialist_cert: getVal('sm_specialist_cert'),
+                institution: getVal('sm_institution'),
                 grad_date: getVal('sm_pers_graddate'),
                 gpa: getVal('sm_pers_gpa'),
-                license_name: getVal('sm_lic_name'),
                 license_no: getVal('sm_lic_no'),
+                license_name: getVal('sm_lic_name'),
                 license_issue: getVal('sm_lic_issue'),
-                license_expire: getVal('sm_lic_expire')
+                license_expire: getVal('sm_lic_expire'),
+                license_org: getVal('sm_lic_org')
             };
 
             const url = editingStaffId ? ('/api/moph-staff/' + editingStaffId) : '/api/moph-staff';
@@ -1792,45 +1788,34 @@ function switchAppTab(tabId, element, staffType = null) {
                   </div>
                   <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-gray-50">
                       
-                      <!-- Section 1: สังกัดหน่วยงาน -->
-                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-building mr-2"></i> 1. สังกัดหน่วยงาน</h4>
-                      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้า (หน่วยงาน)</label><input type="text" id="sm_agency_prefix" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">อำเภอ</label><input type="text" id="sm_agency_district" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">รพ.สต.</label><input type="text" id="sm_agency_rpst" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">กลุ่มงาน</label><input type="text" id="sm_agency_group" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">งาน</label><input type="text" id="sm_agency_task" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div>
-                              <label class="block text-sm font-medium text-gray-700 mb-1">ตรง จ. / ไม่ตรง จ.</label>
-                              <select id="sm_agency_match" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph">
-                                  <option value="">-เลือก-</option>
-                                  <option value="ตรง จ.">ตรง จ.</option>
-                                  <option value="ไม่ตรง จ.">ไม่ตรง จ.</option>
-                              </select>
-                          </div>
-                      </div>
-
-                      <!-- Section 2: ข้อมูลตำแหน่ง -->
-                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-briefcase mr-2"></i> 2. ข้อมูลตำแหน่ง</h4>
+                      <!-- Section 1: ข้อมูลตำแหน่งและสังกัดหน่วยงาน -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-building mr-2"></i> 1. ข้อมูลตำแหน่งและสังกัด (จ.18)</h4>
                       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งเลขที่</label><input type="text" id="sm_pos_no" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ระดับ</label><input type="text" id="sm_pos_level" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งสายงาน</label><input type="text" id="sm_pos_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div>
                               <label class="block text-sm font-medium text-gray-700 mb-1">สถานะตำแหน่ง</label>
                               <select id="sm_pos_status" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph">
+                                  <option value="">-เลือก-</option>
                                   <option value="มีคนครอง">มีคนครอง</option>
                                   <option value="ว่าง">ว่าง</option>
                               </select>
                           </div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ประเภทเจ้าหน้าที่</label><input type="text" id="sm_staff_type" value="พนักงานกระทรวงสาธารณสุข" readonly class="w-full border border-gray-300 bg-gray-100 rounded-md px-3 py-2 text-sm focus:outline-none"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">อำเภอ จ.18</label><input type="text" id="sm_agency_district" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้าหน่วยงาน จ.18</label><input type="text" id="sm_agency_prefix" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">หน่วยงาน จ.18</label><input type="text" id="sm_agency_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">กลุ่มงาน จ.18</label><input type="text" id="sm_agency_group" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">หน่วยงานภายใน จ.18</label><input type="text" id="sm_agency_internal" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ตำแหน่งสายงาน</label><input type="text" id="sm_pos_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ประเภทตำแหน่ง</label><input type="text" id="sm_pos_type" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ระดับ</label><input type="text" id="sm_pos_level" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">ประเภทเจ้าหน้าที่</label><input type="text" id="sm_staff_type" value="พนักงานกระทรวงสาธารณสุข" readonly class="w-full border border-gray-300 bg-gray-100 rounded-md px-3 py-2 text-sm focus:outline-none"></div>
                       </div>
 
-                      <!-- Section 3: ข้อมูลบุคคล -->
-                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-user mr-2"></i> 3. ข้อมูลบุคคล</h4>
+                      <!-- Section 2: ข้อมูลบุคคลและการปฏิบัติงาน -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-user mr-2"></i> 2. ข้อมูลบุคคลและการปฏิบัติงาน</h4>
                       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                           <div>
-                              <label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้า (บุคคล)</label>
+                              <label class="block text-sm font-medium text-gray-700 mb-1">คำนำหน้า</label>
                               <select id="sm_pers_title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph">
                                   <option value="นาย">นาย</option>
                                   <option value="นาง">นาง</option>
@@ -1838,24 +1823,40 @@ function switchAppTab(tabId, element, staffType = null) {
                               </select>
                           </div>
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ</label><input type="text" id="sm_pers_fname" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">สกุล</label><input type="text" id="sm_pers_lname" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">เลขบัตรประชาชน</label><input type="text" id="sm_pers_idcard" maxlength="13" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่เริ่มจ้าง</label><input type="date" id="sm_pers_startdate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วุฒิที่จ้าง</label><input type="text" id="sm_pers_degree" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่จบการศึกษา</label><input type="date" id="sm_pers_graddate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">นามสกุล</label><input type="text" id="sm_pers_lname" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">เลขประจำตัวประชาชน</label><input type="text" id="sm_pers_idcard" maxlength="13" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">สถานะการปฏิบัติราชการปัจจุบัน</label><input type="text" id="sm_duty_status" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วัน เดือน ปี ที่บรรจุ</label><input type="date" id="sm_pers_startdate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                      </div>
+
+                      <!-- Section 3: ข้อมูลวุฒิการศึกษา -->
+                      <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-graduation-cap mr-2"></i> 3. วุฒิการศึกษาสูงสุด</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วุฒิการศึกษาสูงสุด</label><input type="text" id="sm_pers_degree" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">สาขาวิชาเอกของวุฒิสูงสุด</label><input type="text" id="sm_major" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">สาขาวุฒิบัตรความเชี่ยวชาญของวุฒิสูงสุด</label><input type="text" id="sm_specialist_cert" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">สถาบันการศึกษาของวุฒิสูงสุด</label><input type="text" id="sm_institution" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่สำเร็จการศึกษาของวุฒิสูงสุด</label><input type="date" id="sm_pers_graddate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">เกรดเฉลี่ย</label><input type="text" id="sm_pers_gpa" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                       </div>
 
                       <!-- Section 4: ใบประกอบวิชาชีพ -->
                       <h4 class="font-bold text-moph mb-3 flex items-center border-b pb-2"><i class="fas fa-id-card mr-2"></i> 4. ใบประกอบวิชาชีพ</h4>
-                      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-2 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ชื่อใบประกอบวิชาชีพ</label><input type="text" id="sm_lic_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">เลขที่ใบประกอบวิชาชีพ</label><input type="text" id="sm_lic_no" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
-                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันออก</label><input type="date" id="sm_lic_issue" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">เลขใบประกอบ</label><input type="text" id="sm_lic_no" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">ใบประกอบ (ชื่อใบประกอบ)</label><input type="text" id="sm_lic_name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div><label class="block text-sm font-medium text-gray-700 mb-1">วันออกใบประกอบ</label><input type="date" id="sm_lic_issue" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                           <div><label class="block text-sm font-medium text-gray-700 mb-1">วันหมดอายุ</label><input type="date" id="sm_lic_expire" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
+                          <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">สถาบันออกใบประกอบ</label><input type="text" id="sm_lic_org" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-moph"></div>
                       </div>
 
                   </div>
+                  <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                      <button onclick="toggleStaffModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium">ยกเลิก</button>
+                      <button onclick="saveStaffMoph()" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium">บันทึกข้อมูล</button>
+                  </div>
+              </div>
+          </div>
                   <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
                       <button onclick="toggleStaffModal()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm font-medium">ยกเลิก</button>
                       <button onclick="saveStaffMoph()" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium">บันทึกข้อมูล</button>
