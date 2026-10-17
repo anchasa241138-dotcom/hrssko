@@ -2070,7 +2070,7 @@ function switchAppTab(tabId, element, staffType = null) {
 
         const defaultMovements = [
             {
-                date: "2025-08-15",
+                date: "2026-09-15",
                 posNo: "685412",
                 posName: "พยาบาลวิชาชีพ",
                 staffType: "พนักงานกระทรวงสาธารณสุข",
@@ -2140,6 +2140,23 @@ function switchAppTab(tabId, element, staffType = null) {
             return type;
         }
 
+        function formatDateSlashThai(dateStr) {
+            if (!dateStr || dateStr === "-") return "-";
+            if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateStr)) {
+                const p = dateStr.split("/");
+                return `${p[0].padStart(2, "0")}/${p[1].padStart(2, "0")}/${p[2]}`;
+            }
+            const parts = dateStr.split("-");
+            if (parts.length === 3) {
+                let year = parseInt(parts[0]);
+                if (year < 2400) year += 543;
+                const month = String(parts[1]).padStart(2, "0");
+                const day = String(parts[2]).padStart(2, "0");
+                return `${day}/${month}/${year}`;
+            }
+            return dateStr;
+        }
+
         function getMovementData() {
             let data = localStorage.getItem("position_movements_v2");
             let list = defaultMovements;
@@ -2201,7 +2218,14 @@ function switchAppTab(tabId, element, staffType = null) {
                 if (el) el.value = (val === "-" || !val) ? "" : val;
             };
 
-            setVal("mv_date", item.date);
+            if (item.date && item.date.includes("/")) {
+                const p = item.date.split("/");
+                let y = parseInt(p[2]);
+                if (y > 2400) y -= 543;
+                setVal("mv_date", `${y}-${p[1].padStart(2, "0")}-${p[0].padStart(2, "0")}`);
+            } else {
+                setVal("mv_date", item.date);
+            }
             setVal("mv_pos_no", item.posNo);
             setVal("mv_pos_name", item.posName);
             setVal("mv_staff_type", item.staffType);
@@ -2264,7 +2288,7 @@ function switchAppTab(tabId, element, staffType = null) {
                 tr.className = "hover:bg-gray-50 transition";
                 tr.innerHTML = `
                     <td class="text-center font-medium text-gray-500">${index + 1}</td>
-                    <td class="text-center">${item.date ? formatDateToThai(item.date) : "-"}</td>
+                    <td class="text-center font-medium">${item.date ? formatDateSlashThai(item.date) : "-"}</td>
                     <td class="text-center font-semibold text-moph">${item.posNo || "-"}</td>
                     <td>${item.posName || "-"}</td>
                     <td><span class="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">${item.staffType || "-"}</span></td>
