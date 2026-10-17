@@ -1212,9 +1212,7 @@
             editingRow = null;
             saveToLocalStorage();
             
-            if (opStatusVal === 'บันทึกในระบบ HROPH') {
-                await updateStaffToOccupied(positionNo, empType);
-            }
+            await syncStaffStatusFromVacant(positionNo, empType, opStatusVal);
             
             const form = document.querySelector('#dataModal form');
             if(form) form.reset();
@@ -1225,10 +1223,32 @@
             toggleApprovalSection('akp');
         }
 
-        async function updateStaffToOccupied(posNo, empType) {
+        function getVacantOperationStatusMap() {
+            const vacantData = localStorage.getItem('vacant_table_data');
+            const map = {};
+            if (vacantData) {
+                const tmp = document.createElement('tbody');
+                tmp.innerHTML = vacantData;
+                tmp.querySelectorAll('tr').forEach(r => {
+                    const pNo = (r.getAttribute('data-pos-no') || (r.querySelector('td:nth-child(5)') ? r.querySelector('td:nth-child(5)').innerText : '')).trim();
+                    const opSt = (r.getAttribute('data-opstatus') || '').trim();
+                    if (pNo) map[pNo] = opSt;
+                });
+            }
+            return map;
+        }
+
+        async function syncStaffStatusFromVacant(posNo, empType, opStatusVal) {
             if (!posNo || posNo === '-') return;
             const cleanPosNo = String(posNo).trim();
             const cleanEmpType = String(empType || '').trim();
+            const isOccupied = (opStatusVal || '').trim() === 'บันทึกในระบบ HROPH';
+            const targetStatus = isOccupied ? 'มีคนครอง' : 'ไม่มีคนครอง';
+
+            const statusBadgeHtml = isOccupied
+                ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-700 border border-green-200"><i class="fas fa-user-check mr-1"></i>มีคนครอง</span>'
+                : '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-red-100 text-red-700 border border-red-200 shadow-sm"><i class="fas fa-user-slash mr-1"></i>ไม่มีคนครอง</span>';
+            const rowClass = isOccupied ? 'hover:bg-gray-50 transition' : 'hover:bg-amber-50/40 bg-amber-50/15 transition';
 
             // 1. Update in backend database (SQLite via Laravel API if available)
             try {
@@ -1248,22 +1268,22 @@
                             },
                             body: JSON.stringify({
                                 ...target,
-                                position_status: 'มีคนครอง'
+                                position_status: targetStatus
                             })
                         });
-                        console.log('Successfully updated position ' + cleanPosNo + ' to มีคนครอง via API');
+                        console.log(`Successfully updated position ${cleanPosNo} to ${targetStatus} via API`);
                     }
                 }
             } catch (err) {
                 console.warn('API update not reachable:', err);
             }
 
-            // 2. Update defaultStaffData if exists
+            // 2. Update defaultStaffData if exists (for index.html)
             const type = (cleanEmpType && cleanEmpType !== '-') ? cleanEmpType : (window.currentStaffType || 'พนักงานกระทรวงสาธารณสุข');
             if (typeof defaultStaffData !== 'undefined' && defaultStaffData[type]) {
                 const dItem = defaultStaffData[type].find(s => String(s.pos_no || '').trim() === cleanPosNo);
                 if (dItem) {
-                    dItem.pos_status = 'มีคนครอง';
+                    dItem.pos_status = targetStatus;
                 }
             }
 
@@ -1278,9 +1298,9 @@
                     if (pCell && pCell.innerText.trim() === cleanPosNo) {
                         const statusCell = r.querySelector('td:nth-child(3)');
                         if (statusCell) {
-                            statusCell.innerHTML = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-700 border border-green-200"><i class="fas fa-user-check mr-1"></i>มีคนครอง</span>';
+                            statusCell.innerHTML = statusBadgeHtml;
                         }
-                        r.className = 'hover:bg-gray-50 transition';
+                        r.className = rowClass;
                         updated = true;
                     }
                 });
@@ -1297,9 +1317,9 @@
                     if (pCell && pCell.innerText.trim() === cleanPosNo) {
                         const statusCell = r.querySelector('td:nth-child(3)');
                         if (statusCell) {
-                            statusCell.innerHTML = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-700 border border-green-200"><i class="fas fa-user-check mr-1"></i>มีคนครอง</span>';
+                            statusCell.innerHTML = statusBadgeHtml;
                         }
-                        r.className = 'hover:bg-gray-50 transition';
+                        r.className = rowClass;
                     }
                 });
             }
@@ -1539,9 +1559,25 @@
                     return;
                 }
                 
+                const vacantMap = (typeof getVacantOperationStatusMap === 'function') ? getVacantOperationStatusMap() : {};
+
                 tbody.innerHTML = '';
                 staffList.forEach((item, index) => {
-                    const isUnoccupied = (item.position_status || '').trim() === 'ไม่มีคนครอง';
+                    let currentStatus = (item.position_status || '').trim();
+                    const pNo = String(item.position_number || '').trim();
+                    if (vacantMap[pNo] !== undefined) {
+                        const expectedStatus = (vacantMap[pNo] === 'บันทึกในระบบ HROPH') ? 'มีคนครอง' : 'ไม่มีคนครอง';
+                        if (currentStatus !== expectedStatus) {
+                            currentStatus = expectedStatus;
+                            item.position_status = expectedStatus;
+                            fetch('/api/moph-staff/' + item.id, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                                body: JSON.stringify({ ...item, position_status: expectedStatus })
+                            }).catch(() => {});
+                        }
+                    }
+                    const isUnoccupied = currentStatus === 'ไม่มีคนครอง';
                     const tr = document.createElement('tr');
                     tr.className = isUnoccupied ? 'hover:bg-amber-50/40 bg-amber-50/15 transition' : 'hover:bg-gray-50 transition';
                     
