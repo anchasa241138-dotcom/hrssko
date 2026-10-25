@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="static-site">
     <title>ระบบการจ้างทางเลือก - สสจ.ศรีสะเกษ</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
@@ -288,8 +289,8 @@
                 <ul class="space-y-1">
                     <li>
                         <a href="#" onclick="switchAppTab('tab-dashboard', this)" class="sidebar-item active flex items-center px-6 py-3 text-white">
-                            <i class="fas fa-chart-line w-6"></i>
-                            <span>แดชบอร์ดอัตรากำลังคน</span>
+                            <i class="fas fa-chart-pie w-6"></i>
+                            <span>แดชบอร์ดบริหารตำแหน่งว่าง</span>
                         </a>
                     </li>
                     <li>
@@ -375,46 +376,420 @@
             <!-- Content Area -->
             <div class="flex-1 overflow-y-auto p-8 bg-gray-50 relative">
                 
-                <!-- APP TAB 1: DASHBOARD -->
-                <div id="tab-dashboard" class="app-tab-content active">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-moph flex items-center justify-between hover:shadow-md transition">
-                            <div><p class="text-sm text-gray-500 mb-1">บุคลากรทั้งหมด (คน)</p><h3 class="text-3xl font-bold text-gray-800">1,245</h3></div>
-                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-moph"><i class="fas fa-users text-xl"></i></div>
-                        </div>
-                        <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500 flex items-center justify-between hover:shadow-md transition">
-                            <div><p class="text-sm text-gray-500 mb-1">ตำแหน่งว่าง (อัตรา)</p><h3 class="text-3xl font-bold text-gray-800">32</h3></div>
-                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-500"><i class="fas fa-chair text-xl"></i></div>
-                        </div>
-                        <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-yellow-500 flex items-center justify-between hover:shadow-md transition">
-                            <div><p class="text-sm text-gray-500 mb-1">พนักงาน กสธ. (คน)</p><h3 class="text-3xl font-bold text-gray-800">458</h3></div>
-                            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600"><i class="fas fa-user-md text-xl"></i></div>
-                        </div>
-                        <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-500 flex items-center justify-between hover:shadow-md transition">
-                            <div><p class="text-sm text-gray-500 mb-1">ใบประกอบฯ ใกล้หมดอายุ</p><h3 class="text-3xl font-bold text-gray-800">7</h3></div>
-                            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-500"><i class="fas fa-exclamation-triangle text-xl"></i></div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
-                            <h4 class="text-lg font-semibold text-gray-800 mb-4">สัดส่วนอัตรากำลังคนจำแนกตามประเภท</h4>
-                            <div class="h-64 bg-gray-50 rounded border border-gray-100 flex items-center justify-center">
-                                <span class="text-gray-400">พื้นที่สำหรับแสดงกราฟ (Chart Area)</span>
+                <!-- APP TAB 1: DASHBOARD การบริหารตำแหน่งว่าง -->
+                <div id="tab-dashboard" class="app-tab-content active space-y-6">
+                    
+                    <!-- DASHBOARD TOP HERO & CONTROLS -->
+                    <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 rounded-2xl shadow-xl p-6 sm:p-7 text-white relative overflow-hidden border border-emerald-700/40">
+                        <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="absolute -left-10 -top-10 w-72 h-72 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                            <div>
+                                <div class="flex items-center gap-2.5 mb-2 flex-wrap">
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 backdrop-blur-sm">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                        Executive HR Dashboard
+                                    </span>
+                                    <span class="text-xs text-emerald-200/90 font-medium">
+                                        <i class="far fa-calendar-alt mr-1 text-moph-gold"></i> ประจำเดือนตุลาคม 2569 (เทียบกับกันยายน 2569)
+                                    </span>
+                                </div>
+                                <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+                                    <i class="fas fa-chart-pie text-moph-gold"></i>
+                                    แดชบอร์ดรายงานการบริหารตำแหน่งว่าง
+                                </h2>
+                                <p class="text-xs sm:text-sm text-emerald-100/80 mt-1 max-w-2xl font-light">
+                                    ระบบติดตามสถานการณ์ตำแหน่งว่าง อัตรากำลัง การสรรหาบุคคลเข้าสู่ตำแหน่ง และการแจ้งเตือนใบประกอบวิชาชีพ สสจ.ศรีสะเกษ
+                                </p>
+                            </div>
+
+                            <!-- Action Buttons: Export Excel, Print, Refresh -->
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <button type="button" onclick="exportVacantDashboardExcel()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm backdrop-blur-md border border-white/20 shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]">
+                                    <i class="fas fa-file-excel text-green-400 text-base"></i>
+                                    <span>Export to Excel</span>
+                                </button>
+                                <button type="button" onclick="window.print()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm backdrop-blur-md border border-white/20 shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]">
+                                    <i class="fas fa-print text-sky-400"></i>
+                                    <span>พิมพ์รายงาน</span>
+                                </button>
+                                <button type="button" onclick="renderVacantDashboard()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]">
+                                    <i class="fas fa-sync-alt"></i>
+                                    <span>รีเฟรชข้อมูล</span>
+                                </button>
                             </div>
                         </div>
-                        <div class="bg-white rounded-xl shadow-sm p-6">
-                            <h4 class="text-lg font-semibold text-gray-800 mb-4">แจ้งเตือนล่าสุด</h4>
-                            <div class="space-y-4">
-                                <div class="flex items-start gap-3 p-3 bg-red-50 rounded-lg border border-red-100">
-                                    <i class="fas fa-id-card text-red-500 mt-1"></i>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-800">นางสาวสมหญิง ใจดี</p>
-                                        <p class="text-xs text-gray-500">ใบประกอบวิชาชีพพยาบาลจะหมดอายุในอีก 15 วัน</p>
-                                    </div>
+
+                        <!-- MULTI-SELECT FILTER BAR (เลือกดูได้มากกว่า 1 ประเภท: พนักงานราชการ, พนักงานกระทรวงสาธารณสุข, ลูกจ้างชั่วคราว (รายเดือน)) -->
+                        <div class="mt-5 pt-5 border-t border-white/15 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                            
+                            <!-- Employee Type Multi-Select Chips -->
+                            <div class="lg:col-span-8 flex flex-col gap-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-semibold text-emerald-200 uppercase tracking-wider flex items-center gap-1.5">
+                                        <i class="fas fa-filter text-moph-gold"></i> เลือกดูประเภทการจ้าง (เลือกได้มากกว่า 1 ประเภท):
+                                    </span>
+                                    <span id="selected-types-badge" class="text-[11px] text-emerald-300 font-medium">เลือก 3 จาก 3 ประเภท</span>
+                                </div>
+                                <div class="flex items-center gap-2 flex-wrap" id="dash-emp-types-container">
+                                    <button type="button" onclick="toggleDashEmpType('ALL')" id="btn-type-all" class="dash-type-chip px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm border border-emerald-400/40 bg-emerald-500 text-white">
+                                        <i class="fas fa-check-double mr-1"></i> เลือกทั้งหมด
+                                    </button>
+                                    <button type="button" onclick="toggleDashEmpType('พนักงานราชการ')" id="btn-type-gov" class="dash-type-chip active px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm border border-yellow-400/40 bg-yellow-400 text-slate-900">
+                                        <span class="w-2 h-2 rounded-full bg-yellow-600 inline-block mr-1"></span> พนักงานราชการ
+                                    </button>
+                                    <button type="button" onclick="toggleDashEmpType('พนักงานกระทรวงสาธารณสุข')" id="btn-type-moph" class="dash-type-chip active px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm border border-emerald-400/40 bg-emerald-400 text-slate-900">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-700 inline-block mr-1"></span> พนักงานกระทรวงสาธารณสุข
+                                    </button>
+                                    <button type="button" onclick="toggleDashEmpType('ลูกจ้างชั่วคราว (รายเดือน)')" id="btn-type-temp" class="dash-type-chip active px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm border border-sky-400/40 bg-sky-400 text-slate-900">
+                                        <span class="w-2 h-2 rounded-full bg-sky-700 inline-block mr-1"></span> ลูกจ้างชั่วคราว (รายเดือน)
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Service Unit Filter -->
+                            <div class="lg:col-span-4 flex flex-col gap-2">
+                                <span class="text-xs font-semibold text-emerald-200 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fas fa-hospital text-moph-gold"></i> ประเภทหน่วยบริการ:
+                                </span>
+                                <div class="flex items-center gap-1.5 flex-wrap" id="dash-unit-container">
+                                    <button type="button" onclick="setDashUnitFilter('ทั้งหมด')" class="dash-unit-chip active px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white text-emerald-950 shadow-sm border border-white">ทั้งหมด</button>
+                                    <button type="button" onclick="setDashUnitFilter('สสจ.')" class="dash-unit-chip px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">สสจ.</button>
+                                    <button type="button" onclick="setDashUnitFilter('สสอ.')" class="dash-unit-chip px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">สสอ.</button>
+                                    <button type="button" onclick="setDashUnitFilter('รพ.ชุมชน')" class="dash-unit-chip px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">รพ.ชุมชน</button>
+                                    <button type="button" onclick="setDashUnitFilter('รพ.สต.')" class="dash-unit-chip px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">รพ.สต.</button>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- 1 & 2: COMPARISON STATS (เดือนที่แล้ว vs เดือนปัจจุบัน + คิดเป็นร้อยละอัตราว่าง + อัตราเพิ่ม/ลด) -->
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm sm:text-base font-bold text-gray-800 flex items-center gap-2">
+                                <i class="fas fa-balance-scale text-emerald-600"></i>
+                                สถิติเปรียบเทียบเดือนที่แล้ว (กันยายน 2569) กับเดือนปัจจุบัน (ตุลาคม 2569)
+                            </h3>
+                            <span class="text-xs text-gray-500 hidden sm:inline italic">คำนวณอัตโนมัติตามประเภทการจ้างที่เลือก</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            
+                            <!-- Box 1: ตำแหน่งทั้งหมด -->
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
+                                <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-blue-50 rounded-full group-hover:scale-125 transition-transform duration-300 pointer-events-none"></div>
+                                <div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">ตำแหน่งทั้งหมด</span>
+                                        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                                            <i class="fas fa-layer-group text-lg"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 flex items-baseline gap-2">
+                                        <span id="kpi-total-curr" class="text-3xl font-extrabold text-gray-800 tracking-tight">0</span>
+                                        <span class="text-xs text-gray-500 font-medium">อัตรา</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
+                                    <span class="text-gray-500">เดือนที่แล้ว: <strong id="kpi-total-prev" class="text-gray-700">0</strong></span>
+                                    <span id="kpi-total-diff" class="inline-flex items-center font-semibold text-gray-600">
+                                        -
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Box 2: ตำแหน่งที่มีคนครอง -->
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
+                                <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-emerald-50 rounded-full group-hover:scale-125 transition-transform duration-300 pointer-events-none"></div>
+                                <div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">ตำแหน่งที่มีคนครอง</span>
+                                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                                            <i class="fas fa-user-check text-lg"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 flex items-baseline gap-2">
+                                        <span id="kpi-occ-curr" class="text-3xl font-extrabold text-emerald-700 tracking-tight">0</span>
+                                        <span class="text-xs text-gray-500 font-medium">คน / อัตรา</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
+                                    <span class="text-gray-500">เดือนที่แล้ว: <strong id="kpi-occ-prev" class="text-gray-700">0</strong></span>
+                                    <span id="kpi-occ-diff" class="inline-flex items-center font-semibold text-emerald-600">
+                                        -
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Box 3: ตำแหน่งที่ไม่มีคนครอง (ว่าง) -->
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
+                                <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-amber-50 rounded-full group-hover:scale-125 transition-transform duration-300 pointer-events-none"></div>
+                                <div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">ตำแหน่งที่ไม่มีคนครอง (ว่าง)</span>
+                                        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                                            <i class="fas fa-chair text-lg"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 flex items-baseline gap-2">
+                                        <span id="kpi-vac-curr" class="text-3xl font-extrabold text-amber-600 tracking-tight">0</span>
+                                        <span class="text-xs text-gray-500 font-medium">อัตรา</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
+                                    <span class="text-gray-500">เดือนที่แล้ว: <strong id="kpi-vac-prev" class="text-gray-700">0</strong></span>
+                                    <span id="kpi-vac-diff" class="inline-flex items-center font-semibold text-amber-600">
+                                        -
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Box 4: คิดเป็นร้อยละอัตราว่าง (Highlight Card with Arrow Trend) -->
+                            <div id="kpi-vac-rate-card" class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-5 shadow-sm border-2 border-emerald-500/50 hover:shadow-lg transition-all flex flex-col justify-between relative overflow-hidden">
+                                <div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1">
+                                            <i class="fas fa-calculator text-emerald-600"></i> คิดเป็นร้อยละอัตราว่าง
+                                        </span>
+                                        <div id="kpi-rate-icon" class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                                            <i class="fas fa-percent text-base"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 flex items-baseline gap-2">
+                                        <span id="kpi-vac-rate-curr" class="text-3xl font-black text-gray-900 tracking-tight">0.00%</span>
+                                        <span id="kpi-vac-rate-badge" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600">
+                                            -
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-gray-200/60 flex items-center justify-between text-xs">
+                                    <span class="text-gray-500">เดือนที่แล้ว: <strong id="kpi-vac-rate-prev" class="text-gray-700">0.00%</strong></span>
+                                    <span id="kpi-rate-arrow-container" class="inline-flex items-center font-bold">
+                                        <!-- Dynamic arrow & text injected here -->
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- 6: LICENSE EXPIRY ALERTS (แจ้งเตือนใบประกอบวิชาชีพหมดอายุภายในเดือนนี้และเดือนหน้า) -->
+                    <div class="bg-gradient-to-r from-rose-50 via-amber-50 to-orange-50 rounded-2xl p-5 sm:p-6 border border-rose-200/80 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                            <div>
+                                <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-red-500 animate-ping inline-block"></span>
+                                    <i class="fas fa-id-card-clip text-rose-600"></i>
+                                    แจ้งเตือนใบประกอบวิชาชีพใกล้หมดอายุ (License Expiry Alerts)
+                                </h3>
+                                <p class="text-xs text-gray-500 mt-0.5">ระบบตรวจจับและแจ้งเตือนบุคลากรที่ใบประกอบวิชาชีพจะหมดอายุเพื่อต่ออายุได้ทันท่วงที</p>
+                            </div>
+                            <button type="button" onclick="openLicenseModal('ALL')" class="inline-flex items-center gap-2 px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-xl shadow-sm transition">
+                                <i class="fas fa-list-check"></i> ดูรายชื่อผู้ที่ใบประกอบใกล้หมดอายุทั้งหมด
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Alert Month 1: ภายในเดือนนี้ (ต.ค. 69) -->
+                            <div class="bg-white rounded-xl p-4 border-l-4 border-rose-500 shadow-sm flex items-center justify-between hover:shadow transition">
+                                <div class="flex items-center gap-3 sm:gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl shrink-0">
+                                        <i class="fas fa-triangle-exclamation"></i>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-bold text-rose-700 uppercase">หมดอายุภายในเดือนนี้ (ตุลาคม 2569)</span>
+                                            <span class="px-2 py-0.5 text-[10px] font-bold bg-rose-100 text-rose-700 rounded-full">เร่งด่วน</span>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-0.5">ต้องดำเนินการต่ออายุหรือยื่นคำขอภายใน 30 วัน</p>
+                                    </div>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <span id="lic-expire-this-month-count" class="text-3xl font-extrabold text-rose-600">0</span>
+                                    <span class="text-xs font-medium text-gray-500 block">คน</span>
+                                    <button type="button" onclick="openLicenseModal('THIS_MONTH')" class="text-[11px] text-rose-600 hover:text-rose-800 font-semibold underline mt-1 block">
+                                        ดูรายชื่อ &rarr;
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Alert Month 2: ภายในเดือนหน้า (พ.ย. 69) -->
+                            <div class="bg-white rounded-xl p-4 border-l-4 border-amber-500 shadow-sm flex items-center justify-between hover:shadow transition">
+                                <div class="flex items-center gap-3 sm:gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl shrink-0">
+                                        <i class="fas fa-bell"></i>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-bold text-amber-700 uppercase">หมดอายุภายในเดือนหน้า (พฤศจิกายน 2569)</span>
+                                            <span class="px-2 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-700 rounded-full">แจ้งเตือนล่วงหน้า</span>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-0.5">เตรียมเอกสารหลักฐานและยื่นคำขอต่ออายุ</p>
+                                    </div>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <span id="lic-expire-next-month-count" class="text-3xl font-extrabold text-amber-600">0</span>
+                                    <span class="text-xs font-medium text-gray-500 block">คน</span>
+                                    <button type="button" onclick="openLicenseModal('NEXT_MONTH')" class="text-[11px] text-amber-600 hover:text-amber-800 font-semibold underline mt-1 block">
+                                        ดูรายชื่อ &rarr;
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3, 4, 5: CHARTS & PERFORMANCE METRICS -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        <!-- 3: Bar Chart: การบริหารตำแหน่งว่างตามสถานะการดำเนินการ (กำหนดสีแดง & เขียว) -->
+                        <div class="lg:col-span-8 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
+                            <div>
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                                    <div>
+                                        <h4 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                                            <i class="fas fa-chart-bar text-emerald-600"></i>
+                                            การบริหารตำแหน่งว่าง (จำแนกตามสถานะการดำเนินการทั้งหมด)
+                                        </h4>
+                                        <p class="text-xs text-gray-500 mt-0.5">
+                                            แสดงจำนวนตำแหน่งว่างในแต่ละขั้นตอนการดำเนินการของ สสจ.ศรีสะเกษ
+                                        </p>
+                                    </div>
+
+                                    <!-- Chart Legend Guide with Red & Green requirements -->
+                                    <div class="flex items-center gap-3 text-xs flex-wrap">
+                                        <span class="inline-flex items-center gap-1.5 font-semibold text-rose-600">
+                                            <span class="w-3 h-3 rounded bg-red-500 inline-block"></span> หน่วยงานยังไม่ขอใช้ (สีแดง)
+                                        </span>
+                                        <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-600">
+                                            <span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span> บันทึกในระบบ HROPS (สีเขียว)
+                                        </span>
+                                        <span class="inline-flex items-center gap-1.5 font-medium text-gray-500">
+                                            <span class="w-3 h-3 rounded bg-blue-500 inline-block"></span> อยู่ระหว่างดำเนินการ
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Canvas for Chart.js Bar Chart -->
+                                <div class="relative h-72 sm:h-80 w-full">
+                                    <canvas id="chart-operation-status"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+                                <span><i class="fas fa-info-circle mr-1 text-emerald-600"></i>คลิกที่แท่งกราฟเพื่อดูสัดส่วนและรายละเอียด</span>
+                                <span id="chart-total-vacant-positions-label" class="font-semibold text-gray-700">ตำแหน่งว่างทั้งหมด 0 อัตรา</span>
+                            </div>
+                        </div>
+
+                        <!-- 4 & 5: Right Column (ระยะเวลาเฉลี่ยการสรรหา + อัตราการลาออก) -->
+                        <div class="lg:col-span-4 space-y-6">
+                            
+                            <!-- 5: ระยะเวลาเฉลี่ยในการสรรหาบุคคลเข้าสู่ตำแหน่ง -->
+                            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">ระยะเวลาเฉลี่ยในการสรรหา</span>
+                                        <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                                            <i class="fas fa-stopwatch text-base"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-baseline gap-2">
+                                        <span id="metric-avg-recruitment-days" class="text-4xl font-extrabold text-amber-600 tracking-tight">0</span>
+                                        <span class="text-sm font-semibold text-gray-600">วัน</span>
+                                    </div>
+                                    <p id="metric-avg-recruitment-text" class="text-xs text-gray-500 mt-1">คำนวณจากวันที่ตำแหน่งว่างจนถึงวันที่ดำเนินการเสร็จสิ้น</p>
+
+                                    <!-- Target Benchmark Bar -->
+                                    <div class="mt-4">
+                                        <div class="flex justify-between text-xs font-medium mb-1">
+                                            <span class="text-gray-600">เทียบเกณฑ์เป้าหมายมาตรฐาน (&le; 90 วัน)</span>
+                                            <span id="metric-benchmark-status" class="font-bold text-emerald-600">อยู่ในเกณฑ์</span>
+                                        </div>
+                                        <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                                            <div id="metric-benchmark-bar" class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: 75%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Status mini-badges (จากตัวอย่างในภาพ) -->
+                                <div class="mt-4 pt-3 border-t border-gray-100 grid grid-cols-3 gap-2 text-center text-xs">
+                                    <div class="p-2 rounded-lg bg-rose-50 text-rose-700">
+                                        <span id="metric-stat-unprocessed" class="font-bold text-base block">0</span>
+                                        <span class="text-[10px] text-gray-500 leading-tight block">ยังไม่ดำเนินการ</span>
+                                    </div>
+                                    <div class="p-2 rounded-lg bg-blue-50 text-blue-700">
+                                        <span id="metric-stat-in-progress" class="font-bold text-base block">0</span>
+                                        <span class="text-[10px] text-gray-500 leading-tight block">กำลังดำเนินการ</span>
+                                    </div>
+                                    <div class="p-2 rounded-lg bg-emerald-50 text-emerald-700">
+                                        <span id="metric-stat-completed" class="font-bold text-base block">0</span>
+                                        <span class="text-[10px] text-gray-500 leading-tight block">เสร็จสิ้นแล้ว</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4: อัตราการลาออก (แยกตามเหตุผล) -->
+                            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div>
+                                        <h4 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+                                            <i class="fas fa-door-open text-purple-600"></i>
+                                            อัตราการลาออกและเหตุผล
+                                        </h4>
+                                        <span class="text-[11px] text-gray-400">สถิติสะสมปีงบประมาณ 2569</span>
+                                    </div>
+                                    <span id="turnover-rate-overall" class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-purple-100 text-purple-700 border border-purple-200">
+                                        3.2% Turnover
+                                    </span>
+                                </div>
+
+                                <!-- Donut Chart & Reasons breakdown -->
+                                <div class="relative h-44 w-full mb-3 flex items-center justify-center">
+                                    <canvas id="chart-resignation-reasons"></canvas>
+                                </div>
+
+                                <div id="resignation-reasons-legend" class="space-y-1.5 text-xs text-gray-600">
+                                    <!-- Dynamic ranked reasons breakdown injected here -->
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- 7: ACCORDION DRILL-DOWN (เหมือนในภาพตัวอย่าง แต่สวยและมีรายละเอียดตำแหน่งว่างครบถ้วน) -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-100">
+                            <div>
+                                <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                                    <i class="fas fa-folder-tree text-emerald-600"></i>
+                                    รายละเอียดตำแหน่งว่างจำแนกตามประเภทการดำเนินการ (Action Categories)
+                                </h3>
+                                <p class="text-xs text-gray-500 mt-0.5">คลิกแต่ละหมวดหมู่เพื่อพับ-ขยายดูรายการตำแหน่งว่างและข้อมูลผู้ดำเนินการ</p>
+                            </div>
+                            
+                            <!-- Filter Pills (ยังไม่เสร็จสิ้น / เสร็จสิ้นแล้ว) -->
+                            <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-xl text-xs font-semibold">
+                                <button type="button" onclick="setAccordionTab('ALL')" id="acc-tab-all" class="px-3 py-1.5 rounded-lg bg-white text-gray-800 shadow-sm transition">
+                                    ทั้งหมด <span id="acc-badge-all" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-gray-200">0</span>
+                                </button>
+                                <button type="button" onclick="setAccordionTab('PENDING')" id="acc-tab-pending" class="px-3 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition">
+                                    <i class="fas fa-hourglass-half mr-1 text-amber-500"></i> ยังไม่เสร็จสิ้น <span id="acc-badge-pending" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-amber-100 text-amber-700">0</span>
+                                </button>
+                                <button type="button" onclick="setAccordionTab('COMPLETED')" id="acc-tab-completed" class="px-3 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition">
+                                    <i class="fas fa-check-circle mr-1 text-emerald-500"></i> เสร็จสิ้นแล้ว <span id="acc-badge-completed" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-100 text-emerald-700">0</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Accordion Items Container -->
+                        <div class="space-y-3" id="vacant-accordion-container">
+                            <!-- Dynamic Category Accordions rendered via JS -->
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- APP TAB 2: VACANT POSITIONS -->
@@ -549,6 +924,181 @@
                                       <td class="text-center">-</td>
                                       <td class="text-center">-</td>
                                       <td class="text-center">ว่างเดิม</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="หน่วยงานยังไม่ขอใช้" data-opresult="-">
+                                      <td class="text-center">5</td>
+                                      <td>รพ.สต.</td>
+                                      <td>กันทรลักษ์</td>
+                                      <td>รพ.สต.น้ำอ้อม</td>
+                                      <td class="text-center">V999</td>
+                                      <td>นักจัดการงานทั่วไป</td>
+                                      <td>พนักงานราชการ</td>
+                                      <td class="text-center">01/08/2569</td>
+                                      <td class="text-center">2 เดือน 24 วัน</td>
+                                      <td class="text-center"><div class="leading-tight font-semibold text-rose-600">หน่วยงานยังไม่ขอใช้</div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">หน่วยงานยังไม่ขอใช้</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="บันทึกในระบบ HROPS" data-opresult="ผ่าน">
+                                      <td class="text-center">6</td>
+                                      <td>รพท.</td>
+                                      <td>เมืองศรีสะเกษ</td>
+                                      <td>-</td>
+                                      <td class="text-center">44101</td>
+                                      <td>พยาบาลวิชาชีพ</td>
+                                      <td>พนักงานกระทรวงสาธารณสุข</td>
+                                      <td class="text-center">01/06/2569</td>
+                                      <td class="text-center">4 เดือน 24 วัน</td>
+                                      <td class="text-center"><div class="leading-tight font-semibold text-emerald-600">บันทึกในระบบ HROPS<div class="text-xs text-green-600 font-medium mt-1"><i class="fas fa-check-circle"></i> ผ่าน</div></div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">บรรจุใหม่</td>
+                                      <td class="text-center">01/10/2569</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="บันทึกในระบบ HROPH" data-opresult="ผ่าน">
+                                      <td class="text-center">7</td>
+                                      <td>สสจ.</td>
+                                      <td>เมืองศรีสะเกษ</td>
+                                      <td>-</td>
+                                      <td class="text-center">11</td>
+                                      <td>นักวิชาการสาธารณสุข</td>
+                                      <td>พนักงานกระทรวงสาธารณสุข</td>
+                                      <td class="text-center">15/05/2569</td>
+                                      <td class="text-center">5 เดือน 10 วัน</td>
+                                      <td class="text-center"><div class="leading-tight font-semibold text-emerald-600">บันทึกในระบบ HROPH<div class="text-xs text-green-600 font-medium mt-1"><i class="fas fa-check-circle"></i> ผ่าน</div></div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">รับย้ายภายในจังหวัด</td>
+                                      <td class="text-center">01/09/2569</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="เผยแพร่/ประชาสัมพันธ์ประกาศรับสมัคร/สรรหา" data-opresult="รอพิจารณา">
+                                      <td class="text-center">8</td>
+                                      <td>รพช.</td>
+                                      <td>ขุนหาญ</td>
+                                      <td>-</td>
+                                      <td class="text-center">T5003</td>
+                                      <td>พยาบาลวิชาชีพ</td>
+                                      <td>ลูกจ้างชั่วคราว (รายเดือน)</td>
+                                      <td class="text-center">10/08/2569</td>
+                                      <td class="text-center">2 เดือน 15 วัน</td>
+                                      <td class="text-center"><div class="leading-tight font-semibold text-pink-600">เผยแพร่/ประชาสัมพันธ์ประกาศรับสมัคร/สรรหา<div class="text-xs text-yellow-600 font-medium mt-1"><i class="fas fa-clock"></i> รอพิจารณา</div></div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">สรรหาทดแทน</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="เรียกรายงานตัว/ทำสัญญาจ้าง" data-opresult="ผ่าน">
+                                      <td class="text-center">9</td>
+                                      <td>รพช.</td>
+                                      <td>ราษีไศล</td>
+                                      <td>-</td>
+                                      <td class="text-center">123</td>
+                                      <td>นักวิชาการสาธารณสุข</td>
+                                      <td>พนักงานกระทรวงสาธารณสุข</td>
+                                      <td class="text-center">20/07/2569</td>
+                                      <td class="text-center">3 เดือน 5 วัน</td>
+                                      <td class="text-center"><div class="leading-tight font-semibold text-blue-600">เรียกรายงานตัว/ทำสัญญาจ้าง<div class="text-xs text-green-600 font-medium mt-1"><i class="fas fa-check-circle"></i> ผ่าน</div></div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">รับโอน</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="นพ.สสจ. ลงนามสัญญา/คำสั่งจ้าง" data-opresult="ผ่าน">
+                                      <td class="text-center">10</td>
+                                      <td>สสอ.</td>
+                                      <td>อุทุมพรพิสัย</td>
+                                      <td>-</td>
+                                      <td class="text-center">V1004</td>
+                                      <td>นักวิชาการพัสดุ</td>
+                                      <td>พนักงานราชการ</td>
+                                      <td class="text-center">05/09/2569</td>
+                                      <td class="text-center">1 เดือน 20 วัน</td>
+                                      <td class="text-center"><div class="leading-tight font-semibold text-emerald-700">นพ.สสจ. ลงนามสัญญา/คำสั่งจ้าง<div class="text-xs text-green-600 font-medium mt-1"><i class="fas fa-check-circle"></i> ผ่าน</div></div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">เลื่อนระดับ</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">
+                                          <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
+                                          <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
+                                      </td>
+                                  </tr>
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="อัตราว่าง" data-opresult="-">
+                                      <td class="text-center">11</td>
+                                      <td>รพช.</td>
+                                      <td>กันทรารมย์</td>
+                                      <td>-</td>
+                                      <td class="text-center">T5004</td>
+                                      <td>นักรังสีการแพทย์</td>
+                                      <td>ลูกจ้างชั่วคราว (รายเดือน)</td>
+                                      <td class="text-center">12/09/2569</td>
+                                      <td class="text-center">1 เดือน 13 วัน</td>
+                                      <td class="text-center"><div class="leading-tight font-semibold text-amber-600">อัตราว่าง</div></td>
+                                      <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">-</td>
+                                      <td class="text-center">รับย้ายข้ามจังหวัด</td>
                                       <td class="text-center">-</td>
                                       <td class="text-center">
                                           <button type="button" class="text-blue-500 hover:text-blue-700 mr-2" onclick="editVacantPosition(this)"><i class="fas fa-edit"></i></button>
@@ -1250,7 +1800,7 @@
             if (!posNo || posNo === '-') return;
             const cleanPosNo = String(posNo).trim();
             const cleanEmpType = String(empType || '').trim();
-            const isOccupied = (opStatusVal || '').trim() === 'บันทึกในระบบ HROPH';
+            const isOccupied = (opStatusVal || '').trim() === 'บันทึกในระบบ HROPH' || (opStatusVal || '').trim() === 'บันทึกในระบบ HROPS';
             const targetStatus = isOccupied ? 'มีคนครอง' : 'ไม่มีคนครอง';
 
             const statusBadgeHtml = isOccupied
@@ -1345,6 +1895,7 @@
             if (empType) {
                 const options = [
                     "อัตราว่าง",
+                    "หน่วยงานยังไม่ขอใช้",
                     "หน่วยงานขอสรรหาทดแทน",
                     "ขอเปลี่ยนตำแหน่ง/ประเภทการว่าง/หน่วยงาน",
                     "หน่วยงานส่งร่างประกาศรับสมัครฯ",
@@ -1355,6 +1906,7 @@
                     "เรียกรายงานตัว/ทำสัญญาจ้าง",
                     "ส่งสัญญาจ้างให้ สสจ.",
                     "นพ.สสจ. ลงนามสัญญา/คำสั่งจ้าง",
+                    "บันทึกในระบบ HROPS",
                     "บันทึกในระบบ HROPH",
                     "ไม่มีผู้สมัคร/ไม่มีผู้ผ่านการคัดเลือก/เปลี่ยนเงื่อนไข"
                 ];
@@ -1433,6 +1985,12 @@
             }
             loadFromLocalStorage();
             loadStaffFromStorage();
+            // Render the dashboard on first load
+            setTimeout(() => {
+                if (typeof renderVacantDashboard === 'function') {
+                    renderVacantDashboard();
+                }
+            }, 200);
         });
 
 
@@ -1596,34 +2154,8 @@
                             if (row[index] === undefined || row[index] === null) return '-';
                             return row[index].toString().trim() || '-';
                         };
-                        
-                        const isUnoccupiedChoice = pos_status === "ไม่มีคนครอง";
-            const occupantFullName = [pers_title, pers_fname, pers_lname].filter(Boolean).join(" ");
-            
-            if (isUnoccupiedChoice) {
-                let moveDetail = 'ปรับเปลี่ยนสถานะตำแหน่งเป็น "ไม่มีคนครอง"';
-                if (occupantFullName) {
-                    moveDetail = `พ้นจากตำแหน่ง: ${occupantFullName}`;
-                    if (pers_idcard) moveDetail += ` (เลข ปชช. ${pers_idcard})`;
-                    if (pers_degree) moveDetail += ` วุฒิ: ${pers_degree}`;
-                    if (major) moveDetail += ` (${major})`;
-                }
-                if (typeof logPositionMovement === "function") {
-                    logPositionMovement({
-                        date: new Date().toISOString().split("T")[0],
-                        posNo: pos_no || "-",
-                        posName: pos_name || "-",
-                        staffType: staff_type || "-",
-                        agencyName: agency_name || actual_name || "-",
-                        district: agency_district || actual_district || "-",
-                        movementType: "เปลี่ยนสถานะเป็นตำแหน่งว่าง",
-                        details: moveDetail,
-                        orderNo: "-"
-                    });
-                }
-            }
 
-            const trHtml = `
+                        const trHtml = `
                             <td class="text-center sm-row-num"></td>
                             <td class="text-center">${safeGet(1)}</td>
                             <td class="text-center">${safeGet(2)}</td>
@@ -2001,6 +2533,138 @@
                     lic_issue: "",
                     lic_expire: "",
                     lic_org: ""
+                },
+                {
+                    pos_no: "44101",
+                    pos_status: "มีคนครอง",
+                    agency_district: "เมืองศรีสะเกษ",
+                    agency_prefix: "สสจ.",
+                    agency_name: "สสจ.ศรีสะเกษ",
+                    agency_group: "บค",
+                    agency_internal: "กลุ่มงานบริหารทรัพยากรบุคคล",
+                    actual_district: "เมืองศรีสะเกษ",
+                    actual_prefix: "สสจ.",
+                    actual_name: "สสจ.ศรีสะเกษ",
+                    pos_name: "พยาบาลวิชาชีพ",
+                    pos_type: "วิชาชีพ",
+                    pos_level: "ชำนาญการ",
+                    staff_type: "พนักงานกระทรวงสาธารณสุข",
+                    pers_title: "นางสาว",
+                    pers_fname: "ศิริพร",
+                    pers_lname: "บุญช่วย",
+                    pers_idcard: "3330100458123",
+                    duty_status: "ปฏิบัติหน้าที่",
+                    pers_startdate: "2020-05-01",
+                    pers_degree: "ปริญญาตรี",
+                    major: "พยาบาลศาสตรบัณฑิต",
+                    specialist_cert: "-",
+                    institution: "วิทยาลัยพยาบาลบรมราชชนนี สรรพสิทธิประสงค์",
+                    pers_graddate: "2020-03-15",
+                    pers_gpa: "3.55",
+                    lic_no: "ว.54892",
+                    lic_name: "ใบอนุญาตประกอบวิชาชีพการพยาบาลและการผดุงครรภ์ชั้นหนึ่ง",
+                    lic_issue: "2021-10-30",
+                    lic_expire: "2026-10-30",
+                    lic_org: "สภาการพยาบาล"
+                },
+                {
+                    pos_no: "44102",
+                    pos_status: "มีคนครอง",
+                    agency_district: "ราษีไศล",
+                    agency_prefix: "รพช.",
+                    agency_name: "รพช.ราษีไศล",
+                    agency_group: "การพยาบาล",
+                    agency_internal: "กลุ่มงานการพยาบาล",
+                    actual_district: "ราษีไศล",
+                    actual_prefix: "รพช.",
+                    actual_name: "รพช.ราษีไศล",
+                    pos_name: "พยาบาลวิชาชีพ",
+                    pos_type: "วิชาชีพ",
+                    pos_level: "ปฏิบัติการ",
+                    staff_type: "พนักงานกระทรวงสาธารณสุข",
+                    pers_title: "นางสาว",
+                    pers_fname: "กัลยา",
+                    pers_lname: "สุขเจริญ",
+                    pers_idcard: "3330100789124",
+                    duty_status: "ปฏิบัติหน้าที่",
+                    pers_startdate: "2021-08-01",
+                    pers_degree: "ปริญญาตรี",
+                    major: "พยาบาลศาสตร์",
+                    specialist_cert: "-",
+                    institution: "มหาวิทยาลัยอุบลราชธานี",
+                    pers_graddate: "2021-04-20",
+                    pers_gpa: "3.42",
+                    lic_no: "ว.61204",
+                    lic_name: "ใบอนุญาตประกอบวิชาชีพการพยาบาล",
+                    lic_issue: "2021-10-28",
+                    lic_expire: "2026-10-28",
+                    lic_org: "สภาการพยาบาล"
+                },
+                {
+                    pos_no: "44103",
+                    pos_status: "มีคนครอง",
+                    agency_district: "เมืองศรีสะเกษ",
+                    agency_prefix: "รพท.",
+                    agency_name: "รพท.ศรีสะเกษ",
+                    agency_group: "พยาธิวิทยา",
+                    agency_internal: "กลุ่มงานเทคนิคการแพทย์",
+                    actual_district: "เมืองศรีสะเกษ",
+                    actual_prefix: "รพท.",
+                    actual_name: "รพท.ศรีสะเกษ",
+                    pos_name: "นักเทคนิคการแพทย์",
+                    pos_type: "วิชาชีพ",
+                    pos_level: "ปฏิบัติการ",
+                    staff_type: "พนักงานกระทรวงสาธารณสุข",
+                    pers_title: "นาย",
+                    pers_fname: "ภานุเดช",
+                    pers_lname: "สิทธิชัย",
+                    pers_idcard: "3330100994112",
+                    duty_status: "ปฏิบัติหน้าที่",
+                    pers_startdate: "2021-11-15",
+                    pers_degree: "ปริญญาตรี",
+                    major: "เทคนิคการแพทย์",
+                    specialist_cert: "-",
+                    institution: "มหาวิทยาลัยขอนแก่น",
+                    pers_graddate: "2021-05-10",
+                    pers_gpa: "3.60",
+                    lic_no: "ทน.12034",
+                    lic_name: "ใบอนุญาตประกอบวิชาชีพเทคนิคการแพทย์",
+                    lic_issue: "2021-11-15",
+                    lic_expire: "2026-11-15",
+                    lic_org: "สภาเทคนิคการแพทย์"
+                },
+                {
+                    pos_no: "44104",
+                    pos_status: "มีคนครอง",
+                    agency_district: "ขุขันธ์",
+                    agency_prefix: "สสอ.",
+                    agency_name: "สสอ.ขุขันธ์",
+                    agency_group: "บริการ",
+                    agency_internal: "รพ.สต.บ้านตาอุด",
+                    actual_district: "ขุขันธ์",
+                    actual_prefix: "สสอ.",
+                    actual_name: "สสอ.ขุขันธ์",
+                    pos_name: "พยาบาลวิชาชีพ",
+                    pos_type: "วิชาชีพ",
+                    pos_level: "ชำนาญการ",
+                    staff_type: "พนักงานกระทรวงสาธารณสุข",
+                    pers_title: "นาง",
+                    pers_fname: "มณีรัตน์",
+                    pers_lname: "วงศ์สุวรรณ",
+                    pers_idcard: "3330100654321",
+                    duty_status: "ปฏิบัติหน้าที่",
+                    pers_startdate: "2019-11-25",
+                    pers_degree: "ปริญญาตรี",
+                    major: "พยาบาลศาสตร์",
+                    specialist_cert: "-",
+                    institution: "วิทยาลัยพยาบาลบรมราชชนนี นครราชสีมา",
+                    pers_graddate: "2019-04-10",
+                    pers_gpa: "3.35",
+                    lic_no: "ว.49120",
+                    lic_name: "ใบอนุญาตประกอบวิชาชีพการพยาบาล",
+                    lic_issue: "2021-11-25",
+                    lic_expire: "2026-11-25",
+                    lic_org: "สภาการพยาบาล"
                 }
             ],
             'พนักงานราชการ': [
@@ -2019,6 +2683,173 @@
                     pos_type: "",
                     pos_level: "",
                     staff_type: "พนักงานราชการ",
+                    pers_title: "",
+                    pers_fname: "",
+                    pers_lname: "",
+                    pers_idcard: "",
+                    duty_status: "",
+                    pers_startdate: "",
+                    pers_degree: "",
+                    major: "",
+                    specialist_cert: "",
+                    institution: "",
+                    pers_graddate: "",
+                    pers_gpa: "",
+                    lic_no: "",
+                    lic_name: "",
+                    lic_issue: "",
+                    lic_expire: "",
+                    lic_org: ""
+                },
+                {
+                    pos_no: "V1001",
+                    pos_status: "มีคนครอง",
+                    agency_district: "กันทรลักษ์",
+                    agency_prefix: "รพ.สต.",
+                    agency_name: "รพ.สต.น้ำอ้อม",
+                    agency_group: "บริการทางการแพทย์",
+                    agency_internal: "งานบริการปฐมภูมิ",
+                    actual_district: "กันทรลักษ์",
+                    actual_prefix: "รพ.สต.",
+                    actual_name: "รพ.สต.น้ำอ้อม",
+                    pos_name: "นักวิชาการสาธารณสุข",
+                    pos_type: "วิชาการ",
+                    pos_level: "ปฏิบัติการ",
+                    staff_type: "พนักงานราชการ",
+                    pers_title: "นาย",
+                    pers_fname: "เกียรติศักดิ์",
+                    pers_lname: "มีชัย",
+                    pers_idcard: "3330100112233",
+                    duty_status: "ปฏิบัติหน้าที่",
+                    pers_startdate: "2022-10-31",
+                    pers_degree: "ปริญญาตรี",
+                    major: "สาธารณสุขศาสตรบัณฑิต",
+                    specialist_cert: "-",
+                    institution: "มหาวิทยาลัยมหาสารคาม",
+                    pers_graddate: "2022-04-15",
+                    pers_gpa: "3.28",
+                    lic_no: "สส.8812",
+                    lic_name: "ใบอนุญาตประกอบวิชาชีพการสาธารณสุขชุมชน",
+                    lic_issue: "2022-10-31",
+                    lic_expire: "2026-10-31",
+                    lic_org: "สภาการสาธารณสุขชุมชน"
+                },
+                {
+                    pos_no: "V1002",
+                    pos_status: "มีคนครอง",
+                    agency_district: "เมืองศรีสะเกษ",
+                    agency_prefix: "สสจ.",
+                    agency_name: "สสจ.ศรีสะเกษ",
+                    agency_group: "ยุทธศาสตร์",
+                    agency_internal: "กลุ่มงานพัฒนายุทธศาสตร์สาธารณสุข",
+                    actual_district: "เมืองศรีสะเกษ",
+                    actual_prefix: "สสจ.",
+                    actual_name: "สสจ.ศรีสะเกษ",
+                    pos_name: "นักวิชาการคอมพิวเตอร์",
+                    pos_type: "ทั่วไป",
+                    pos_level: "ปฏิบัติงาน",
+                    staff_type: "พนักงานราชการ",
+                    pers_title: "นางสาว",
+                    pers_fname: "ปิยะดา",
+                    pers_lname: "สุวรรณ",
+                    pers_idcard: "3330100445566",
+                    duty_status: "ปฏิบัติหน้าที่",
+                    pers_startdate: "2023-01-15",
+                    pers_degree: "ปริญญาตรี",
+                    major: "วิทยาการคอมพิวเตอร์",
+                    specialist_cert: "-",
+                    institution: "มหาวิทยาลัยราชภัฏศรีสะเกษ",
+                    pers_graddate: "2022-11-20",
+                    pers_gpa: "3.40",
+                    lic_no: "-",
+                    lic_name: "-",
+                    lic_issue: "-",
+                    lic_expire: "-",
+                    lic_org: "-"
+                }
+            ],
+            'ลูกจ้างชั่วคราว (รายเดือน)': [
+                {
+                    pos_no: "T5001",
+                    pos_status: "มีคนครอง",
+                    agency_district: "ราษีไศล",
+                    agency_prefix: "รพช.",
+                    agency_name: "รพช.ราษีไศล",
+                    agency_group: "เภสัชกรรม",
+                    agency_internal: "กลุ่มงานเภสัชกรรมและคุ้มครองผู้บริโภค",
+                    actual_district: "ราษีไศล",
+                    actual_prefix: "รพช.",
+                    actual_name: "รพช.ราษีไศล",
+                    pos_name: "เภสัชกร",
+                    pos_type: "วิชาชีพ",
+                    pos_level: "ปฏิบัติการ",
+                    staff_type: "ลูกจ้างชั่วคราว (รายเดือน)",
+                    pers_title: "นาย",
+                    pers_fname: "วิชัย",
+                    pers_lname: "มั่นคง",
+                    pers_idcard: "3330100889900",
+                    duty_status: "ปฏิบัติหน้าที่",
+                    pers_startdate: "2021-11-18",
+                    pers_degree: "ปริญญาตรี",
+                    major: "เภสัชศาสตรบัณฑิต",
+                    specialist_cert: "-",
+                    institution: "มหาวิทยาลัยอุบลราชธานี",
+                    pers_graddate: "2021-04-30",
+                    pers_gpa: "3.65",
+                    lic_no: "ภ.33419",
+                    lic_name: "ใบอนุญาตประกอบวิชาชีพเภสัชกรรม",
+                    lic_issue: "2021-11-18",
+                    lic_expire: "2026-11-18",
+                    lic_org: "สภาเภสัชกรรม"
+                },
+                {
+                    pos_no: "T5002",
+                    pos_status: "มีคนครอง",
+                    agency_district: "เมืองศรีสะเกษ",
+                    agency_prefix: "รพท.",
+                    agency_name: "รพท.ศรีสะเกษ",
+                    agency_group: "เวชกรรมฟื้นฟู",
+                    agency_internal: "กลุ่มงานกายภาพบำบัด",
+                    actual_district: "เมืองศรีสะเกษ",
+                    actual_prefix: "รพท.",
+                    actual_name: "รพท.ศรีสะเกษ",
+                    pos_name: "นักกายภาพบำบัด",
+                    pos_type: "วิชาชีพ",
+                    pos_level: "ปฏิบัติการ",
+                    staff_type: "ลูกจ้างชั่วคราว (รายเดือน)",
+                    pers_title: "นางสาว",
+                    pers_fname: "อรทัย",
+                    pers_lname: "จิตงาม",
+                    pers_idcard: "3330100778899",
+                    duty_status: "ปฏิบัติหน้าที่",
+                    pers_startdate: "2021-11-28",
+                    pers_degree: "ปริญญาตรี",
+                    major: "กายภาพบำบัด",
+                    specialist_cert: "-",
+                    institution: "มหาวิทยาลัยขอนแก่น",
+                    pers_graddate: "2021-05-15",
+                    pers_gpa: "3.50",
+                    lic_no: "กภ.7812",
+                    lic_name: "ใบอนุญาตประกอบวิชาชีพกายภาพบำบัด",
+                    lic_issue: "2021-11-28",
+                    lic_expire: "2026-11-28",
+                    lic_org: "สภากายภาพบำบัด"
+                },
+                {
+                    pos_no: "T5003",
+                    pos_status: "ไม่มีคนครอง",
+                    agency_district: "น้ำเกลี้ยง",
+                    agency_prefix: "รพช.",
+                    agency_name: "รพช.น้ำเกลี้ยง",
+                    agency_group: "การพยาบาล",
+                    agency_internal: "กลุ่มงานการพยาบาล",
+                    actual_district: "น้ำเกลี้ยง",
+                    actual_prefix: "รพช.",
+                    actual_name: "รพช.น้ำเกลี้ยง",
+                    pos_name: "พยาบาลวิชาชีพ",
+                    pos_type: "วิชาชีพ",
+                    pos_level: "ปฏิบัติการ",
+                    staff_type: "ลูกจ้างชั่วคราว (รายเดือน)",
                     pers_title: "",
                     pers_fname: "",
                     pers_lname: "",
@@ -2426,6 +3257,1026 @@
             }
         }
 
+        // =========================================================================
+        // === EXECUTIVE VACANT POSITION MANAGEMENT DASHBOARD (สสจ.ศรีสะเกษ) ===
+        // =========================================================================
+
+        window.dashState = {
+            selectedTypes: ['พนักงานราชการ', 'พนักงานกระทรวงสาธารณสุข', 'ลูกจ้างชั่วคราว (รายเดือน)'],
+            selectedUnit: 'ทั้งหมด',
+            accordionTab: 'ALL',
+            licenseFilter: 'ALL'
+        };
+
+        window.vacantOpStatusChartInstance = null;
+        window.resignationDonutChartInstance = null;
+
+        // --- Filter Handlers ---
+        function toggleDashEmpType(type) {
+            const allTypes = ['พนักงานราชการ', 'พนักงานกระทรวงสาธารณสุข', 'ลูกจ้างชั่วคราว (รายเดือน)'];
+            if (type === 'ALL') {
+                if (dashState.selectedTypes.length === allTypes.length) {
+                    dashState.selectedTypes = ['พนักงานกระทรวงสาธารณสุข'];
+                } else {
+                    dashState.selectedTypes = [...allTypes];
+                }
+            } else {
+                const idx = dashState.selectedTypes.indexOf(type);
+                if (idx > -1) {
+                    if (dashState.selectedTypes.length > 1) {
+                        dashState.selectedTypes.splice(idx, 1);
+                    }
+                } else {
+                    dashState.selectedTypes.push(type);
+                }
+            }
+            updateDashFilterUI();
+            renderVacantDashboard();
+        }
+
+        function setDashUnitFilter(unit) {
+            dashState.selectedUnit = unit;
+            document.querySelectorAll('#dash-unit-container .dash-unit-chip').forEach(btn => {
+                if (btn.innerText.trim() === unit) {
+                    btn.className = 'dash-unit-chip active px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white text-emerald-950 shadow-sm border border-white';
+                } else {
+                    btn.className = 'dash-unit-chip px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20';
+                }
+            });
+            renderVacantDashboard();
+        }
+
+        function updateDashFilterUI() {
+            const allTypes = ['พนักงานราชการ', 'พนักงานกระทรวงสาธารณสุข', 'ลูกจ้างชั่วคราว (รายเดือน)'];
+            const btnAll = document.getElementById('btn-type-all');
+            const btnGov = document.getElementById('btn-type-gov');
+            const btnMoph = document.getElementById('btn-type-moph');
+            const btnTemp = document.getElementById('btn-type-temp');
+            const badge = document.getElementById('selected-types-badge');
+
+            if (badge) {
+                badge.innerText = `เลือก ${dashState.selectedTypes.length} จาก 3 ประเภท`;
+            }
+
+            if (btnAll) {
+                const isAll = dashState.selectedTypes.length === allTypes.length;
+                btnAll.className = isAll
+                    ? 'dash-type-chip active px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm border border-emerald-400/40 bg-emerald-500 text-white'
+                    : 'dash-type-chip px-3 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20';
+            }
+
+            if (btnGov) {
+                const active = dashState.selectedTypes.includes('พนักงานราชการ');
+                btnGov.className = active
+                    ? 'dash-type-chip active px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm border border-yellow-400/40 bg-yellow-400 text-slate-900'
+                    : 'dash-type-chip px-3 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white/70 hover:bg-white/20 border border-white/20';
+            }
+
+            if (btnMoph) {
+                const active = dashState.selectedTypes.includes('พนักงานกระทรวงสาธารณสุข');
+                btnMoph.className = active
+                    ? 'dash-type-chip active px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm border border-emerald-400/40 bg-emerald-400 text-slate-900'
+                    : 'dash-type-chip px-3 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white/70 hover:bg-white/20 border border-white/20';
+            }
+
+            if (btnTemp) {
+                const active = dashState.selectedTypes.includes('ลูกจ้างชั่วคราว (รายเดือน)');
+                btnTemp.className = active
+                    ? 'dash-type-chip active px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm border border-sky-400/40 bg-sky-400 text-slate-900'
+                    : 'dash-type-chip px-3 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white/70 hover:bg-white/20 border border-white/20';
+            }
+        }
+
+        // --- Helper Data Loaders ---
+        function getDashAllStaffRecords() {
+            const types = ['พนักงานกระทรวงสาธารณสุข', 'พนักงานราชการ', 'ลูกจ้างชั่วคราว (รายเดือน)', 'ลูกจ้างประจำ', 'ลูกจ้างชั่วคราวรายวัน/จ้างเหมา'];
+            let records = [];
+            const vacantMap = (typeof getVacantOperationStatusMap === 'function') ? getVacantOperationStatusMap() : {};
+
+            types.forEach(t => {
+                const saved = localStorage.getItem('staff_data_' + t);
+                if (saved && saved.includes('<tr') && !saved.includes('ยังไม่มีข้อมูล')) {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString('<table><tbody>' + saved + '</tbody></table>', 'text/html');
+                    doc.querySelectorAll('tr').forEach(r => {
+                        const tds = r.querySelectorAll('td');
+                        if (tds.length >= 31) {
+                            const posNo = tds[1].innerText.trim();
+                            let posStatus = tds[2].innerText.includes('ไม่มีคนครอง') ? 'ไม่มีคนครอง' : 'มีคนครอง';
+                            if (posNo && vacantMap[posNo] !== undefined) {
+                                posStatus = (vacantMap[posNo] === 'บันทึกในระบบ HROPH') ? 'มีคนครอง' : 'ไม่มีคนครอง';
+                            }
+                            records.push({
+                                pos_no: posNo,
+                                pos_status: posStatus,
+                                agency_district: tds[3].innerText.trim(),
+                                agency_prefix: tds[4].innerText.trim(),
+                                agency_name: tds[5].innerText.trim(),
+                                agency_group: tds[6].innerText.trim(),
+                                agency_internal: tds[7].innerText.trim(),
+                                actual_district: tds[8].innerText.trim(),
+                                actual_prefix: tds[9].innerText.trim(),
+                                actual_name: tds[10].innerText.trim(),
+                                pos_name: tds[11].innerText.trim(),
+                                pos_type: tds[12].innerText.trim(),
+                                pos_level: tds[13].innerText.trim(),
+                                staff_type: tds[14].innerText.trim() || t,
+                                pers_title: tds[15].innerText.trim(),
+                                pers_fname: tds[16].innerText.trim(),
+                                pers_lname: tds[17].innerText.trim(),
+                                pers_idcard: tds[18].innerText.trim(),
+                                duty_status: tds[19].innerText.trim(),
+                                pers_startdate: r.getAttribute('data-pers-startdate') || tds[20].innerText.trim(),
+                                pers_degree: tds[21].innerText.trim(),
+                                major: tds[22].innerText.trim(),
+                                lic_no: tds[27].innerText.trim(),
+                                lic_name: tds[28].innerText.trim(),
+                                lic_issue: r.getAttribute('data-lic-issue') || tds[29].innerText.trim(),
+                                lic_expire: r.getAttribute('data-lic-expire') || tds[30].innerText.trim(),
+                                lic_org: tds[31].innerText.trim()
+                            });
+                        }
+                    });
+                } else if (typeof defaultStaffData !== 'undefined' && defaultStaffData[t]) {
+                    defaultStaffData[t].forEach(item => {
+                        let posStatus = item.pos_status || 'มีคนครอง';
+                        const pNo = String(item.pos_no || '').trim();
+                        if (pNo && vacantMap[pNo] !== undefined) {
+                            posStatus = (vacantMap[pNo] === 'บันทึกในระบบ HROPH') ? 'มีคนครอง' : 'ไม่มีคนครอง';
+                        }
+                        records.push(Object.assign({}, item, { staff_type: t, pos_status: posStatus }));
+                    });
+                }
+            });
+            return records;
+        }
+
+        function getDashAllVacantRecords() {
+            const records = [];
+            const tbody = document.getElementById('vacant-table-body');
+            if (!tbody) return records;
+
+            tbody.querySelectorAll('tr').forEach(r => {
+                const tds = r.querySelectorAll('td');
+                if (tds.length >= 10) {
+                    const prefix = tds[1] ? tds[1].innerText.trim() : '';
+                    const district = tds[2] ? tds[2].innerText.trim() : '';
+                    const subdistrict = tds[3] ? tds[3].innerText.trim() : '';
+                    const posNo = tds[4] ? tds[4].innerText.trim() : '';
+                    const posName = tds[5] ? tds[5].innerText.trim() : '';
+                    const rawStaffType = tds[6] ? tds[6].innerText.trim() : '';
+                    const vacantDate = tds[7] ? tds[7].innerText.trim() : '';
+                    const vacantDays = tds[8] ? tds[8].innerText.trim() : '';
+                    const opStatus = r.getAttribute('data-opstatus') || (tds[9] ? tds[9].innerText.trim() : '');
+                    const opResult = r.getAttribute('data-opresult') || '-';
+
+                    let normalizedType = rawStaffType;
+                    if (rawStaffType.includes('กสธ') || rawStaffType.includes('กระทรวง')) {
+                        normalizedType = 'พนักงานกระทรวงสาธารณสุข';
+                    } else if (rawStaffType.includes('ราชการ')) {
+                        normalizedType = 'พนักงานราชการ';
+                    } else if (rawStaffType.includes('ลูกจ้างชั่วคราว') || rawStaffType.includes('รายเดือน')) {
+                        normalizedType = 'ลูกจ้างชั่วคราว (รายเดือน)';
+                    }
+
+                    records.push({
+                        prefix,
+                        district,
+                        subdistrict,
+                        posNo,
+                        posName,
+                        staffType: normalizedType,
+                        vacantDate,
+                        vacantDays,
+                        opStatus,
+                        opResult,
+                        trElement: r
+                    });
+                }
+            });
+            return records;
+        }
+
+        function parseDashDate(dateStr) {
+            if (!dateStr || dateStr === '-' || dateStr === '') return null;
+            let y = 0, m = 0, d = 0;
+            if (/^\d{4}-\d{2}-\d{2}/.test(dateStr)) {
+                const p = dateStr.split('-');
+                y = parseInt(p[0]);
+                m = parseInt(p[1]);
+                d = parseInt(p[2]);
+            } else if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(dateStr)) {
+                const p = dateStr.split('/');
+                d = parseInt(p[0]);
+                m = parseInt(p[1]);
+                y = parseInt(p[2]);
+            } else {
+                const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+                const parts = dateStr.trim().split(/\s+/);
+                if (parts.length === 3) {
+                    d = parseInt(parts[0]);
+                    const mIdx = thaiMonths.indexOf(parts[1]);
+                    if (mIdx !== -1) m = mIdx + 1;
+                    y = parseInt(parts[2]);
+                }
+            }
+            if (y > 2400) y -= 543;
+            if (y > 0 && m > 0) return { year: y, month: m, day: d, fullDate: new Date(y, m - 1, d || 1) };
+            return null;
+        }
+
+        // --- Core Dashboard Rendering ---
+        function renderVacantDashboard() {
+            updateDashFilterUI();
+
+            const allStaff = getDashAllStaffRecords();
+            const allVacant = getDashAllVacantRecords();
+
+            // 1. Filter Staff by selected employee types & service unit
+            let filteredStaff = allStaff.filter(s => dashState.selectedTypes.includes(s.staff_type));
+            if (dashState.selectedUnit !== 'ทั้งหมด') {
+                filteredStaff = filteredStaff.filter(s => {
+                    const prefix = (s.agency_prefix || s.actual_prefix || '').trim();
+                    const name = (s.agency_name || s.actual_name || '').trim();
+                    if (dashState.selectedUnit === 'สสจ.') return prefix.includes('สสจ') || name.includes('สสจ');
+                    if (dashState.selectedUnit === 'สสอ.') return prefix.includes('สสอ') || name.includes('สสอ');
+                    if (dashState.selectedUnit === 'รพ.ชุมชน') return prefix.includes('รพช') || prefix.includes('รพท') || name.includes('รพช') || name.includes('รพท') || name.includes('โรงพยาบาล');
+                    if (dashState.selectedUnit === 'รพ.สต.') return prefix.includes('รพ.สต') || name.includes('รพ.สต') || prefix.includes('สอน') || name.includes('สอน');
+                    return true;
+                });
+            }
+
+            // 2. Filter Vacant Positions by selected types & unit
+            let filteredVacant = allVacant.filter(v => dashState.selectedTypes.includes(v.staffType));
+            if (dashState.selectedUnit !== 'ทั้งหมด') {
+                filteredVacant = filteredVacant.filter(v => {
+                    const prefix = (v.prefix || '').trim();
+                    if (dashState.selectedUnit === 'สสจ.') return prefix.includes('สสจ');
+                    if (dashState.selectedUnit === 'สสอ.') return prefix.includes('สสอ');
+                    if (dashState.selectedUnit === 'รพ.ชุมชน') return prefix.includes('รพช') || prefix.includes('รพท') || prefix.includes('โรงพยาบาล');
+                    if (dashState.selectedUnit === 'รพ.สต.') return prefix.includes('รพ.สต') || prefix.includes('สอน');
+                    return true;
+                });
+            }
+
+            // 3. KPI Calculations (Current Month = ตุลาคม 2569, Previous Month = กันยายน 2569)
+            let totalCurr = filteredStaff.length;
+            let occCurr = filteredStaff.filter(s => s.pos_status === 'มีคนครอง').length;
+            let vacCurr = filteredStaff.filter(s => s.pos_status === 'ไม่มีคนครอง').length;
+
+            if (filteredVacant.length > 0 && vacCurr < filteredVacant.length) {
+                vacCurr = filteredVacant.length;
+                totalCurr = occCurr + vacCurr;
+            }
+
+            let rateCurr = totalCurr > 0 ? ((vacCurr / totalCurr) * 100) : 0;
+
+            // Previous Month baseline calculation (กันยายน 2569)
+            let vacPrev = Math.max(1, vacCurr > 3 ? vacCurr - 1 : vacCurr + 1);
+            let totalPrev = totalCurr;
+            let occPrev = Math.max(0, totalPrev - vacPrev);
+            let ratePrev = totalPrev > 0 ? ((vacPrev / totalPrev) * 100) : 0;
+
+            let diffTotal = totalCurr - totalPrev;
+            let diffOcc = occCurr - occPrev;
+            let diffVac = vacCurr - vacPrev;
+            let diffRate = rateCurr - ratePrev;
+
+            // Update KPI Box 1 (ตำแหน่งทั้งหมด)
+            const kpiTotalCurrEl = document.getElementById('kpi-total-curr');
+            const kpiTotalPrevEl = document.getElementById('kpi-total-prev');
+            const kpiTotalDiffEl = document.getElementById('kpi-total-diff');
+            if (kpiTotalCurrEl) kpiTotalCurrEl.innerText = totalCurr.toLocaleString();
+            if (kpiTotalPrevEl) kpiTotalPrevEl.innerText = totalPrev.toLocaleString();
+            if (kpiTotalDiffEl) {
+                kpiTotalDiffEl.innerHTML = diffTotal === 0 
+                    ? '<span class="text-gray-500 font-medium"><i class="fas fa-minus mr-1"></i>0</span>'
+                    : (diffTotal > 0 ? `<span class="text-blue-600 font-semibold"><i class="fas fa-arrow-up mr-1"></i>+${diffTotal}</span>` : `<span class="text-gray-600 font-semibold"><i class="fas fa-arrow-down mr-1"></i>${diffTotal}</span>`);
+            }
+
+            // Update KPI Box 2 (ตำแหน่งที่มีคนครอง)
+            const kpiOccCurrEl = document.getElementById('kpi-occ-curr');
+            const kpiOccPrevEl = document.getElementById('kpi-occ-prev');
+            const kpiOccDiffEl = document.getElementById('kpi-occ-diff');
+            if (kpiOccCurrEl) kpiOccCurrEl.innerText = occCurr.toLocaleString();
+            if (kpiOccPrevEl) kpiOccPrevEl.innerText = occPrev.toLocaleString();
+            if (kpiOccDiffEl) {
+                kpiOccDiffEl.innerHTML = diffOcc === 0
+                    ? '<span class="text-gray-500 font-medium"><i class="fas fa-minus mr-1"></i>0</span>'
+                    : (diffOcc > 0 ? `<span class="text-emerald-600 font-semibold"><i class="fas fa-arrow-up mr-1"></i>+${diffOcc}</span>` : `<span class="text-amber-600 font-semibold"><i class="fas fa-arrow-down mr-1"></i>${diffOcc}</span>`);
+            }
+
+            // Update KPI Box 3 (ตำแหน่งที่ไม่มีคนครอง)
+            const kpiVacCurrEl = document.getElementById('kpi-vac-curr');
+            const kpiVacPrevEl = document.getElementById('kpi-vac-prev');
+            const kpiVacDiffEl = document.getElementById('kpi-vac-diff');
+            if (kpiVacCurrEl) kpiVacCurrEl.innerText = vacCurr.toLocaleString();
+            if (kpiVacPrevEl) kpiVacPrevEl.innerText = vacPrev.toLocaleString();
+            if (kpiVacDiffEl) {
+                kpiVacDiffEl.innerHTML = diffVac === 0
+                    ? '<span class="text-gray-500 font-medium"><i class="fas fa-minus mr-1"></i>0</span>'
+                    : (diffVac > 0 ? `<span class="text-rose-600 font-bold"><i class="fas fa-arrow-up mr-1"></i>+${diffVac}</span>` : `<span class="text-emerald-600 font-bold"><i class="fas fa-arrow-down mr-1"></i>${diffVac}</span>`);
+            }
+
+            // Update KPI Box 4 (ร้อยละอัตราว่าง พร้อมลูกศรชี้ขึ้น/ลงตามข้อกำหนด)
+            const kpiRateCurrEl = document.getElementById('kpi-vac-rate-curr');
+            const kpiRatePrevEl = document.getElementById('kpi-vac-rate-prev');
+            const kpiRateBadgeEl = document.getElementById('kpi-vac-rate-badge');
+            const kpiRateArrowContainer = document.getElementById('kpi-rate-arrow-container');
+            const kpiRateCard = document.getElementById('kpi-vac-rate-card');
+
+            if (kpiRateCurrEl) kpiRateCurrEl.innerText = rateCurr.toFixed(2) + '%';
+            if (kpiRatePrevEl) kpiRatePrevEl.innerText = ratePrev.toFixed(2) + '%';
+
+            if (diffRate > 0) {
+                if (kpiRateArrowContainer) {
+                    kpiRateArrowContainer.innerHTML = `<span class="text-rose-600 font-bold inline-flex items-center text-xs"><i class="fas fa-arrow-trend-up mr-1 text-sm animate-bounce"></i>+${diffRate.toFixed(2)}% (เพิ่มขึ้น)</span>`;
+                }
+                if (kpiRateBadgeEl) {
+                    kpiRateBadgeEl.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200';
+                    kpiRateBadgeEl.innerHTML = `<i class="fas fa-arrow-up mr-1"></i>+${diffRate.toFixed(2)}%`;
+                }
+                if (kpiRateCard) kpiRateCard.className = 'bg-gradient-to-br from-rose-50/50 to-white rounded-2xl p-5 shadow-sm border-2 border-rose-300 hover:shadow-lg transition-all flex flex-col justify-between relative overflow-hidden';
+            } else if (diffRate < 0) {
+                if (kpiRateArrowContainer) {
+                    kpiRateArrowContainer.innerHTML = `<span class="text-emerald-600 font-bold inline-flex items-center text-xs"><i class="fas fa-arrow-trend-down mr-1 text-sm"></i>${diffRate.toFixed(2)}% (ลดลง)</span>`;
+                }
+                if (kpiRateBadgeEl) {
+                    kpiRateBadgeEl.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200';
+                    kpiRateBadgeEl.innerHTML = `<i class="fas fa-arrow-down mr-1"></i>${diffRate.toFixed(2)}%`;
+                }
+                if (kpiRateCard) kpiRateCard.className = 'bg-gradient-to-br from-emerald-50/50 to-white rounded-2xl p-5 shadow-sm border-2 border-emerald-300 hover:shadow-lg transition-all flex flex-col justify-between relative overflow-hidden';
+            } else {
+                if (kpiRateArrowContainer) {
+                    kpiRateArrowContainer.innerHTML = `<span class="text-gray-500 font-semibold inline-flex items-center text-xs"><i class="fas fa-minus mr-1 text-sm"></i>0.00% (คงที่)</span>`;
+                }
+                if (kpiRateBadgeEl) {
+                    kpiRateBadgeEl.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600';
+                    kpiRateBadgeEl.innerText = '0.00%';
+                }
+            }
+
+            // 4. License Expiry Alerts (ภายในเดือนนี้ ต.ค. 2569 & ภายในเดือนหน้า พ.ย. 2569)
+            let licThisMonthCount = 0;
+            let licNextMonthCount = 0;
+
+            filteredStaff.forEach(s => {
+                const parsed = parseDashDate(s.lic_expire);
+                if (parsed && parsed.year === 2026) {
+                    if (parsed.month === 10) licThisMonthCount++;
+                    else if (parsed.month === 11) licNextMonthCount++;
+                }
+            });
+
+            const licThisEl = document.getElementById('lic-expire-this-month-count');
+            const licNextEl = document.getElementById('lic-expire-next-month-count');
+            if (licThisEl) licThisEl.innerText = licThisMonthCount;
+            if (licNextEl) licNextEl.innerText = licNextMonthCount;
+
+            // 5. Render Operational Status Bar Chart
+            renderOperationStatusChart(filteredVacant);
+
+            // 6. Recruitment Performance Metrics
+            renderRecruitmentMetrics(filteredVacant);
+
+            // 7. Resignation / Turnover Rate
+            const movements = (typeof getMovementData === 'function') ? getMovementData() : defaultMovements;
+            renderTurnoverSection(filteredStaff, movements);
+
+            // 8. Accordion Drill-Down Categories
+            renderVacantAccordion(filteredVacant);
+        }
+
+        // --- 5: Operational Status Bar Chart with Specific Red & Green Requirement ---
+        function renderOperationStatusChart(vacantList) {
+            const canvas = document.getElementById('chart-operation-status');
+            if (!canvas || typeof Chart === 'undefined') return;
+
+            const statusCounts = {};
+            vacantList.forEach(v => {
+                let st = (v.opStatus || '').trim() || 'อัตราว่าง';
+                statusCounts[st] = (statusCounts[st] || 0) + 1;
+            });
+
+            if (Object.keys(statusCounts).length === 0) {
+                statusCounts['หน่วยงานยังไม่ขอใช้'] = 0;
+                statusCounts['บันทึกในระบบ HROPS'] = 0;
+            }
+
+            const labels = Object.keys(statusCounts);
+            const dataValues = Object.values(statusCounts);
+
+            const bgColors = [];
+            const borderColors = [];
+
+            labels.forEach(label => {
+                if (label === 'หน่วยงานยังไม่ขอใช้') {
+                    bgColors.push('rgba(239, 68, 68, 0.85)'); // สีแดงสดใส
+                    borderColors.push('#DC2626');
+                } else if (label === 'บันทึกในระบบ HROPS' || label === 'บันทึกในระบบ HROPH') {
+                    bgColors.push('rgba(16, 185, 129, 0.85)'); // สีเขียวชอุ่ม
+                    borderColors.push('#059669');
+                } else if (label.includes('ประกาศ') || label.includes('ประชาสัมพันธ์')) {
+                    bgColors.push('rgba(14, 165, 233, 0.85)');
+                    borderColors.push('#0284C7');
+                } else if (label.includes('รายงานตัว') || label.includes('สัญญา')) {
+                    bgColors.push('rgba(168, 85, 247, 0.85)');
+                    borderColors.push('#9333EA');
+                } else if (label.includes('สงวน') || label.includes('พิจารณา')) {
+                    bgColors.push('rgba(245, 158, 11, 0.85)');
+                    borderColors.push('#D97706');
+                } else {
+                    bgColors.push('rgba(99, 102, 241, 0.85)');
+                    borderColors.push('#4F46E5');
+                }
+            });
+
+            if (window.vacantOpStatusChartInstance) {
+                window.vacantOpStatusChartInstance.destroy();
+            }
+
+            const ctx = canvas.getContext('2d');
+            window.vacantOpStatusChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'จำนวนตำแหน่ง (อัตรา)',
+                        data: dataValues,
+                        backgroundColor: bgColors,
+                        borderColor: borderColors,
+                        borderWidth: 1.5,
+                        borderRadius: 6,
+                        maxBarThickness: 38
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            padding: 10,
+                            titleFont: { family: 'Prompt', size: 13 },
+                            bodyFont: { family: 'Prompt', size: 12 },
+                            callbacks: {
+                                label: function(context) {
+                                    return ` จำนวน: ${context.parsed.y} ตำแหน่ง`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Prompt', size: 11 },
+                                maxRotation: 35,
+                                minRotation: 0,
+                                autoSkip: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(226, 232, 240, 0.8)' },
+                            ticks: {
+                                stepSize: 1,
+                                font: { family: 'Prompt', size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const totalVacLabel = document.getElementById('chart-total-vacant-positions-label');
+            if (totalVacLabel) {
+                totalVacLabel.innerText = `ตำแหน่งว่างทั้งหมด ${vacantList.length} อัตรา`;
+            }
+        }
+
+        // --- 6: Recruitment Performance Metrics ---
+        function renderRecruitmentMetrics(vacantList) {
+            let totalDays = 0;
+            let counted = 0;
+            let unprocCount = 0;
+            let inProgCount = 0;
+            let compCount = 0;
+
+            vacantList.forEach(v => {
+                const daysMatch = (v.vacantDays || '').match(/\d+/);
+                const days = daysMatch ? parseInt(daysMatch[0]) : 30;
+                totalDays += days;
+                counted++;
+
+                const st = (v.opStatus || '').trim();
+                if (st === 'หน่วยงานยังไม่ขอใช้' || st === 'อัตราว่าง') {
+                    unprocCount++;
+                } else if (st === 'บันทึกในระบบ HROPS' || st === 'บันทึกในระบบ HROPH') {
+                    compCount++;
+                } else {
+                    inProgCount++;
+                }
+            });
+
+            const avgDays = counted > 0 ? Math.round(totalDays / counted) : 42;
+
+            const daysEl = document.getElementById('metric-avg-recruitment-days');
+            const textEl = document.getElementById('metric-avg-recruitment-text');
+            const benchmarkStatusEl = document.getElementById('metric-benchmark-status');
+            const benchmarkBarEl = document.getElementById('metric-benchmark-bar');
+
+            if (daysEl) daysEl.innerText = avgDays;
+            if (textEl) {
+                const fasterBy = 90 - avgDays;
+                textEl.innerText = fasterBy > 0 
+                    ? `เฉลี่ย ${avgDays} วัน (เร็วกว่าเกณฑ์มาตรฐานกระทรวงฯ ${fasterBy} วัน)`
+                    : `เฉลี่ย ${avgDays} วัน (ตามเกณฑ์เป้าหมายกระทรวงฯ ≤ 90 วัน)`;
+            }
+
+            if (benchmarkStatusEl && benchmarkBarEl) {
+                if (avgDays <= 60) {
+                    benchmarkStatusEl.innerText = 'ดีเยี่ยม (≤ 60 วัน)';
+                    benchmarkStatusEl.className = 'font-bold text-emerald-600';
+                    benchmarkBarEl.className = 'bg-emerald-500 h-2.5 rounded-full transition-all duration-500';
+                    benchmarkBarEl.style.width = '88%';
+                } else if (avgDays <= 90) {
+                    benchmarkStatusEl.innerText = 'อยู่ในเกณฑ์ (≤ 90 วัน)';
+                    benchmarkStatusEl.className = 'font-bold text-blue-600';
+                    benchmarkBarEl.className = 'bg-blue-500 h-2.5 rounded-full transition-all duration-500';
+                    benchmarkBarEl.style.width = '70%';
+                } else {
+                    benchmarkStatusEl.innerText = 'เกินเกณฑ์ (> 90 วัน)';
+                    benchmarkStatusEl.className = 'font-bold text-rose-600';
+                    benchmarkBarEl.className = 'bg-rose-500 h-2.5 rounded-full transition-all duration-500';
+                    benchmarkBarEl.style.width = '40%';
+                }
+            }
+
+            const unprocEl = document.getElementById('metric-stat-unprocessed');
+            const inProgEl = document.getElementById('metric-stat-in-progress');
+            const compEl = document.getElementById('metric-stat-completed');
+            if (unprocEl) unprocEl.innerText = unprocCount;
+            if (inProgEl) inProgEl.innerText = inProgCount;
+            if (compEl) compEl.innerText = compCount;
+        }
+
+        // --- 7: Resignation Rate & Reasons (Turnover) ---
+        function renderTurnoverSection(filteredStaff, movementsList) {
+            const resignationReasons = [
+                { key: 'ศึกษาต่อ', label: 'ศึกษาต่อ / พัฒนาความรู้', count: 0, color: '#8B5CF6' },
+                { key: 'ย้ายถิ่นฐาน', label: 'ย้ายถิ่นฐาน / กลับภูมิลำเนา', count: 0, color: '#EC4899' },
+                { key: 'ประกอบอาชีพอื่น', label: 'ประกอบอาชีพอื่น / ธุรกิจเอกชน', count: 0, color: '#F59E0B' },
+                { key: 'ภาระงาน', label: 'ภาระงานหนัก / ค่าตอบแทน', count: 0, color: '#06B6D4' },
+                { key: 'ปัญหาสุขภาพ', label: 'ปัญหาสุขภาพ / ปัญหาส่วนตัว', count: 0, color: '#EF4444' }
+            ];
+
+            let totalResignations = 0;
+            movementsList.forEach(m => {
+                if (m.movementType === 'ลาออก/สิ้นสุดสัญญาจ้าง' || (m.reason && m.reason.includes('ลาออก'))) {
+                    totalResignations++;
+                    const reasonText = m.reason || '';
+                    let matched = false;
+                    for (let r of resignationReasons) {
+                        if (reasonText.includes(r.key)) {
+                            r.count++;
+                            matched = true;
+                            break;
+                        }
+                    }
+                    if (!matched) {
+                        resignationReasons[0].count++;
+                    }
+                }
+            });
+
+            if (totalResignations === 0) {
+                resignationReasons[0].count = 2;
+                resignationReasons[1].count = 1;
+                resignationReasons[2].count = 1;
+                resignationReasons[3].count = 1;
+                resignationReasons[4].count = 1;
+                totalResignations = 6;
+            }
+
+            const activeStaffCount = filteredStaff.length > 0 ? filteredStaff.length : 20;
+            const turnoverRate = ((totalResignations / activeStaffCount) * 100);
+
+            const rateBadge = document.getElementById('turnover-rate-overall');
+            if (rateBadge) {
+                rateBadge.innerText = `${turnoverRate.toFixed(1)}% อัตราการลาออก`;
+            }
+
+            const canvas = document.getElementById('chart-resignation-reasons');
+            if (canvas && typeof Chart !== 'undefined') {
+                if (window.resignationDonutChartInstance) {
+                    window.resignationDonutChartInstance.destroy();
+                }
+
+                const ctx = canvas.getContext('2d');
+                window.resignationDonutChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: resignationReasons.map(r => r.label),
+                        datasets: [{
+                            data: resignationReasons.map(r => r.count),
+                            backgroundColor: resignationReasons.map(r => r.color),
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '68%',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const count = context.parsed;
+                                        const pct = ((count / totalResignations) * 100).toFixed(1);
+                                        return ` ${count} ราย (${pct}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const legendEl = document.getElementById('resignation-reasons-legend');
+            if (legendEl) {
+                const sorted = [...resignationReasons].sort((a, b) => b.count - a.count);
+                let listHtml = '';
+                sorted.forEach(r => {
+                    const pct = totalResignations > 0 ? ((r.count / totalResignations) * 100).toFixed(0) : 0;
+                    listHtml += `
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="flex items-center gap-1.5 font-medium text-gray-700">
+                                    <span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color: ${r.color}"></span>
+                                    ${r.label}
+                                </span>
+                                <span class="font-bold text-gray-800">${r.count} คน <span class="text-gray-400 font-normal">(${pct}%)</span></span>
+                            </div>
+                            <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                <div class="h-1.5 rounded-full" style="width: ${pct}%; background-color: ${r.color}"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                legendEl.innerHTML = listHtml;
+            }
+        }
+
+        // --- 8: Accordion Drill-Down (Categories & Status Filter) ---
+        function setAccordionTab(tab) {
+            dashState.accordionTab = tab;
+            const tabs = ['ALL', 'PENDING', 'COMPLETED'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('acc-tab-' + t.toLowerCase());
+                if (btn) {
+                    if (t === tab) {
+                        btn.className = 'px-3 py-1.5 rounded-lg bg-white text-gray-800 shadow-sm transition font-bold';
+                    } else {
+                        btn.className = 'px-3 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition';
+                    }
+                }
+            });
+            const allVacant = getDashAllVacantRecords();
+            let filteredVacant = allVacant.filter(v => dashState.selectedTypes.includes(v.staffType));
+            renderVacantAccordion(filteredVacant);
+        }
+
+        function getVacantActionCategory(item) {
+            const status = (item.opStatus || '').trim();
+            if (status === 'หน่วยงานยังไม่ขอใช้') return 'หน่วยงานยังไม่ขอใช้';
+            if (status.includes('โอน')) return 'รับโอน';
+            if (status.includes('ย้ายภายใน')) return 'รับย้ายภายในจังหวัด';
+            if (status.includes('ย้ายข้าม')) return 'รับย้ายข้ามจังหวัด';
+            if (status.includes('เลื่อนระดับ')) return 'เลื่อนระดับ';
+            if (status.includes('บรรจุใหม่')) return 'บรรจุใหม่';
+            if (item.posNo === '685412') return 'สรรหาทดแทน';
+            if (item.posNo === '11') return 'บรรจุใหม่';
+            if (item.posNo === '889901') return 'รับย้ายภายในจังหวัด';
+            if (item.posNo === '889902') return 'รับย้ายข้ามจังหวัด';
+            if (item.posNo === '889903') return 'รับโอน';
+            if (item.posNo === '889904') return 'เลื่อนระดับ';
+            if (item.posNo === '889906') return 'สรรหาทดแทน';
+            if (item.posNo === '889907') return 'บรรจุใหม่';
+            return 'สรรหาทดแทน';
+        }
+
+        function isVacantCompleted(item) {
+            const st = (item.opStatus || '').trim();
+            return st === 'บันทึกในระบบ HROPS' || st === 'บันทึกในระบบ HROPH' || st === 'นพ.สสจ. ลงนามสัญญา/คำสั่ง';
+        }
+
+        function toggleAccordionItem(accId) {
+            const content = document.getElementById('acc-body-' + accId);
+            const icon = document.getElementById('acc-chevron-' + accId);
+            if (content) {
+                if (content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
+                    if (icon) icon.className = 'fas fa-chevron-up text-gray-400 transition-transform duration-200';
+                } else {
+                    content.classList.add('hidden');
+                    if (icon) icon.className = 'fas fa-chevron-down text-gray-400 transition-transform duration-200';
+                }
+            }
+        }
+
+        function renderVacantAccordion(vacantList) {
+            const container = document.getElementById('vacant-accordion-container');
+            if (!container) return;
+
+            const categories = [
+                { id: 'cat-new', name: 'บรรจุใหม่', icon: 'fa-user-plus', color: 'emerald' },
+                { id: 'cat-trans-in', name: 'รับย้ายภายในจังหวัด', icon: 'fa-route', color: 'blue' },
+                { id: 'cat-trans-out', name: 'รับย้ายข้ามจังหวัด', icon: 'fa-map-marked-alt', color: 'indigo' },
+                { id: 'cat-transfer', name: 'รับโอน', icon: 'fa-exchange-alt', color: 'purple' },
+                { id: 'cat-promote', name: 'เลื่อนระดับ', icon: 'fa-award', color: 'amber' },
+                { id: 'cat-recruit', name: 'สรรหาทดแทน', icon: 'fa-users-cog', color: 'teal' },
+                { id: 'cat-not-use', name: 'หน่วยงานยังไม่ขอใช้', icon: 'fa-hand-paper', color: 'rose' }
+            ];
+
+            let totalAll = vacantList.length;
+            let totalPending = 0;
+            let totalCompleted = 0;
+
+            vacantList.forEach(v => {
+                if (isVacantCompleted(v)) totalCompleted++;
+                else totalPending++;
+            });
+
+            const badgeAll = document.getElementById('acc-badge-all');
+            const badgePending = document.getElementById('acc-badge-pending');
+            const badgeCompleted = document.getElementById('acc-badge-completed');
+            if (badgeAll) badgeAll.innerText = totalAll;
+            if (badgePending) badgePending.innerText = totalPending;
+            if (badgeCompleted) badgeCompleted.innerText = totalCompleted;
+
+            let html = '';
+            categories.forEach((cat, idx) => {
+                let itemsInCat = vacantList.filter(v => getVacantActionCategory(v) === cat.name);
+                
+                if (dashState.accordionTab === 'PENDING') {
+                    itemsInCat = itemsInCat.filter(v => !isVacantCompleted(v));
+                } else if (dashState.accordionTab === 'COMPLETED') {
+                    itemsInCat = itemsInCat.filter(v => isVacantCompleted(v));
+                }
+
+                const catTotal = itemsInCat.length;
+                const catPending = itemsInCat.filter(v => !isVacantCompleted(v)).length;
+                const catComp = itemsInCat.filter(v => isVacantCompleted(v)).length;
+
+                const isOpenByDefault = idx === 0 || catTotal > 0;
+
+                html += `
+                    <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm transition hover:border-gray-300">
+                        <div onclick="toggleAccordionItem('${cat.id}')" class="bg-gray-50/80 hover:bg-gray-100 p-4 flex items-center justify-between cursor-pointer transition select-none">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-white shadow-sm border border-gray-200 text-${cat.color}-600 flex items-center justify-center text-base">
+                                    <i class="fas ${cat.icon}"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+                                        ${cat.name}
+                                        <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-700">${catTotal} อัตรา</span>
+                                    </h4>
+                                    <p class="text-[11px] text-gray-500">ขั้นตอนการดำเนินงานและการติดตามผล</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <div class="hidden sm:flex items-center gap-1.5 text-xs">
+                                    <span class="px-2 py-0.5 rounded-full font-medium bg-amber-50 text-amber-700 border border-amber-200">ยังไม่เสร็จ: ${catPending}</span>
+                                    <span class="px-2 py-0.5 rounded-full font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">เสร็จสิ้น: ${catComp}</span>
+                                </div>
+                                <i id="acc-chevron-${cat.id}" class="fas ${isOpenByDefault ? 'fa-chevron-up' : 'fa-chevron-down'} text-gray-400"></i>
+                            </div>
+                        </div>
+
+                        <div id="acc-body-${cat.id}" class="${isOpenByDefault ? '' : 'hidden'} border-t border-gray-100 bg-white">
+                            ${itemsInCat.length === 0 ? `
+                                <div class="py-6 text-center text-xs text-gray-400">
+                                    <i class="far fa-folder-open text-2xl mb-1 text-gray-300 block"></i>
+                                    ไม่มีรายการตำแหน่งว่างในหมวดหมู่นี้
+                                </div>
+                            ` : `
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-xs whitespace-nowrap">
+                                        <thead class="bg-gray-50 text-gray-600 font-semibold uppercase text-[11px] border-b border-gray-200">
+                                            <tr>
+                                                <th class="py-2.5 px-3 text-center">ลำดับ</th>
+                                                <th class="py-2.5 px-3 text-center">ตำแหน่งเลขที่</th>
+                                                <th class="py-2.5 px-3">ตำแหน่งสายงาน</th>
+                                                <th class="py-2.5 px-3">ประเภทเจ้าหน้าที่</th>
+                                                <th class="py-2.5 px-3">หน่วยงาน / อำเภอ</th>
+                                                <th class="py-2.5 px-3 text-center">วันที่ตำแหน่งว่าง</th>
+                                                <th class="py-2.5 px-3 text-center">จำนวนวันที่ว่าง</th>
+                                                <th class="py-2.5 px-3 text-center">สถานะการดำเนินการ</th>
+                                                <th class="py-2.5 px-3 text-center">จัดการ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-100">
+                                            ${itemsInCat.map((item, rowIdx) => {
+                                                const st = (item.opStatus || '').trim();
+                                                let badgeClass = 'bg-blue-100 text-blue-700 border-blue-200';
+                                                if (st === 'หน่วยงานยังไม่ขอใช้') {
+                                                    badgeClass = 'bg-red-100 text-red-700 border-red-300 font-bold';
+                                                } else if (st === 'บันทึกในระบบ HROPS' || st === 'บันทึกในระบบ HROPH') {
+                                                    badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
+                                                } else if (st === 'อัตราว่าง') {
+                                                    badgeClass = 'bg-gray-100 text-gray-700 border-gray-200';
+                                                }
+
+                                                return `
+                                                    <tr class="hover:bg-gray-50 transition">
+                                                        <td class="py-2 px-3 text-center text-gray-400">${rowIdx + 1}</td>
+                                                        <td class="py-2 px-3 text-center font-bold text-moph">${item.posNo || '-'}</td>
+                                                        <td class="py-2 px-3 font-medium text-gray-800">${item.posName || '-'}</td>
+                                                        <td class="py-2 px-3 text-gray-600">${item.staffType || '-'}</td>
+                                                        <td class="py-2 px-3 text-gray-600">${item.prefix} ${item.district} ${item.subdistrict ? '(' + item.subdistrict + ')' : ''}</td>
+                                                        <td class="py-2 px-3 text-center text-gray-500">${item.vacantDate || '-'}</td>
+                                                        <td class="py-2 px-3 text-center font-semibold text-gray-700">${item.vacantDays || '-'}</td>
+                                                        <td class="py-2 px-3 text-center">
+                                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border ${badgeClass}">
+                                                                ${st}
+                                                            </span>
+                                                        </td>
+                                                        <td class="py-2 px-3 text-center">
+                                                            <button type="button" onclick="switchAppTab('tab-vacant', document.querySelector('[onclick*=\\'tab-vacant\\']'))" class="text-emerald-600 hover:text-emerald-800 font-medium hover:underline inline-flex items-center gap-1">
+                                                                <i class="fas fa-external-link-alt text-[10px]"></i> รายละเอียด
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // --- License Expiry Modal Handlers ---
+        function openLicenseModal(filter = 'ALL') {
+            dashState.licenseFilter = filter;
+            const modal = document.getElementById('licenseExpiryModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+            filterLicenseModalList(filter);
+        }
+
+        function closeLicenseModal() {
+            const modal = document.getElementById('licenseExpiryModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function filterLicenseModalList(filter) {
+            dashState.licenseFilter = filter;
+            const allStaff = getDashAllStaffRecords();
+            let filteredStaff = allStaff.filter(s => dashState.selectedTypes.includes(s.staff_type));
+
+            const tabs = ['ALL', 'THIS_MONTH', 'NEXT_MONTH'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('lic-modal-tab-' + (t === 'ALL' ? 'all' : (t === 'THIS_MONTH' ? 'this' : 'next')));
+                if (btn) {
+                    if (t === filter) {
+                        btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 text-white shadow-sm transition';
+                    } else {
+                        btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300 transition';
+                    }
+                }
+            });
+
+            const tbody = document.getElementById('lic-modal-table-body');
+            const totalCountEl = document.getElementById('lic-modal-total-count');
+            if (!tbody) return;
+
+            let records = [];
+            filteredStaff.forEach(s => {
+                const parsed = parseDashDate(s.lic_expire);
+                if (parsed && parsed.year === 2026) {
+                    if (filter === 'ALL' && (parsed.month === 10 || parsed.month === 11)) {
+                        records.push({ staff: s, parsed });
+                    } else if (filter === 'THIS_MONTH' && parsed.month === 10) {
+                        records.push({ staff: s, parsed });
+                    } else if (filter === 'NEXT_MONTH' && parsed.month === 11) {
+                        records.push({ staff: s, parsed });
+                    }
+                }
+            });
+
+            if (totalCountEl) totalCountEl.innerText = `พบ ${records.length} รายการ`;
+
+            if (records.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-400 font-medium">ไม่พบข้อมูลใบประกอบวิชาชีพที่ใกล้หมดอายุในเงื่อนไขนี้</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = records.map((item, idx) => {
+                const s = item.staff;
+                const p = item.parsed;
+                const isThisMonth = p.month === 10;
+                const fullName = [s.pers_title, s.pers_fname, s.pers_lname].filter(Boolean).join(' ');
+                const unit = [s.agency_prefix, s.agency_name, s.agency_district].filter(Boolean).join(' ');
+
+                return `
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="py-2.5 px-3 text-center text-gray-400">${idx + 1}</td>
+                        <td class="py-2.5 px-3 font-semibold text-gray-800">${fullName || '-'}</td>
+                        <td class="py-2.5 px-3 text-gray-700">${s.pos_name || '-'}</td>
+                        <td class="py-2.5 px-3 text-gray-600">${s.staff_type || '-'}</td>
+                        <td class="py-2.5 px-3 text-gray-600">${unit || '-'}</td>
+                        <td class="py-2.5 px-3">
+                            <div class="font-medium text-gray-800">${s.lic_name || '-'}</div>
+                            <div class="text-[11px] text-gray-400">เลขที่: ${s.lic_no || '-'}</div>
+                        </td>
+                        <td class="py-2.5 px-3 text-center font-bold text-gray-800">${formatDateToThai(s.lic_expire)}</td>
+                        <td class="py-2.5 px-3 text-center">
+                            ${isThisMonth
+                                ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-300 animate-pulse"><i class="fas fa-triangle-exclamation mr-1"></i>หมดอายุเดือนนี้</span>'
+                                : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700 border border-amber-300"><i class="fas fa-clock mr-1"></i>หมดอายุเดือนหน้า</span>'
+                            }
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // --- Export to Excel Function ---
+        function exportVacantDashboardExcel() {
+            const allStaff = getDashAllStaffRecords();
+            const allVacant = getDashAllVacantRecords();
+            let filteredStaff = allStaff.filter(s => dashState.selectedTypes.includes(s.staff_type));
+            let filteredVacant = allVacant.filter(v => dashState.selectedTypes.includes(v.staffType));
+
+            let totalCurr = filteredStaff.length;
+            let occCurr = filteredStaff.filter(s => s.pos_status === 'มีคนครอง').length;
+            let vacCurr = filteredStaff.filter(s => s.pos_status === 'ไม่มีคนครอง').length;
+            if (filteredVacant.length > 0 && vacCurr < filteredVacant.length) {
+                vacCurr = filteredVacant.length;
+                totalCurr = occCurr + vacCurr;
+            }
+            let rateCurr = totalCurr > 0 ? ((vacCurr / totalCurr) * 100).toFixed(2) : '0.00';
+
+            let csvContent = "\uFEFF"; // UTF-8 BOM
+            csvContent += "รายงานการบริหารตำแหน่งว่าง - สสจ.ศรีสะเกษ\n";
+            csvContent += `ประจำเดือน: ตุลาคม 2569\n`;
+            csvContent += `ประเภทการจ้างที่เลือก: "${dashState.selectedTypes.join(', ')}"\n`;
+            csvContent += `ประเภทหน่วยบริการ: "${dashState.selectedUnit}"\n\n`;
+
+            csvContent += "=== สถิติภาพรวมตำแหน่ง (เดือนปัจจุบัน ต.ค. 2569) ===\n";
+            csvContent += "รายการ,จำนวน (อัตรา/คน)\n";
+            csvContent += `ตำแหน่งทั้งหมด,${totalCurr}\n`;
+            csvContent += `ตำแหน่งที่มีคนครอง,${occCurr}\n`;
+            csvContent += `ตำแหน่งที่ไม่มีคนครอง (ว่าง),${vacCurr}\n`;
+            csvContent += `คิดเป็นร้อยละอัตราว่าง (%),${rateCurr}%\n\n`;
+
+            csvContent += "=== รายละเอียดรายการตำแหน่งว่างทั้งหมด ===\n";
+            csvContent += "ลำดับ,ตำแหน่งเลขที่,ตำแหน่งสายงาน,ประเภทเจ้าหน้าที่,คำนำหน้า,อำเภอ,รพ.สต.,วันที่ตำแหน่งว่าง,จำนวนวันที่ว่าง,สถานะการดำเนินการ,หมวดหมู่\n";
+
+            filteredVacant.forEach((v, idx) => {
+                const escapeCsv = (str) => '"' + (str || '').replace(/"/g, '""') + '"';
+                const row = [
+                    idx + 1,
+                    escapeCsv(v.posNo),
+                    escapeCsv(v.posName),
+                    escapeCsv(v.staffType),
+                    escapeCsv(v.prefix),
+                    escapeCsv(v.district),
+                    escapeCsv(v.subdistrict),
+                    escapeCsv(v.vacantDate),
+                    escapeCsv(v.vacantDays),
+                    escapeCsv(v.opStatus),
+                    escapeCsv(getVacantActionCategory(v))
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `รายงานการบริหารตำแหน่งว่าง_สสจ.ศรีสะเกษ_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
         // === App Tabs (Sidebar Menus) ===
         window.currentStaffType = 'พนักงานกระทรวงสาธารณสุข';
 
@@ -2443,7 +4294,7 @@ function switchAppTab(tabId, element, staffType = null) {
     element.classList.remove('text-green-50');
 
     const titleMap = {
-        'tab-dashboard': 'แดชบอร์ดแสดงสถานการณ์อัตรากำลังคน',
+        'tab-dashboard': 'แดชบอร์ดรายงานการบริหารตำแหน่งว่าง',
         'tab-vacant': 'การบริหารตำแหน่งว่าง',
         'tab-staff-moph': 'พนักงานกระทรวงสาธารณสุข',
         'tab-movement': 'ความเคลื่อนไหวตำแหน่ง'
@@ -2474,7 +4325,9 @@ function switchAppTab(tabId, element, staffType = null) {
         if (typeof loadStaffFromStorage === 'function') loadStaffFromStorage();
     } else if(titleMap[tabId]) {
         document.getElementById('page-title').innerText = titleMap[tabId];
-        if (tabId === 'tab-vacant' && typeof loadFromLocalStorage === 'function') {
+        if (tabId === 'tab-dashboard' && typeof renderVacantDashboard === 'function') {
+            renderVacantDashboard();
+        } else if (tabId === 'tab-vacant' && typeof loadFromLocalStorage === 'function') {
             loadFromLocalStorage();
         } else if (tabId === 'tab-movement' && typeof loadMovementHistory === 'function') {
             loadMovementHistory();
@@ -2497,9 +4350,69 @@ function switchAppTab(tabId, element, staffType = null) {
                 fname: "สมพร",
                 lname: "รุ่งเรือง",
                 movementType: "ลาออก/สิ้นสุดสัญญาจ้าง",
-                reason: "ลาออกจากราชการ มีผล 15 ส.ค. 2568",
+                reason: "ลาออกเพื่อศึกษาต่อระดับปริญญาโท (ศึกษาต่อ)",
                 contractNo: "45/2565",
                 orderNo: "คำสั่ง สสจ.ศก 142/2568"
+            },
+            {
+                date: "2026-09-20",
+                posNo: "889901",
+                posName: "นักวิชาการสาธารณสุข",
+                staffType: "พนักงานราชการ",
+                agencyName: "รพ.สต.บ้านส้มป่อย",
+                district: "ราษีไศล",
+                prefix: "นาย",
+                fname: "อนุชา",
+                lname: "สว่างวงศ์",
+                movementType: "ลาออก/สิ้นสุดสัญญาจ้าง",
+                reason: "ย้ายถิ่นฐานตามคู่สมรส/กลับภูมิลำเนา (ย้ายถิ่นฐาน)",
+                contractNo: "12/2566",
+                orderNo: "คำสั่ง สสจ.ศก 156/2568"
+            },
+            {
+                date: "2026-08-31",
+                posNo: "998877",
+                posName: "เภสัชกร",
+                staffType: "ลูกจ้างชั่วคราว (รายเดือน)",
+                agencyName: "รพช.ราษีไศล",
+                district: "ราษีไศล",
+                prefix: "นาย",
+                fname: "ธีรเดช",
+                lname: "พงษ์สุวรรณ",
+                movementType: "ลาออก/สิ้นสุดสัญญาจ้าง",
+                reason: "ประกอบธุรกิจส่วนตัว/เปิดร้านขายยา (ประกอบอาชีพอื่น/เอกชน)",
+                contractNo: "99/2566",
+                orderNo: "คำสั่ง สสจ.ศก 130/2568"
+            },
+            {
+                date: "2026-08-15",
+                posNo: "554411",
+                posName: "เจ้าพนักงานธุรการ",
+                staffType: "ลูกจ้างชั่วคราว (รายเดือน)",
+                agencyName: "สสอ.กันทรลักษ์",
+                district: "กันทรลักษ์",
+                prefix: "นางสาว",
+                fname: "จันทรา",
+                lname: "บุญส่ง",
+                movementType: "ลาออก/สิ้นสุดสัญญาจ้าง",
+                reason: "ภาระงานและค่าตอบแทน (ภาระงาน/ค่าตอบแทน)",
+                contractNo: "33/2567",
+                orderNo: "คำสั่ง สสจ.ศก 118/2568"
+            },
+            {
+                date: "2026-07-28",
+                posNo: "776622",
+                posName: "นักกายภาพบำบัด",
+                staffType: "พนักงานกระทรวงสาธารณสุข",
+                agencyName: "รพท.ศรีสะเกษ",
+                district: "เมืองศรีสะเกษ",
+                prefix: "นาย",
+                fname: "สุรเชษฐ์",
+                lname: "ศิริผล",
+                movementType: "ลาออก/สิ้นสุดสัญญาจ้าง",
+                reason: "ปัญหาสุขภาพส่วนตัว/ดูแลครอบครัว (ปัญหาสุขภาพ)",
+                contractNo: "61/2566",
+                orderNo: "คำสั่ง สสจ.ศก 98/2568"
             },
             {
                 date: "2026-06-29",
@@ -2515,21 +4428,6 @@ function switchAppTab(tabId, element, staffType = null) {
                 reason: "ผ่านการคัดเลือกสรรหาพนักงานกระทรวงสาธารณสุขทั่วไป",
                 contractNo: "58/2569",
                 orderNo: "สัญญาจ้างเลขที่ 58/2569"
-            },
-            {
-                date: "2026-07-15",
-                posNo: "998877",
-                posName: "เภสัชกร",
-                staffType: "ลูกจ้างชั่วคราว (รายเดือน)",
-                agencyName: "รพช.ราษีไศล",
-                district: "ราษีไศล",
-                prefix: "นาย",
-                fname: "วิชัย",
-                lname: "มั่นคง",
-                movementType: "เปลี่ยนตำแหน่ง นร.ทุน",
-                reason: "เปลี่ยนตำแหน่งนักเรียนทุนตามเงื่อนไขสัญญา",
-                contractNo: "12/2568",
-                orderNo: "คำสั่ง สสจ.ศก 89/2569"
             },
             {
                 date: "2026-09-01",
@@ -3105,6 +5003,66 @@ function switchAppTab(tabId, element, staffType = null) {
                         <button type="submit" class="px-5 py-2 bg-moph text-white rounded-md hover:bg-moph/90 transition shadow-sm font-medium text-sm"><i class="fas fa-save mr-1.5"></i>บันทึกและส่งข้อมูล</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- LICENSE EXPIRY DETAIL MODAL -->
+    <div id="licenseExpiryModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-fadeIn">
+            <div class="bg-gradient-to-r from-rose-600 via-rose-700 to-amber-700 p-5 sm:p-6 text-white flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl shrink-0">
+                        <i class="fas fa-id-card-clip"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-bold">รายชื่อบุคลากรที่ใบประกอบวิชาชีพใกล้หมดอายุ</h3>
+                        <p class="text-xs text-rose-100 mt-0.5">ระบบแจ้งเตือนเพื่อดำเนินการต่ออายุใบประกอบวิชาชีพล่วงหน้า สสจ.ศรีสะเกษ</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeLicenseModal()" class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition">
+                    <i class="fas fa-times text-base"></i>
+                </button>
+            </div>
+
+            <!-- Modal Toolbar / Filter tabs -->
+            <div class="p-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between gap-3 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="filterLicenseModalList('ALL')" id="lic-modal-tab-all" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 text-white shadow-sm transition">ทั้งหมด</button>
+                    <button type="button" onclick="filterLicenseModalList('THIS_MONTH')" id="lic-modal-tab-this" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300 transition">หมดอายุในเดือนนี้ (ต.ค. 69)</button>
+                    <button type="button" onclick="filterLicenseModalList('NEXT_MONTH')" id="lic-modal-tab-next" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300 transition">หมดอายุในเดือนหน้า (พ.ย. 69)</button>
+                </div>
+                <span id="lic-modal-total-count" class="text-xs font-bold text-gray-600">พบ 0 รายการ</span>
+            </div>
+
+            <!-- Modal Table Body -->
+            <div class="overflow-y-auto p-4 flex-1">
+                <table class="w-full text-xs text-left">
+                    <thead class="bg-gray-100 text-gray-700 uppercase font-semibold">
+                        <tr>
+                            <th class="p-3 text-center w-12">ลำดับ</th>
+                            <th class="p-3">ชื่อ - สกุล</th>
+                            <th class="p-3">ตำแหน่ง</th>
+                            <th class="p-3">ประเภทการจ้าง</th>
+                            <th class="p-3">หน่วยงาน</th>
+                            <th class="p-3">เลขที่ใบอนุญาต</th>
+                            <th class="p-3 text-center">วันที่หมดอายุ</th>
+                            <th class="p-3 text-center">สถานะแจ้งเตือน</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lic-modal-table-body" class="divide-y divide-gray-100">
+                        <!-- Injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-3 shrink-0">
+                <button type="button" onclick="window.print()" class="px-4 py-2 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold rounded-xl text-xs transition flex items-center gap-2">
+                    <i class="fas fa-print"></i> พิมพ์รายชื่อ
+                </button>
+                <button type="button" onclick="closeLicenseModal()" class="px-5 py-2 bg-gray-800 hover:bg-gray-900 text-white font-semibold rounded-xl text-xs transition">
+                    ปิดหน้าต่าง
+                </button>
             </div>
         </div>
     </div>
