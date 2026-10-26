@@ -3749,16 +3749,9 @@ function switchAppTab(tabId, element, staffType = null) {
         window.currentStaffType = staffType;
         document.getElementById('page-title').innerText = staffType;
         
-        // Update table header title with matching color badge
-        const colorBadges = {
-            'พนักงานราชการ': '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-300 ml-2 shadow-sm"><span class="w-2 h-2 rounded-full bg-yellow-500 mr-1.5"></span>สีเหลือง</span>',
-            'ลูกจ้างประจำ': '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-800 border border-orange-300 ml-2 shadow-sm"><span class="w-2 h-2 rounded-full bg-orange-500 mr-1.5"></span>สีส้ม</span>',
-            'พนักงานกระทรวงสาธารณสุข': '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 ml-2 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>สีเขียว</span>',
-            'ลูกจ้างชั่วคราว (รายเดือน)': '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-100 text-sky-800 border border-sky-300 ml-2 shadow-sm"><span class="w-2 h-2 rounded-full bg-sky-500 mr-1.5"></span>สีฟ้า</span>',
-            'ลูกจ้างชั่วคราวรายวัน/จ้างเหมา': '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-pink-100 text-pink-800 border border-pink-300 ml-2 shadow-sm"><span class="w-2 h-2 rounded-full bg-pink-500 mr-1.5"></span>สีชมพู</span>'
-        };
+        // Update table header title
         const tableTitle = document.querySelector('#tab-staff-moph h3.font-bold');
-        if(tableTitle) tableTitle.innerHTML = 'รายชื่อ' + staffType + 'ทั้งหมด ' + (colorBadges[staffType] || '');
+        if(tableTitle) tableTitle.textContent = 'รายชื่อ' + staffType + 'ทั้งหมด';
         
         // Update modal title
         const modalTitle = document.querySelector('#staffModal h3.text-xl');
