@@ -471,15 +471,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Quick Pill Chips -->
-                                <div class="flex items-center gap-1.5 flex-wrap" id="dash-unit-container">
-                                    <button type="button" onclick="setDashUnitFilter('ทั้งหมด')" class="dash-unit-chip active px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white text-emerald-950 shadow-sm border border-white">ทั้งหมด</button>
-                                    <button type="button" onclick="setDashUnitFilter('สสจ.')" class="dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">สสจ.</button>
-                                    <button type="button" onclick="setDashUnitFilter('รพท.')" class="dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">รพท.</button>
-                                    <button type="button" onclick="setDashUnitFilter('รพช.')" class="dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">รพช.</button>
-                                    <button type="button" onclick="setDashUnitFilter('สสอ.')" class="dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">สสอ.</button>
-                                    <button type="button" onclick="setDashUnitFilter('รพ.สต.')" class="dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">รพ.สต.</button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -2839,14 +2830,6 @@
             const badgeEl = document.getElementById('selected-unit-badge');
             if (badgeEl) badgeEl.innerText = unit;
 
-            // Sync Pill Buttons
-            document.querySelectorAll('#dash-unit-container .dash-unit-chip').forEach(btn => {
-                if (btn.innerText.trim() === unit) {
-                    btn.className = 'dash-unit-chip active px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white text-emerald-950 shadow-sm border border-white';
-                } else {
-                    btn.className = 'dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20';
-                }
-            });
             renderVacantDashboard();
         }
 
