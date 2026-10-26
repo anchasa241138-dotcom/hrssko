@@ -34,6 +34,23 @@
             background: linear-gradient(135deg, #065f46 0%, #022c22 100%);
         }
         
+        /* Golden Gradient Headline Text - สีเหลืองทองไล่เฉดสี สวยงาม อลังการ */
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #FFFDF0 0%, #FFE57F 22%, #FFC107 45%, #FFA000 68%, #FFD54F 85%, #B45309 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+        }
+        .text-gold-subgradient {
+            background: linear-gradient(135deg, #FFFDEB 0%, #FDE68A 30%, #FBBF24 60%, #F59E0B 85%, #D97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+        }
+        .bg-headline-moph {
+            background: linear-gradient(90deg, #022c22 0%, #064e3b 40%, #065f46 70%, #022c22 100%);
+        }
+        
         /* View switching (Auth vs App) */
         .view-section { display: none !important; }
         .view-section.active { display: flex !important; animation: fadeIn 0.4s ease-in-out; }
@@ -273,17 +290,55 @@
 
 
     <!-- ======================= APP VIEW ======================= -->
-    <div id="view-app" class="view-section h-full w-full flex">
+    <div id="view-app" class="view-section h-screen w-full flex flex-col overflow-hidden">
         
-        <!-- Sidebar -->
-        <aside class="w-72 bg-gradient-moph text-white shadow-xl flex flex-col transition-all duration-300 flex-shrink-0">
-            <div class="p-6 text-center border-b border-white/10">
-                <div class="w-20 h-20 mx-auto bg-gradient-to-br from-gray-50 to-gray-200 rounded-full flex items-center justify-center mb-4 shadow-lg border-2 border-moph-gold">
-                    <i class="fas fa-hospital text-4xl text-moph-dark"></i>
+        <!-- TOP HEADLINE BANNER (ตรากระทรวงสาธารณสุข + ข้อความสีเหลืองทองไล่เฉดสี สวยงาม อลังการ) -->
+        <header class="w-full bg-headline-moph border-b-2 border-amber-400/60 shadow-xl px-5 sm:px-8 py-2.5 sm:py-3.5 z-30 flex-shrink-0 relative overflow-hidden">
+            <!-- Ambient golden/emerald glow effects -->
+            <div class="absolute -right-10 -top-10 w-64 h-64 bg-amber-400/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute left-1/4 -bottom-8 w-80 h-32 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex items-center justify-between">
+                <!-- Left: MOPH Seal & Golden Gradient Headline -->
+                <div class="flex items-center gap-3.5 sm:gap-4.5">
+                    <!-- โลโก้ตรากระทรวงสาธารณสุขที่มุมด้านซ้าย -->
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-white via-amber-50 to-amber-100 p-1.5 shadow-lg shadow-black/30 ring-2 ring-amber-400/80 flex items-center justify-center shrink-0 transition-transform hover:scale-105 duration-300">
+                        <img src="assets/images/moph-logo.svg" alt="ตรากระทรวงสาธารณสุข" class="w-full h-full object-contain filter drop-shadow-sm">
+                    </div>
+
+                    <!-- ข้อความพาดหัว 2 บรรทัด ตัวหนังสือสีเหลืองทองไล่เฉดสี สวยงาม อลังการ -->
+                    <div class="flex flex-col justify-center">
+                        <h1 class="text-xl sm:text-2xl lg:text-[26px] font-black tracking-wide leading-tight text-gold-gradient drop-shadow-sm">
+                            ระบบบริหารอัตรากำลัง
+                        </h1>
+                        <p class="text-xs sm:text-sm lg:text-[15px] font-bold tracking-wider text-gold-subgradient mt-0.5">
+                            สำนักงานสาธารณสุขจังหวัดศรีสะเกษ
+                        </p>
+                    </div>
                 </div>
-                <h1 class="text-xl font-bold leading-tight tracking-wide text-white drop-shadow-sm">ระบบการจ้างทางเลือก</h1>
-                <p class="text-sm text-moph-gold mt-1 font-medium tracking-wider">สสจ.ศรีสะเกษ</p>
+
+                <!-- Right: Decorative System Badge -->
+                <div class="hidden md:flex items-center gap-3.5">
+                    <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/70 border border-amber-400/40 text-amber-200 text-xs font-semibold shadow-inner backdrop-blur-xs">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400"></span>
+                        <span>ระบบการจ้างทางเลือก • HR Information System</span>
+                    </div>
+                </div>
             </div>
+        </header>
+
+        <!-- Main Body Wrapper (Sidebar + Main Content) -->
+        <div class="flex-1 flex overflow-hidden w-full">
+            
+            <!-- Sidebar -->
+            <aside class="w-72 bg-gradient-moph text-white shadow-xl flex flex-col transition-all duration-300 flex-shrink-0">
+                <div class="p-5 text-center border-b border-white/10">
+                    <div class="w-16 h-16 mx-auto bg-gradient-to-br from-gray-50 to-gray-200 rounded-full flex items-center justify-center mb-3 shadow-lg border-2 border-moph-gold p-1">
+                        <img src="assets/images/moph-logo.svg" alt="ตรากระทรวงสาธารณสุข" class="w-full h-full object-contain">
+                    </div>
+                    <h2 class="text-base font-bold leading-tight tracking-wide text-white drop-shadow-sm">ระบบการจ้างทางเลือก</h2>
+                    <p class="text-xs text-moph-gold mt-1 font-medium tracking-wider">สสจ.ศรีสะเกษ</p>
+                </div>
 
             <nav class="flex-1 overflow-y-auto py-4">
                 <ul class="space-y-1">
@@ -358,7 +413,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        <main class="flex-1 flex flex-col h-full overflow-hidden">
             <!-- Header -->
             <header class="bg-white shadow-sm h-16 flex items-center justify-between px-8 z-10 flex-shrink-0">
                 <h2 id="page-title" class="text-2xl font-bold text-gray-800">แดชบอร์ดแสดงสถานการณ์อัตรากำลังคน</h2>
@@ -1373,6 +1428,7 @@
 
             </div>
         </main>
+        </div>
     </div>
 
     
