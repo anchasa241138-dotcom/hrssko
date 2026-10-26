@@ -665,16 +665,16 @@
                                     </p>
                                 </div>
 
-                                <!-- Chart Legend Guide with Red & Green requirements -->
-                                <div class="flex items-center gap-3 text-xs flex-wrap">
-                                    <span class="inline-flex items-center gap-1.5 font-semibold text-rose-600">
-                                        <span class="w-3 h-3 rounded bg-red-500 inline-block"></span> หน่วยงานยังไม่ขอใช้ (สีแดง)
+                                <!-- Chart Legend Guide with status indicators -->
+                                <div class="flex items-center gap-3.5 text-xs flex-wrap">
+                                    <span class="inline-flex items-center gap-1.5 font-bold text-red-600">
+                                        <span class="w-3 h-3 rounded-full bg-red-500 inline-block shadow-sm"></span> หน่วยงานยังไม่ขอใช้
                                     </span>
-                                    <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-600">
-                                        <span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span> บันทึกในระบบ HROPS (สีเขียว)
+                                    <span class="inline-flex items-center gap-1.5 font-bold text-emerald-600">
+                                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block shadow-sm"></span> บันทึกในระบบ HROPS
                                     </span>
-                                    <span class="inline-flex items-center gap-1.5 font-medium text-gray-500">
-                                        <span class="w-3 h-3 rounded bg-blue-500 inline-block"></span> อยู่ระหว่างดำเนินการ
+                                    <span class="inline-flex items-center gap-1.5 font-medium text-slate-500">
+                                        <span class="w-3 h-3 rounded-full bg-indigo-500 inline-block shadow-sm"></span> สถานะอื่นๆ (แทนด้วยสีเฉพาะแต่ละขั้นตอน)
                                     </span>
                                 </div>
                             </div>
@@ -3700,6 +3700,203 @@
             renderVacantAccordion(filteredVacant);
         }
 
+        // --- Helper: Operational Status Color and Style System ---
+        function getOpStatusStyle(st, alpha = 0.85) {
+            const s = (st || '').trim();
+            if (s === 'หน่วยงานยังไม่ขอใช้') {
+                return {
+                    bg: `rgba(239, 68, 68, ${alpha})`, // สีแดง
+                    border: '#DC2626',
+                    textColor: '#DC2626',
+                    badgeClass: 'bg-red-50 text-red-700 border-red-300 font-bold',
+                    icon: 'fa-hand-paper',
+                    colorName: 'rose'
+                };
+            }
+            if (s === 'บันทึกในระบบ HROPS' || s === 'บันทึกในระบบ HROPH') {
+                return {
+                    bg: `rgba(16, 185, 129, ${alpha})`, // สีเขียว
+                    border: '#059669',
+                    textColor: '#059669',
+                    badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-300 font-bold',
+                    icon: 'fa-check-double',
+                    colorName: 'emerald'
+                };
+            }
+            if (s === 'อัตราว่าง') {
+                return {
+                    bg: `rgba(100, 116, 139, ${alpha})`, // สีเทา
+                    border: '#475569',
+                    textColor: '#475569',
+                    badgeClass: 'bg-slate-50 text-slate-700 border-slate-300 font-medium',
+                    icon: 'fa-folder-open',
+                    colorName: 'slate'
+                };
+            }
+            if (s.includes('สรรหาทดแทน')) {
+                return {
+                    bg: `rgba(20, 184, 166, ${alpha})`, // สีทีล
+                    border: '#0D9488',
+                    textColor: '#0D9488',
+                    badgeClass: 'bg-teal-50 text-teal-700 border-teal-300 font-medium',
+                    icon: 'fa-users-cog',
+                    colorName: 'teal'
+                };
+            }
+            if (s.includes('สงวนตำแหน่ง')) {
+                return {
+                    bg: `rgba(217, 119, 6, ${alpha})`, // สีอำพัน
+                    border: '#B45309',
+                    textColor: '#B45309',
+                    badgeClass: 'bg-amber-50 text-amber-800 border-amber-300 font-medium',
+                    icon: 'fa-bookmark',
+                    colorName: 'amber'
+                };
+            }
+            if (s.includes('รวบรวมข้อมูล') || s.includes('จัดทำประกาศ')) {
+                return {
+                    bg: `rgba(59, 130, 246, ${alpha})`, // สีน้ำเงิน
+                    border: '#2563EB',
+                    textColor: '#2563EB',
+                    badgeClass: 'bg-blue-50 text-blue-700 border-blue-300 font-medium',
+                    icon: 'fa-clipboard-list',
+                    colorName: 'blue'
+                };
+            }
+            if (s.includes('ประกาศ') || s.includes('ประชาสัมพันธ์')) {
+                return {
+                    bg: `rgba(14, 165, 233, ${alpha})`, // สีฟ้า
+                    border: '#0284C7',
+                    textColor: '#0284C7',
+                    badgeClass: 'bg-sky-50 text-sky-700 border-sky-300 font-medium',
+                    icon: 'fa-bullhorn',
+                    colorName: 'sky'
+                };
+            }
+            if (s.includes('รับสมัคร') && !s.includes('ประกาศ')) {
+                return {
+                    bg: `rgba(6, 182, 212, ${alpha})`, // สีไซแอน
+                    border: '#0891B2',
+                    textColor: '#0891B2',
+                    badgeClass: 'bg-cyan-50 text-cyan-700 border-cyan-300 font-medium',
+                    icon: 'fa-user-edit',
+                    colorName: 'cyan'
+                };
+            }
+            if (s.includes('รายชื่อผู้มีสิทธิ')) {
+                return {
+                    bg: `rgba(99, 102, 241, ${alpha})`, // สีคราม
+                    border: '#4F46E5',
+                    textColor: '#4F46E5',
+                    badgeClass: 'bg-indigo-50 text-indigo-700 border-indigo-300 font-medium',
+                    icon: 'fa-id-card',
+                    colorName: 'indigo'
+                };
+            }
+            if (s.includes('ดำเนินการคัดเลือก')) {
+                return {
+                    bg: `rgba(139, 92, 246, ${alpha})`, // สีม่วงไวโอเล็ต
+                    border: '#7C3AED',
+                    textColor: '#7C3AED',
+                    badgeClass: 'bg-violet-50 text-violet-700 border-violet-300 font-medium',
+                    icon: 'fa-user-check',
+                    colorName: 'violet'
+                };
+            }
+            if (s.includes('ประกาศผลการคัดเลือก')) {
+                return {
+                    bg: `rgba(168, 85, 247, ${alpha})`, // สีม่วง
+                    border: '#9333EA',
+                    textColor: '#9333EA',
+                    badgeClass: 'bg-purple-50 text-purple-700 border-purple-300 font-medium',
+                    icon: 'fa-award',
+                    colorName: 'purple'
+                };
+            }
+            if (s.includes('รายงานผลการสรรหา')) {
+                return {
+                    bg: `rgba(217, 70, 239, ${alpha})`, // สีบานเย็น
+                    border: '#C026D3',
+                    textColor: '#C026D3',
+                    badgeClass: 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-300 font-medium',
+                    icon: 'fa-file-alt',
+                    colorName: 'fuchsia'
+                };
+            }
+            if (s.includes('พิจารณา')) {
+                return {
+                    bg: `rgba(249, 115, 22, ${alpha})`, // สีส้ม
+                    border: '#EA580C',
+                    textColor: '#EA580C',
+                    badgeClass: 'bg-orange-50 text-orange-700 border-orange-300 font-medium',
+                    icon: 'fa-gavel',
+                    colorName: 'orange'
+                };
+            }
+            if (s.includes('รายงานตัว') || s.includes('ทำสัญญาจ้าง')) {
+                return {
+                    bg: `rgba(236, 72, 153, ${alpha})`, // สีชมพู
+                    border: '#DB2777',
+                    textColor: '#DB2777',
+                    badgeClass: 'bg-pink-50 text-pink-700 border-pink-300 font-medium',
+                    icon: 'fa-file-signature',
+                    colorName: 'pink'
+                };
+            }
+            if (s.includes('ส่งสัญญาจ้างให้ สสจ.')) {
+                return {
+                    bg: `rgba(132, 204, 22, ${alpha})`, // สีตองอ่อน
+                    border: '#65A30D',
+                    textColor: '#65A30D',
+                    badgeClass: 'bg-lime-50 text-lime-800 border-lime-300 font-medium',
+                    icon: 'fa-paper-plane',
+                    colorName: 'lime'
+                };
+            }
+            if (s.includes('ลงนามสัญญา') || s.includes('คำสั่งจ้าง')) {
+                return {
+                    bg: `rgba(5, 150, 105, ${alpha})`, // สีเขียวเข้ม
+                    border: '#047857',
+                    textColor: '#047857',
+                    badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-300 font-medium',
+                    icon: 'fa-signature',
+                    colorName: 'emerald'
+                };
+            }
+            if (s.includes('ไม่มีผู้สมัคร') || s.includes('เปลี่ยนเงื่อนไข')) {
+                return {
+                    bg: `rgba(225, 29, 72, ${alpha})`, // สีแดงกุหลาบ
+                    border: '#BE123C',
+                    textColor: '#BE123C',
+                    badgeClass: 'bg-rose-50 text-rose-700 border-rose-300 font-medium',
+                    icon: 'fa-user-times',
+                    colorName: 'rose'
+                };
+            }
+
+            const dynamicPalette = [
+                { bg: '20, 184, 166', border: '#0D9488', text: '#0D9488', colorName: 'teal' },
+                { bg: '245, 158, 11', border: '#D97706', text: '#D97706', colorName: 'amber' },
+                { bg: '14, 165, 233', border: '#0284C7', text: '#0284C7', colorName: 'sky' },
+                { bg: '168, 85, 247', border: '#9333EA', text: '#9333EA', colorName: 'purple' },
+                { bg: '236, 72, 153', border: '#DB2777', text: '#DB2777', colorName: 'pink' },
+                { bg: '99, 102, 241', border: '#4F46E5', text: '#4F46E5', colorName: 'indigo' },
+                { bg: '132, 204, 22', border: '#65A30D', text: '#65A30D', colorName: 'lime' },
+                { bg: '249, 115, 22', border: '#EA580C', text: '#EA580C', colorName: 'orange' }
+            ];
+            let hash = 0;
+            for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
+            const item = dynamicPalette[hash % dynamicPalette.length];
+            return {
+                bg: `rgba(${item.bg}, ${alpha})`,
+                border: item.border,
+                textColor: item.text,
+                badgeClass: 'bg-indigo-50 text-indigo-700 border-indigo-200 font-medium',
+                icon: 'fa-tasks',
+                colorName: item.colorName
+            };
+        }
+
         // --- 5: Operational Status Bar Chart with Specific Red & Green Requirement ---
         function renderOperationStatusChart(vacantList) {
             const canvas = document.getElementById('chart-operation-status');
@@ -3726,26 +3923,9 @@
             labels.forEach(label => {
                 const isSelected = (dashState.filterOpStatus === label);
                 const alpha = hasActiveFilter ? (isSelected ? '0.95' : '0.22') : '0.85';
-
-                if (label === 'หน่วยงานยังไม่ขอใช้') {
-                    bgColors.push(`rgba(239, 68, 68, ${alpha})`); // สีแดงสดใส
-                    borderColors.push('#DC2626');
-                } else if (label === 'บันทึกในระบบ HROPS' || label === 'บันทึกในระบบ HROPH') {
-                    bgColors.push(`rgba(16, 185, 129, ${alpha})`); // สีเขียวชอุ่ม
-                    borderColors.push('#059669');
-                } else if (label.includes('ประกาศ') || label.includes('ประชาสัมพันธ์')) {
-                    bgColors.push(`rgba(14, 165, 233, ${alpha})`);
-                    borderColors.push('#0284C7');
-                } else if (label.includes('รายงานตัว') || label.includes('สัญญา')) {
-                    bgColors.push(`rgba(168, 85, 247, ${alpha})`);
-                    borderColors.push('#9333EA');
-                } else if (label.includes('สงวน') || label.includes('พิจารณา')) {
-                    bgColors.push(`rgba(245, 158, 11, ${alpha})`);
-                    borderColors.push('#D97706');
-                } else {
-                    bgColors.push(`rgba(99, 102, 241, ${alpha})`);
-                    borderColors.push('#4F46E5');
-                }
+                const style = getOpStatusStyle(label, alpha);
+                bgColors.push(style.bg);
+                borderColors.push(style.border);
             });
 
             if (window.vacantOpStatusChartInstance) {
@@ -3801,7 +3981,25 @@
                         x: {
                             grid: { display: false },
                             ticks: {
-                                font: { family: 'Prompt', size: 11 },
+                                font: function(context) {
+                                    const label = labels[context.index] || '';
+                                    const isImportant = (label === 'หน่วยงานยังไม่ขอใช้' || label === 'บันทึกในระบบ HROPS' || label === 'บันทึกในระบบ HROPH');
+                                    return {
+                                        family: 'Prompt',
+                                        size: 11,
+                                        weight: isImportant ? 'bold' : '500'
+                                    };
+                                },
+                                color: function(context) {
+                                    const label = labels[context.index] || '';
+                                    if (label === 'หน่วยงานยังไม่ขอใช้') {
+                                        return '#DC2626'; // หน่วยงานยังไม่ขอใช้ แทนด้วยตัวหนังสือสีแดง
+                                    }
+                                    if (label === 'บันทึกในระบบ HROPS' || label === 'บันทึกในระบบ HROPH') {
+                                        return '#059669'; // บันทึกในระบบ HROPS แทนด้วยตัวหนังสือสีเขียว
+                                    }
+                                    return getOpStatusStyle(label).textColor; // แต่ละสถานะให้แทนด้วยสีที่ต่างกัน
+                                },
                                 maxRotation: 35,
                                 minRotation: 0,
                                 autoSkip: false
@@ -4152,22 +4350,12 @@
             if (dashState.accordionMode === 'STATUS') {
                 const allStatuses = Array.from(new Set(vacantList.map(v => (v.opStatus || '').trim() || 'อัตราว่าง')));
                 categories = allStatuses.map((st, idx) => {
-                    let icon = 'fa-tasks';
-                    let color = 'indigo';
-                    if (st === 'หน่วยงานยังไม่ขอใช้') { icon = 'fa-hand-paper'; color = 'rose'; }
-                    else if (st.includes('HROPS') || st.includes('HROPH')) { icon = 'fa-check-double'; color = 'emerald'; }
-                    else if (st === 'อัตราว่าง') { icon = 'fa-folder-open'; color = 'slate'; }
-                    else if (st.includes('สรรหาทดแทน')) { icon = 'fa-users-cog'; color = 'teal'; }
-                    else if (st.includes('พิจารณา')) { icon = 'fa-gavel'; color = 'amber'; }
-                    else if (st.includes('ประกาศ') || st.includes('ประชาสัมพันธ์')) { icon = 'fa-bullhorn'; color = 'sky'; }
-                    else if (st.includes('รายงานตัว') || st.includes('สัญญา')) { icon = 'fa-file-signature'; color = 'purple'; }
-                    else if (st.includes('ไม่มีผู้สมัคร')) { icon = 'fa-user-times'; color = 'rose'; }
-
+                    const style = getOpStatusStyle(st);
                     return {
                         id: 'cat-status-' + idx,
                         name: st,
-                        icon: icon,
-                        color: color,
+                        icon: style.icon,
+                        color: style.colorName,
                         matcher: (v) => ((v.opStatus || '').trim() || 'อัตราว่าง') === st
                     };
                 });
@@ -4255,14 +4443,8 @@
                                         <tbody class="divide-y divide-gray-100">
                                             ${itemsInCat.map((item, rowIdx) => {
                                                 const st = (item.opStatus || '').trim() || 'อัตราว่าง';
-                                                let badgeClass = 'bg-blue-100 text-blue-700 border-blue-200';
-                                                if (st === 'หน่วยงานยังไม่ขอใช้') {
-                                                    badgeClass = 'bg-red-100 text-red-700 border-red-300 font-bold';
-                                                } else if (st === 'บันทึกในระบบ HROPS' || st === 'บันทึกในระบบ HROPH') {
-                                                    badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
-                                                } else if (st === 'อัตราว่าง') {
-                                                    badgeClass = 'bg-gray-100 text-gray-700 border-gray-200';
-                                                }
+                                                const style = getOpStatusStyle(st);
+                                                const badgeClass = style.badgeClass;
 
                                                 const actionCatLabel = getVacantActionCategory(item);
 
