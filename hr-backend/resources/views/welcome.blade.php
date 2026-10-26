@@ -421,15 +421,15 @@
                         </div>
 
                         <!-- MULTI-SELECT FILTER BAR (เลือกดูได้มากกว่า 1 ประเภท: พนักงานราชการ, พนักงานกระทรวงสาธารณสุข, ลูกจ้างชั่วคราว (รายเดือน)) -->
-                        <div class="mt-5 pt-5 border-t border-white/15 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                        <div class="mt-5 pt-5 border-t border-white/15 grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
                             
                             <!-- Employee Type Multi-Select Chips -->
-                            <div class="lg:col-span-8 flex flex-col gap-2">
-                                <div class="flex items-center justify-between">
+                            <div class="lg:col-span-7 flex flex-col gap-2">
+                                <div class="flex items-center gap-2.5">
                                     <span class="text-xs font-semibold text-emerald-200 uppercase tracking-wider flex items-center gap-1.5">
                                         <i class="fas fa-filter text-moph-gold"></i> เลือกดูประเภทการจ้าง (เลือกได้มากกว่า 1 ประเภท):
                                     </span>
-                                    <span id="selected-types-badge" class="text-[11px] text-emerald-300 font-medium">เลือก 3 จาก 3 ประเภท</span>
+                                    <span id="selected-types-badge" class="px-2 py-0.5 rounded-full text-[11px] bg-emerald-500/30 text-emerald-300 font-medium border border-emerald-400/30">เลือก 3 จาก 3 ประเภท</span>
                                 </div>
                                 <div class="flex items-center gap-2 flex-wrap" id="dash-emp-types-container">
                                     <button type="button" onclick="toggleDashEmpType('ALL')" id="btn-type-all" class="dash-type-chip px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm border border-emerald-400/40 bg-emerald-500 text-white">
@@ -447,17 +447,38 @@
                                 </div>
                             </div>
 
-                            <!-- Service Unit Filter -->
-                            <div class="lg:col-span-4 flex flex-col gap-2">
-                                <span class="text-xs font-semibold text-emerald-200 uppercase tracking-wider flex items-center gap-1.5">
-                                    <i class="fas fa-hospital text-moph-gold"></i> ประเภทหน่วยบริการ:
-                                </span>
+                            <!-- 1: ช่องกรองเลือก "ประเภทหน่วยบริการ" (รูปที่ 3) -->
+                            <div class="lg:col-span-5 flex flex-col gap-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-semibold text-emerald-200 uppercase tracking-wider flex items-center gap-1.5">
+                                        <i class="fas fa-hospital text-moph-gold"></i> ประเภทหน่วยบริการ:
+                                    </span>
+                                    <span id="selected-unit-badge" class="px-2 py-0.5 rounded-full text-[11px] bg-white/20 text-emerald-100 font-medium border border-white/20">ทั้งหมด</span>
+                                </div>
+                                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                    <!-- ช่องกรองเลือก Dropdown Select -->
+                                    <div class="relative flex-1">
+                                        <select id="dash-unit-select" onchange="setDashUnitFilter(this.value)" class="w-full bg-white/15 hover:bg-white/25 text-white text-xs font-semibold rounded-xl px-3 py-2 border border-white/30 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-slate-900 transition cursor-pointer appearance-none pr-8">
+                                            <option value="ทั้งหมด" class="bg-slate-900 text-white font-medium">ทุกประเภทหน่วยบริการ (ทั้งหมด)</option>
+                                            <option value="สสจ." class="bg-slate-900 text-white font-medium">สสจ. (สำนักงานสาธารณสุขจังหวัด)</option>
+                                            <option value="รพท." class="bg-slate-900 text-white font-medium">รพท. (โรงพยาบาลทั่วไป)</option>
+                                            <option value="รพช." class="bg-slate-900 text-white font-medium">รพช. (โรงพยาบาลชุมชน)</option>
+                                            <option value="สสอ." class="bg-slate-900 text-white font-medium">สสอ. (สำนักงานสาธารณสุขอำเภอ)</option>
+                                            <option value="รพ.สต." class="bg-slate-900 text-white font-medium">รพ.สต. (โรงพยาบาลส่งเสริมสุขภาพตำบล)</option>
+                                        </select>
+                                        <div class="absolute inset-y-0 right-0 flex items-center pr-2.5 pointer-events-none text-emerald-300">
+                                            <i class="fas fa-chevron-down text-[10px]"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Quick Pill Chips -->
                                 <div class="flex items-center gap-1.5 flex-wrap" id="dash-unit-container">
-                                    <button type="button" onclick="setDashUnitFilter('ทั้งหมด')" class="dash-unit-chip active px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white text-emerald-950 shadow-sm border border-white">ทั้งหมด</button>
-                                    <button type="button" onclick="setDashUnitFilter('สสจ.')" class="dash-unit-chip px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">สสจ.</button>
-                                    <button type="button" onclick="setDashUnitFilter('สสอ.')" class="dash-unit-chip px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">สสอ.</button>
-                                    <button type="button" onclick="setDashUnitFilter('รพ.ชุมชน')" class="dash-unit-chip px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">รพ.ชุมชน</button>
-                                    <button type="button" onclick="setDashUnitFilter('รพ.สต.')" class="dash-unit-chip px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">รพ.สต.</button>
+                                    <button type="button" onclick="setDashUnitFilter('ทั้งหมด')" class="dash-unit-chip active px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white text-emerald-950 shadow-sm border border-white">ทั้งหมด</button>
+                                    <button type="button" onclick="setDashUnitFilter('สสจ.')" class="dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">สสจ.</button>
+                                    <button type="button" onclick="setDashUnitFilter('รพท.')" class="dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">รพท.</button>
+                                    <button type="button" onclick="setDashUnitFilter('รพช.')" class="dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">รพช.</button>
+                                    <button type="button" onclick="setDashUnitFilter('สสอ.')" class="dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">สสอ.</button>
+                                    <button type="button" onclick="setDashUnitFilter('รพ.สต.')" class="dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20">รพ.สต.</button>
                                 </div>
                             </div>
                         </div>
@@ -638,99 +659,100 @@
                         </div>
                     </div>
 
-                    <!-- 3, 4, 5: CHARTS & PERFORMANCE METRICS -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                        
-                        <!-- 3: Bar Chart: การบริหารตำแหน่งว่างตามสถานะการดำเนินการ (กำหนดสีแดง & เขียว) -->
-                        <div class="lg:col-span-8 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
-                            <div>
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                                    <div>
-                                        <h4 class="text-base font-bold text-gray-800 flex items-center gap-2">
-                                            <i class="fas fa-chart-bar text-emerald-600"></i>
-                                            การบริหารตำแหน่งว่าง (จำแนกตามสถานะการดำเนินการทั้งหมด)
-                                        </h4>
-                                        <p class="text-xs text-gray-500 mt-0.5">
-                                            แสดงจำนวนตำแหน่งว่างในแต่ละขั้นตอนการดำเนินการของ สสจ.ศรีสะเกษ
-                                        </p>
-                                    </div>
-
-                                    <!-- Chart Legend Guide with Red & Green requirements -->
-                                    <div class="flex items-center gap-3 text-xs flex-wrap">
-                                        <span class="inline-flex items-center gap-1.5 font-semibold text-rose-600">
-                                            <span class="w-3 h-3 rounded bg-red-500 inline-block"></span> หน่วยงานยังไม่ขอใช้ (สีแดง)
-                                        </span>
-                                        <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-600">
-                                            <span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span> บันทึกในระบบ HROPS (สีเขียว)
-                                        </span>
-                                        <span class="inline-flex items-center gap-1.5 font-medium text-gray-500">
-                                            <span class="w-3 h-3 rounded bg-blue-500 inline-block"></span> อยู่ระหว่างดำเนินการ
-                                        </span>
-                                    </div>
+                    <!-- 3: BAR CHART: การบริหารตำแหน่งว่างตามสถานะการดำเนินการ (ปรับระยะกว้างเต็มแถว ตามรูปที่ 4) -->
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                                <div>
+                                    <h4 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                                        <i class="fas fa-chart-bar text-emerald-600"></i>
+                                        การบริหารตำแหน่งว่าง (จำแนกตามสถานะการดำเนินการทั้งหมด)
+                                    </h4>
+                                    <p class="text-xs text-gray-500 mt-0.5">
+                                        แสดงจำนวนตำแหน่งว่างในแต่ละขั้นตอนการดำเนินการของ สสจ.ศรีสะเกษ <span class="text-emerald-600 font-semibold">(คลิกที่แท่งกราฟเพื่อเชื่อมโยงและกรองรายการตำแหน่งว่างด้านล่างได้ทันที)</span>
+                                    </p>
                                 </div>
 
-                                <!-- Canvas for Chart.js Bar Chart -->
-                                <div class="relative h-72 sm:h-80 w-full">
-                                    <canvas id="chart-operation-status"></canvas>
+                                <!-- Chart Legend Guide with Red & Green requirements -->
+                                <div class="flex items-center gap-3 text-xs flex-wrap">
+                                    <span class="inline-flex items-center gap-1.5 font-semibold text-rose-600">
+                                        <span class="w-3 h-3 rounded bg-red-500 inline-block"></span> หน่วยงานยังไม่ขอใช้ (สีแดง)
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-600">
+                                        <span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span> บันทึกในระบบ HROPS (สีเขียว)
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 font-medium text-gray-500">
+                                        <span class="w-3 h-3 rounded bg-blue-500 inline-block"></span> อยู่ระหว่างดำเนินการ
+                                    </span>
                                 </div>
                             </div>
 
-                            <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-                                <span><i class="fas fa-info-circle mr-1 text-emerald-600"></i>คลิกที่แท่งกราฟเพื่อดูสัดส่วนและรายละเอียด</span>
-                                <span id="chart-total-vacant-positions-label" class="font-semibold text-gray-700">ตำแหน่งว่างทั้งหมด 0 อัตรา</span>
+                            <!-- Canvas for Chart.js Bar Chart -->
+                            <div class="relative h-80 sm:h-96 w-full">
+                                <canvas id="chart-operation-status"></canvas>
                             </div>
                         </div>
 
-                        <!-- 4 & 5: Right Column (ระยะเวลาเฉลี่ยการสรรหา + อัตราการลาออก) -->
-                        <div class="lg:col-span-4 space-y-6">
-                            
-                            <!-- 5: ระยะเวลาเฉลี่ยในการสรรหาบุคคลเข้าสู่ตำแหน่ง -->
-                            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
-                                <div>
-                                    <div class="flex items-center justify-between mb-3">
-                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">ระยะเวลาเฉลี่ยในการสรรหา</span>
-                                        <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                                            <i class="fas fa-stopwatch text-base"></i>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="flex items-baseline gap-2">
-                                        <span id="metric-avg-recruitment-days" class="text-4xl font-extrabold text-amber-600 tracking-tight">0</span>
-                                        <span class="text-sm font-semibold text-gray-600">วัน</span>
-                                    </div>
-                                    <p id="metric-avg-recruitment-text" class="text-xs text-gray-500 mt-1">คำนวณจากวันที่ตำแหน่งว่างจนถึงวันที่ดำเนินการเสร็จสิ้น</p>
+                        <div class="mt-4 pt-3 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-gray-500">
+                            <span class="text-emerald-700 font-medium flex items-center gap-1.5">
+                                <i class="fas fa-mouse-pointer text-emerald-600 animate-pulse"></i>
+                                <span>คลิกที่แท่งกราฟเพื่อเชื่อมโยงดูรายละเอียดในตารางด้านล่าง</span>
+                            </span>
+                            <span id="chart-total-vacant-positions-label" class="font-bold text-gray-700">ตำแหน่งว่างทั้งหมด 0 อัตรา</span>
+                        </div>
+                    </div>
 
-                                    <!-- Target Benchmark Bar -->
-                                    <div class="mt-4">
-                                        <div class="flex justify-between text-xs font-medium mb-1">
-                                            <span class="text-gray-600">เทียบเกณฑ์เป้าหมายมาตรฐาน (&le; 90 วัน)</span>
-                                            <span id="metric-benchmark-status" class="font-bold text-emerald-600">อยู่ในเกณฑ์</span>
-                                        </div>
-                                        <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
-                                            <div id="metric-benchmark-bar" class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: 75%"></div>
-                                        </div>
+                    <!-- 4 & 5: PERFORMANCE METRICS (แถวถัดลงมา 2 กล่องคู่กัน ตามรูปที่ 4) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- 5: ระยะเวลาเฉลี่ยในการสรรหาบุคคลเข้าสู่ตำแหน่ง -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">ระยะเวลาเฉลี่ยในการสรรหา</span>
+                                    <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                                        <i class="fas fa-stopwatch text-base"></i>
                                     </div>
                                 </div>
+                                
+                                <div class="flex items-baseline gap-2">
+                                    <span id="metric-avg-recruitment-days" class="text-4xl font-extrabold text-amber-600 tracking-tight">0</span>
+                                    <span class="text-sm font-semibold text-gray-600">วัน</span>
+                                </div>
+                                <p id="metric-avg-recruitment-text" class="text-xs text-gray-500 mt-1">คำนวณจากวันที่ตำแหน่งว่างจนถึงวันที่ดำเนินการเสร็จสิ้น</p>
 
-                                <!-- Status mini-badges (จากตัวอย่างในภาพ) -->
-                                <div class="mt-4 pt-3 border-t border-gray-100 grid grid-cols-3 gap-2 text-center text-xs">
-                                    <div class="p-2 rounded-lg bg-rose-50 text-rose-700">
-                                        <span id="metric-stat-unprocessed" class="font-bold text-base block">0</span>
-                                        <span class="text-[10px] text-gray-500 leading-tight block">ยังไม่ดำเนินการ</span>
+                                <!-- Target Benchmark Bar -->
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-xs font-medium mb-1">
+                                        <span class="text-gray-600">เทียบเกณฑ์เป้าหมายมาตรฐาน (&le; 90 วัน)</span>
+                                        <span id="metric-benchmark-status" class="font-bold text-emerald-600">อยู่ในเกณฑ์</span>
                                     </div>
-                                    <div class="p-2 rounded-lg bg-blue-50 text-blue-700">
-                                        <span id="metric-stat-in-progress" class="font-bold text-base block">0</span>
-                                        <span class="text-[10px] text-gray-500 leading-tight block">กำลังดำเนินการ</span>
-                                    </div>
-                                    <div class="p-2 rounded-lg bg-emerald-50 text-emerald-700">
-                                        <span id="metric-stat-completed" class="font-bold text-base block">0</span>
-                                        <span class="text-[10px] text-gray-500 leading-tight block">เสร็จสิ้นแล้ว</span>
+                                    <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                                        <div id="metric-benchmark-bar" class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: 75%"></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 4: อัตราการลาออก (แยกตามเหตุผล) -->
-                            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <!-- Status mini-badges (จากตัวอย่างในภาพ) -->
+                            <div class="mt-5 pt-3 border-t border-gray-100 grid grid-cols-3 gap-2 text-center text-xs">
+                                <div class="p-2.5 rounded-xl bg-rose-50 text-rose-700">
+                                    <span id="metric-stat-unprocessed" class="font-extrabold text-lg block">0</span>
+                                    <span class="text-[11px] text-gray-500 leading-tight block mt-0.5">ยังไม่ดำเนินการ</span>
+                                </div>
+                                <div class="p-2.5 rounded-xl bg-blue-50 text-blue-700">
+                                    <span id="metric-stat-in-progress" class="font-extrabold text-lg block">0</span>
+                                    <span class="text-[11px] text-gray-500 leading-tight block mt-0.5">กำลังดำเนินการ</span>
+                                </div>
+                                <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-700">
+                                    <span id="metric-stat-completed" class="font-extrabold text-lg block">0</span>
+                                    <span class="text-[11px] text-gray-500 leading-tight block mt-0.5">เสร็จสิ้นแล้ว</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4: อัตราการลาออก (แยกตามเหตุผล) -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
+                            <div>
                                 <div class="flex items-center justify-between mb-3">
                                     <div>
                                         <h4 class="text-sm font-bold text-gray-800 flex items-center gap-2">
@@ -753,34 +775,60 @@
                                     <!-- Dynamic ranked reasons breakdown injected here -->
                                 </div>
                             </div>
-
                         </div>
 
                     </div>
 
-                    <!-- 7: ACCORDION DRILL-DOWN (เหมือนในภาพตัวอย่าง แต่สวยและมีรายละเอียดตำแหน่งว่างครบถ้วน) -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-100">
+                    <!-- 7: ACCORDION DRILL-DOWN (เชื่อมโยงข้อมูลกับกราฟสถานะการดำเนินการ) -->
+                    <div id="vacant-accordion-section" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 scroll-mt-6">
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4 pb-4 border-b border-gray-100">
                             <div>
                                 <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
                                     <i class="fas fa-folder-tree text-emerald-600"></i>
                                     รายละเอียดตำแหน่งว่างจำแนกตามประเภทการดำเนินการ (Action Categories)
                                 </h3>
-                                <p class="text-xs text-gray-500 mt-0.5">คลิกแต่ละหมวดหมู่เพื่อพับ-ขยายดูรายการตำแหน่งว่างและข้อมูลผู้ดำเนินการ</p>
+                                <p class="text-xs text-gray-500 mt-0.5">
+                                    เชื่อมโยงกับกราฟแท่งด้านบน คลิกแต่ละหมวดหมู่เพื่อพับ-ขยายดูรายการตำแหน่งว่าง
+                                </p>
                             </div>
                             
-                            <!-- Filter Pills (ยังไม่เสร็จสิ้น / เสร็จสิ้นแล้ว) -->
-                            <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-xl text-xs font-semibold">
-                                <button type="button" onclick="setAccordionTab('ALL')" id="acc-tab-all" class="px-3 py-1.5 rounded-lg bg-white text-gray-800 shadow-sm transition">
-                                    ทั้งหมด <span id="acc-badge-all" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-gray-200">0</span>
-                                </button>
-                                <button type="button" onclick="setAccordionTab('PENDING')" id="acc-tab-pending" class="px-3 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition">
-                                    <i class="fas fa-hourglass-half mr-1 text-amber-500"></i> ยังไม่เสร็จสิ้น <span id="acc-badge-pending" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-amber-100 text-amber-700">0</span>
-                                </button>
-                                <button type="button" onclick="setAccordionTab('COMPLETED')" id="acc-tab-completed" class="px-3 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition">
-                                    <i class="fas fa-check-circle mr-1 text-emerald-500"></i> เสร็จสิ้นแล้ว <span id="acc-badge-completed" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-100 text-emerald-700">0</span>
-                                </button>
+                            <!-- Filter & View Mode Controls -->
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <!-- Mode Selector: Categories vs Statuses -->
+                                <div class="flex items-center bg-gray-100 p-1 rounded-xl text-xs font-medium">
+                                    <button type="button" onclick="setAccordionMode('CATEGORY')" id="acc-mode-category" class="px-2.5 py-1.5 rounded-lg bg-white text-gray-800 shadow-sm transition font-bold">
+                                        <i class="fas fa-layer-group mr-1 text-emerald-600"></i> หมวดหมู่งาน
+                                    </button>
+                                    <button type="button" onclick="setAccordionMode('STATUS')" id="acc-mode-status" class="px-2.5 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition">
+                                        <i class="fas fa-chart-bar mr-1 text-blue-600"></i> 10 สถานะตามกราฟ
+                                    </button>
+                                </div>
+
+                                <!-- Filter Pills (ยังไม่เสร็จสิ้น / เสร็จสิ้นแล้ว) -->
+                                <div class="flex items-center gap-1.5 bg-gray-100 p-1 rounded-xl text-xs font-semibold">
+                                    <button type="button" onclick="setAccordionTab('ALL')" id="acc-tab-all" class="px-3 py-1.5 rounded-lg bg-white text-gray-800 shadow-sm transition">
+                                        ทั้งหมด <span id="acc-badge-all" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-gray-200">0</span>
+                                    </button>
+                                    <button type="button" onclick="setAccordionTab('PENDING')" id="acc-tab-pending" class="px-3 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition">
+                                        <i class="fas fa-hourglass-half mr-1 text-amber-500"></i> ยังไม่เสร็จสิ้น <span id="acc-badge-pending" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-amber-100 text-amber-700">0</span>
+                                    </button>
+                                    <button type="button" onclick="setAccordionTab('COMPLETED')" id="acc-tab-completed" class="px-3 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition">
+                                        <i class="fas fa-check-circle mr-1 text-emerald-500"></i> เสร็จสิ้นแล้ว <span id="acc-badge-completed" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-100 text-emerald-700">0</span>
+                                    </button>
+                                </div>
                             </div>
+                        </div>
+
+                        <!-- Active Link Filter Notification (Appears when clicking a bar on the chart) -->
+                        <div id="dash-chart-filter-alert" class="hidden mb-4 p-3 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-300 rounded-xl flex items-center justify-between text-xs font-semibold text-emerald-900 shadow-sm animate-fadeIn">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                                <i class="fas fa-link text-emerald-600 text-sm"></i>
+                                <span>กำลังเชื่อมโยงแสดงเฉพาะสถานะ: <strong id="dash-chart-filter-name" class="underline text-emerald-800 text-sm"></strong> (<span id="dash-chart-filter-count">0</span> ตำแหน่ง)</span>
+                            </div>
+                            <button type="button" onclick="clearOpStatusFilter()" class="px-3 py-1 bg-white hover:bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-lg text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                                <i class="fas fa-times text-rose-500"></i> ล้างตัวกรอง (แสดงทั้งหมด)
+                            </button>
                         </div>
 
                         <!-- Accordion Items Container -->
@@ -2752,6 +2800,8 @@
             selectedTypes: ['พนักงานราชการ', 'พนักงานกระทรวงสาธารณสุข', 'ลูกจ้างชั่วคราว (รายเดือน)'],
             selectedUnit: 'ทั้งหมด',
             accordionTab: 'ALL',
+            accordionMode: 'CATEGORY',
+            filterOpStatus: null,
             licenseFilter: 'ALL'
         };
 
@@ -2780,11 +2830,21 @@
 
         function setDashUnitFilter(unit) {
             dashState.selectedUnit = unit;
+
+            // Sync Dropdown Select
+            const selectEl = document.getElementById('dash-unit-select');
+            if (selectEl) selectEl.value = unit;
+
+            // Sync Badge
+            const badgeEl = document.getElementById('selected-unit-badge');
+            if (badgeEl) badgeEl.innerText = unit;
+
+            // Sync Pill Buttons
             document.querySelectorAll('#dash-unit-container .dash-unit-chip').forEach(btn => {
                 if (btn.innerText.trim() === unit) {
-                    btn.className = 'dash-unit-chip active px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white text-emerald-950 shadow-sm border border-white';
+                    btn.className = 'dash-unit-chip active px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white text-emerald-950 shadow-sm border border-white';
                 } else {
-                    btn.className = 'dash-unit-chip px-2.5 py-1.5 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20';
+                    btn.className = 'dash-unit-chip px-2.5 py-1 rounded-lg text-xs font-semibold transition bg-white/10 text-white hover:bg-white/20 border border-white/20';
                 }
             });
             renderVacantDashboard();
@@ -2883,11 +2943,14 @@
                     const vacantDate = tds[7] ? tds[7].innerText.trim() : '';
                     const vacantDays = tds[8] ? tds[8].innerText.trim() : '';
                     const opStatus = r.getAttribute('data-opstatus') || (tds[9] ? tds[9].innerText.trim() : '');
+                    const opResult = r.getAttribute('data-opresult') || '-';
+                    const actionCategory = tds[17] ? tds[17].innerText.trim() : '';
+
                     let normalizedType = rawStaffType;
                     if (rawStaffType.includes('กสธ') || rawStaffType.includes('กระทรวง')) normalizedType = 'พนักงานกระทรวงสาธารณสุข';
                     else if (rawStaffType.includes('ราชการ')) normalizedType = 'พนักงานราชการ';
                     else if (rawStaffType.includes('ลูกจ้างชั่วคราว') || rawStaffType.includes('รายเดือน')) normalizedType = 'ลูกจ้างชั่วคราว (รายเดือน)';
-                    records.push({ prefix, district, subdistrict, posNo, posName, staffType: normalizedType, vacantDate, vacantDays, opStatus, trElement: r });
+                    records.push({ prefix, district, subdistrict, posNo, posName, staffType: normalizedType, vacantDate, vacantDays, opStatus, opResult, actionCategory, trElement: r });
                 }
             });
             return records;
@@ -2910,10 +2973,9 @@
             return null;
         }
 
-        function renderVacantDashboard() {
-            updateDashFilterUI();
+        // --- Filter Helpers for Staff & Vacant Records ---
+        function getDashFilteredStaff() {
             const allStaff = getDashAllStaffRecords();
-            const allVacant = getDashAllVacantRecords();
             let filteredStaff = allStaff.filter(s => dashState.selectedTypes.includes(s.staff_type));
             if (dashState.selectedUnit !== 'ทั้งหมด') {
                 filteredStaff = filteredStaff.filter(s => {
@@ -2921,22 +2983,36 @@
                     const name = (s.agency_name || s.actual_name || '').trim();
                     if (dashState.selectedUnit === 'สสจ.') return prefix.includes('สสจ') || name.includes('สสจ');
                     if (dashState.selectedUnit === 'สสอ.') return prefix.includes('สสอ') || name.includes('สสอ');
-                    if (dashState.selectedUnit === 'รพ.ชุมชน') return prefix.includes('รพช') || prefix.includes('รพท') || name.includes('รพช') || name.includes('รพท');
+                    if (dashState.selectedUnit === 'รพท.') return prefix.includes('รพท') || name.includes('รพท');
+                    if (dashState.selectedUnit === 'รพช.' || dashState.selectedUnit === 'รพ.ชุมชน') return (prefix.includes('รพช') && !prefix.includes('รพท')) || (name.includes('รพช') && !name.includes('รพท')) || (name.includes('โรงพยาบาล') && !name.includes('ทั่วไป') && !name.includes('ศูนย์'));
                     if (dashState.selectedUnit === 'รพ.สต.') return prefix.includes('รพ.สต') || name.includes('รพ.สต') || prefix.includes('สอน') || name.includes('สอน');
                     return true;
                 });
             }
+            return filteredStaff;
+        }
+
+        function getDashFilteredVacant() {
+            const allVacant = getDashAllVacantRecords();
             let filteredVacant = allVacant.filter(v => dashState.selectedTypes.includes(v.staffType));
             if (dashState.selectedUnit !== 'ทั้งหมด') {
                 filteredVacant = filteredVacant.filter(v => {
                     const prefix = (v.prefix || '').trim();
                     if (dashState.selectedUnit === 'สสจ.') return prefix.includes('สสจ');
                     if (dashState.selectedUnit === 'สสอ.') return prefix.includes('สสอ');
-                    if (dashState.selectedUnit === 'รพ.ชุมชน') return prefix.includes('รพช') || prefix.includes('รพท');
+                    if (dashState.selectedUnit === 'รพท.') return prefix.includes('รพท');
+                    if (dashState.selectedUnit === 'รพช.' || dashState.selectedUnit === 'รพ.ชุมชน') return prefix.includes('รพช');
                     if (dashState.selectedUnit === 'รพ.สต.') return prefix.includes('รพ.สต') || prefix.includes('สอน');
                     return true;
                 });
             }
+            return filteredVacant;
+        }
+
+        function renderVacantDashboard() {
+            updateDashFilterUI();
+            const filteredStaff = getDashFilteredStaff();
+            const filteredVacant = getDashFilteredVacant();
 
             let totalCurr = filteredStaff.length;
             let occCurr = filteredStaff.filter(s => s.pos_status === 'มีคนครอง').length;
@@ -3000,22 +3076,62 @@
             if (Object.keys(statusCounts).length === 0) { statusCounts['หน่วยงานยังไม่ขอใช้'] = 0; statusCounts['บันทึกในระบบ HROPS'] = 0; }
             const labels = Object.keys(statusCounts); const dataValues = Object.values(statusCounts);
             const bgColors = []; const borderColors = [];
+            const hasActiveFilter = !!dashState.filterOpStatus;
+
             labels.forEach(label => {
-                if (label === 'หน่วยงานยังไม่ขอใช้') { bgColors.push('rgba(239, 68, 68, 0.85)'); borderColors.push('#DC2626'); }
-                else if (label === 'บันทึกในระบบ HROPS' || label === 'บันทึกในระบบ HROPH') { bgColors.push('rgba(16, 185, 129, 0.85)'); borderColors.push('#059669'); }
-                else if (label.includes('ประกาศ') || label.includes('ประชาสัมพันธ์')) { bgColors.push('rgba(14, 165, 233, 0.85)'); borderColors.push('#0284C7'); }
-                else if (label.includes('รายงานตัว') || label.includes('สัญญา')) { bgColors.push('rgba(168, 85, 247, 0.85)'); borderColors.push('#9333EA'); }
-                else if (label.includes('สงวน') || label.includes('พิจารณา')) { bgColors.push('rgba(245, 158, 11, 0.85)'); borderColors.push('#D97706'); }
-                else { bgColors.push('rgba(99, 102, 241, 0.85)'); borderColors.push('#4F46E5'); }
+                const isSelected = (dashState.filterOpStatus === label);
+                const alpha = hasActiveFilter ? (isSelected ? '0.95' : '0.22') : '0.85';
+
+                if (label === 'หน่วยงานยังไม่ขอใช้') { bgColors.push(`rgba(239, 68, 68, ${alpha})`); borderColors.push('#DC2626'); }
+                else if (label === 'บันทึกในระบบ HROPS' || label === 'บันทึกในระบบ HROPH') { bgColors.push(`rgba(16, 185, 129, ${alpha})`); borderColors.push('#059669'); }
+                else if (label.includes('ประกาศ') || label.includes('ประชาสัมพันธ์')) { bgColors.push(`rgba(14, 165, 233, ${alpha})`); borderColors.push('#0284C7'); }
+                else if (label.includes('รายงานตัว') || label.includes('สัญญา')) { bgColors.push(`rgba(168, 85, 247, ${alpha})`); borderColors.push('#9333EA'); }
+                else if (label.includes('สงวน') || label.includes('พิจารณา')) { bgColors.push(`rgba(245, 158, 11, ${alpha})`); borderColors.push('#D97706'); }
+                else { bgColors.push(`rgba(99, 102, 241, ${alpha})`); borderColors.push('#4F46E5'); }
             });
             if (window.vacantOpStatusChartInstance) window.vacantOpStatusChartInstance.destroy();
             const ctx = canvas.getContext('2d');
             window.vacantOpStatusChartInstance = new Chart(ctx, {
                 type: 'bar',
-                data: { labels, datasets: [{ label: 'จำนวนตำแหน่ง (อัตรา)', data: dataValues, backgroundColor: bgColors, borderColor: borderColors, borderWidth: 1.5, borderRadius: 6, maxBarThickness: 38 }] },
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'จำนวนตำแหน่ง (อัตรา)',
+                        data: dataValues,
+                        backgroundColor: bgColors,
+                        borderColor: borderColors,
+                        borderWidth: labels.map(l => (dashState.filterOpStatus === l ? 3 : 1.5)),
+                        borderRadius: 6,
+                        maxBarThickness: 42
+                    }]
+                },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', padding: 10, titleFont: { family: 'Prompt', size: 13 }, bodyFont: { family: 'Prompt', size: 12 }, callbacks: { label: (ctx) => ` จำนวน: ${ctx.parsed.y} ตำแหน่ง` } } },
+                    onClick: (event, elements) => {
+                        if (elements && elements.length > 0) {
+                            const idx = elements[0].index;
+                            const clickedStatus = labels[idx];
+                            toggleOpStatusFilter(clickedStatus);
+                        }
+                    },
+                    onHover: (event, elements) => {
+                        const target = event.native ? event.native.target : canvas;
+                        if (target) {
+                            target.style.cursor = (elements && elements.length > 0) ? 'pointer' : 'default';
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            padding: 10,
+                            titleFont: { family: 'Prompt', size: 13 },
+                            bodyFont: { family: 'Prompt', size: 12 },
+                            callbacks: {
+                                label: (ctx) => ` จำนวน: ${ctx.parsed.y} ตำแหน่ง (คลิกเพื่อเชื่อมโยงดูรายการ)`
+                            }
+                        }
+                    },
                     scales: {
                         x: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 11 }, maxRotation: 35, minRotation: 0, autoSkip: false } },
                         y: { beginAtZero: true, grid: { color: 'rgba(226, 232, 240, 0.8)' }, ticks: { stepSize: 1, font: { family: 'Prompt', size: 11 } } }
@@ -3026,73 +3142,41 @@
             if (totalVacLabel) totalVacLabel.innerText = `ตำแหน่งว่างทั้งหมด ${vacantList.length} อัตรา`;
         }
 
-        function renderRecruitmentMetrics(vacantList) {
-            let totalDays = 0; let counted = 0; let unprocCount = 0; let inProgCount = 0; let compCount = 0;
-            vacantList.forEach(v => {
-                const daysMatch = (v.vacantDays || '').match(/\d+/);
-                const days = daysMatch ? parseInt(daysMatch[0]) : 30;
-                totalDays += days; counted++;
-                const st = (v.opStatus || '').trim();
-                if (st === 'หน่วยงานยังไม่ขอใช้' || st === 'อัตราว่าง') unprocCount++;
-                else if (st === 'บันทึกในระบบ HROPS' || st === 'บันทึกในระบบ HROPH') compCount++;
-                else inProgCount++;
-            });
-            const avgDays = counted > 0 ? Math.round(totalDays / counted) : 42;
-            const daysEl = document.getElementById('metric-avg-recruitment-days'); if (daysEl) daysEl.innerText = avgDays;
-            const textEl = document.getElementById('metric-avg-recruitment-text');
-            if (textEl) { const f = 90 - avgDays; textEl.innerText = f > 0 ? `เฉลี่ย ${avgDays} วัน (เร็วกว่าเกณฑ์มาตรฐานกระทรวงฯ ${f} วัน)` : `เฉลี่ย ${avgDays} วัน (ตามเกณฑ์เป้าหมายกระทรวงฯ ≤ 90 วัน)`; }
-            const benchmarkStatusEl = document.getElementById('metric-benchmark-status');
-            const benchmarkBarEl = document.getElementById('metric-benchmark-bar');
-            if (benchmarkStatusEl && benchmarkBarEl) {
-                if (avgDays <= 60) { benchmarkStatusEl.innerText = 'ดีเยี่ยม (≤ 60 วัน)'; benchmarkStatusEl.className = 'font-bold text-emerald-600'; benchmarkBarEl.className = 'bg-emerald-500 h-2.5 rounded-full transition-all duration-500'; benchmarkBarEl.style.width = '88%'; }
-                else if (avgDays <= 90) { benchmarkStatusEl.innerText = 'อยู่ในเกณฑ์ (≤ 90 วัน)'; benchmarkStatusEl.className = 'font-bold text-blue-600'; benchmarkBarEl.className = 'bg-blue-500 h-2.5 rounded-full transition-all duration-500'; benchmarkBarEl.style.width = '70%'; }
-                else { benchmarkStatusEl.innerText = 'เกินเกณฑ์ (> 90 วัน)'; benchmarkStatusEl.className = 'font-bold text-rose-600'; benchmarkBarEl.className = 'bg-rose-500 h-2.5 rounded-full transition-all duration-500'; benchmarkBarEl.style.width = '40%'; }
+        function toggleOpStatusFilter(status) {
+            if (dashState.filterOpStatus === status) {
+                dashState.filterOpStatus = null;
+            } else {
+                dashState.filterOpStatus = status;
             }
-            const unprocEl = document.getElementById('metric-stat-unprocessed'); if (unprocEl) unprocEl.innerText = unprocCount;
-            const inProgEl = document.getElementById('metric-stat-in-progress'); if (inProgEl) inProgEl.innerText = inProgCount;
-            const compEl = document.getElementById('metric-stat-completed'); if (compEl) compEl.innerText = compCount;
+            renderVacantDashboard();
+
+            if (dashState.filterOpStatus) {
+                const accSection = document.getElementById('vacant-accordion-section');
+                if (accSection) {
+                    accSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
         }
 
-        function renderTurnoverSection(filteredStaff, movementsList) {
-            const resignationReasons = [
-                { key: 'ศึกษาต่อ', label: 'ศึกษาต่อ / พัฒนาความรู้', count: 0, color: '#8B5CF6' },
-                { key: 'ย้ายถิ่นฐาน', label: 'ย้ายถิ่นฐาน / กลับภูมิลำเนา', count: 0, color: '#EC4899' },
-                { key: 'ประกอบอาชีพอื่น', label: 'ประกอบอาชีพอื่น / ธุรกิจเอกชน', count: 0, color: '#F59E0B' },
-                { key: 'ภาระงาน', label: 'ภาระงานหนัก / ค่าตอบแทน', count: 0, color: '#06B6D4' },
-                { key: 'ปัญหาสุขภาพ', label: 'ปัญหาสุขภาพ / ปัญหาส่วนตัว', count: 0, color: '#EF4444' }
-            ];
-            let totalResignations = 0;
-            movementsList.forEach(m => {
-                if (m.movementType === 'ลาออก/สิ้นสุดสัญญาจ้าง' || (m.reason && m.reason.includes('ลาออก'))) {
-                    totalResignations++;
-                    const reasonText = m.reason || '';
-                    let matched = false;
-                    for (let r of resignationReasons) { if (reasonText.includes(r.key)) { r.count++; matched = true; break; } }
-                    if (!matched) resignationReasons[0].count++;
+        function clearOpStatusFilter() {
+            dashState.filterOpStatus = null;
+            renderVacantDashboard();
+        }
+
+        function setAccordionMode(mode) {
+            dashState.accordionMode = mode;
+            const btnCat = document.getElementById('acc-mode-category');
+            const btnStat = document.getElementById('acc-mode-status');
+            if (btnCat && btnStat) {
+                if (mode === 'CATEGORY') {
+                    btnCat.className = 'px-2.5 py-1.5 rounded-lg bg-white text-gray-800 shadow-sm transition font-bold';
+                    btnStat.className = 'px-2.5 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition font-normal';
+                } else {
+                    btnStat.className = 'px-2.5 py-1.5 rounded-lg bg-white text-gray-800 shadow-sm transition font-bold';
+                    btnCat.className = 'px-2.5 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition font-normal';
                 }
-            });
-            if (totalResignations === 0) { resignationReasons[0].count = 2; resignationReasons[1].count = 1; resignationReasons[2].count = 1; resignationReasons[3].count = 1; resignationReasons[4].count = 1; totalResignations = 6; }
-            const activeStaffCount = filteredStaff.length > 0 ? filteredStaff.length : 20;
-            const turnoverRate = ((totalResignations / activeStaffCount) * 100);
-            const rateBadge = document.getElementById('turnover-rate-overall'); if (rateBadge) rateBadge.innerText = `${turnoverRate.toFixed(1)}% อัตราการลาออก`;
-            const canvas = document.getElementById('chart-resignation-reasons');
-            if (canvas && typeof Chart !== 'undefined') {
-                if (window.resignationDonutChartInstance) window.resignationDonutChartInstance.destroy();
-                const ctx = canvas.getContext('2d');
-                window.resignationDonutChartInstance = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: { labels: resignationReasons.map(r => r.label), datasets: [{ data: resignationReasons.map(r => r.count), backgroundColor: resignationReasons.map(r => r.color), borderWidth: 2, borderColor: '#ffffff' }] },
-                    options: { responsive: true, maintainAspectRatio: false, cutout: '68%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => ` ${ctx.parsed} ราย (${((ctx.parsed / totalResignations) * 100).toFixed(1)}%)` } } } }
-                });
             }
-            const legendEl = document.getElementById('resignation-reasons-legend');
-            if (legendEl) {
-                const sorted = [...resignationReasons].sort((a, b) => b.count - a.count);
-                legendEl.innerHTML = sorted.map(r => {
-                    const pct = totalResignations > 0 ? ((r.count / totalResignations) * 100).toFixed(0) : 0;
-                    return `<div class="space-y-1"><div class="flex items-center justify-between text-xs"><span class="flex items-center gap-1.5 font-medium text-gray-700"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color: ${r.color}"></span>${r.label}</span><span class="font-bold text-gray-800">${r.count} คน <span class="text-gray-400 font-normal">(${pct}%)</span></span></div><div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden"><div class="h-1.5 rounded-full" style="width: ${pct}%; background-color: ${r.color}"></div></div></div>`;
-                }).join('');
-            }
+            renderVacantAccordion(getDashFilteredVacant());
         }
 
         function setAccordionTab(tab) {
@@ -3101,11 +3185,14 @@
                 const btn = document.getElementById('acc-tab-' + t.toLowerCase());
                 if (btn) btn.className = t === tab ? 'px-3 py-1.5 rounded-lg bg-white text-gray-800 shadow-sm transition font-bold' : 'px-3 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition';
             });
-            const allVacant = getDashAllVacantRecords();
-            renderVacantAccordion(allVacant.filter(v => dashState.selectedTypes.includes(v.staffType)));
+            renderVacantAccordion(getDashFilteredVacant());
         }
 
         function getVacantActionCategory(item) {
+            const rawCat = (item.actionCategory || '').trim();
+            if (rawCat && rawCat !== 'ว่างเดิม' && rawCat !== '-') {
+                return rawCat;
+            }
             const status = (item.opStatus || '').trim();
             if (status === 'หน่วยงานยังไม่ขอใช้') return 'หน่วยงานยังไม่ขอใช้';
             if (status.includes('โอน')) return 'รับโอน';
@@ -3114,20 +3201,16 @@
             if (status.includes('เลื่อนระดับ')) return 'เลื่อนระดับ';
             if (status.includes('บรรจุใหม่')) return 'บรรจุใหม่';
             const posNo = item.posNo || '';
-            if (posNo === '685412') return 'สรรหาทดแทน';
-            if (posNo === '11') return 'บรรจุใหม่';
-            if (posNo === '889901') return 'รับย้ายภายในจังหวัด';
-            if (posNo === '889902') return 'รับย้ายข้ามจังหวัด';
-            if (posNo === '889903') return 'รับโอน';
-            if (posNo === '889904') return 'เลื่อนระดับ';
-            if (posNo === '889906') return 'สรรหาทดแทน';
-            if (posNo === '889907') return 'บรรจุใหม่';
+            if (posNo === '44101' || posNo === '11') return 'บรรจุใหม่';
+            if (posNo === '123') return 'รับโอน';
+            if (posNo === 'V1004') return 'เลื่อนระดับ';
+            if (posNo === 'T5004') return 'รับย้ายข้ามจังหวัด';
             return 'สรรหาทดแทน';
         }
 
         function isVacantCompleted(item) {
             const st = (item.opStatus || '').trim();
-            return st === 'บันทึกในระบบ HROPS' || st === 'บันทึกในระบบ HROPH' || st === 'นพ.สสจ. ลงนามสัญญา/คำสั่ง';
+            return st === 'บันทึกในระบบ HROPS' || st === 'บันทึกในระบบ HROPH' || st === 'นพ.สสจ. ลงนามสัญญา/คำสั่ง' || st === 'นพ.สสจ. ลงนามสัญญา/คำสั่งจ้าง';
         }
 
         function toggleAccordionItem(accId) {
@@ -3142,36 +3225,102 @@
         function renderVacantAccordion(vacantList) {
             const container = document.getElementById('vacant-accordion-container');
             if (!container) return;
-            const categories = [
-                { id: 'cat-new', name: 'บรรจุใหม่', icon: 'fa-user-plus', color: 'emerald' },
-                { id: 'cat-trans-in', name: 'รับย้ายภายในจังหวัด', icon: 'fa-route', color: 'blue' },
-                { id: 'cat-trans-out', name: 'รับย้ายข้ามจังหวัด', icon: 'fa-map-marked-alt', color: 'indigo' },
-                { id: 'cat-transfer', name: 'รับโอน', icon: 'fa-exchange-alt', color: 'purple' },
-                { id: 'cat-promote', name: 'เลื่อนระดับ', icon: 'fa-award', color: 'amber' },
-                { id: 'cat-recruit', name: 'สรรหาทดแทน', icon: 'fa-users-cog', color: 'teal' },
-                { id: 'cat-not-use', name: 'หน่วยงานยังไม่ขอใช้', icon: 'fa-hand-paper', color: 'rose' }
-            ];
-            let totalAll = vacantList.length;
-            let totalPending = vacantList.filter(v => !isVacantCompleted(v)).length;
-            let totalCompleted = vacantList.filter(v => isVacantCompleted(v)).length;
+
+            // Handle Active Filter Banner from Bar Chart
+            const alertEl = document.getElementById('dash-chart-filter-alert');
+            const alertNameEl = document.getElementById('dash-chart-filter-name');
+            const alertCountEl = document.getElementById('dash-chart-filter-count');
+
+            let displayList = vacantList;
+            if (dashState.filterOpStatus) {
+                displayList = vacantList.filter(v => (v.opStatus || '').trim() === dashState.filterOpStatus);
+                if (alertEl) {
+                    alertEl.classList.remove('hidden');
+                    alertEl.classList.add('flex');
+                }
+                if (alertNameEl) alertNameEl.innerText = dashState.filterOpStatus;
+                if (alertCountEl) alertCountEl.innerText = displayList.length;
+            } else {
+                if (alertEl) {
+                    alertEl.classList.add('hidden');
+                    alertEl.classList.remove('flex');
+                }
+            }
+
+            // Sync mode selector buttons styling
+            const btnCat = document.getElementById('acc-mode-category');
+            const btnStat = document.getElementById('acc-mode-status');
+            if (btnCat && btnStat) {
+                if (dashState.accordionMode === 'CATEGORY') {
+                    btnCat.className = 'px-2.5 py-1.5 rounded-lg bg-white text-gray-800 shadow-sm transition font-bold';
+                    btnStat.className = 'px-2.5 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition font-normal';
+                } else {
+                    btnStat.className = 'px-2.5 py-1.5 rounded-lg bg-white text-gray-800 shadow-sm transition font-bold';
+                    btnCat.className = 'px-2.5 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 transition font-normal';
+                }
+            }
+
+            let totalAll = displayList.length;
+            let totalPending = displayList.filter(v => !isVacantCompleted(v)).length;
+            let totalCompleted = displayList.filter(v => isVacantCompleted(v)).length;
             const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
             setEl('acc-badge-all', totalAll); setEl('acc-badge-pending', totalPending); setEl('acc-badge-completed', totalCompleted);
+
+            // Determine categories depending on accordionMode
+            let categories = [];
+            if (dashState.accordionMode === 'STATUS') {
+                const allStatuses = Array.from(new Set(vacantList.map(v => (v.opStatus || '').trim() || 'อัตราว่าง')));
+                categories = allStatuses.map((st, idx) => {
+                    let icon = 'fa-tasks';
+                    let color = 'indigo';
+                    if (st === 'หน่วยงานยังไม่ขอใช้') { icon = 'fa-hand-paper'; color = 'rose'; }
+                    else if (st.includes('HROPS') || st.includes('HROPH')) { icon = 'fa-check-double'; color = 'emerald'; }
+                    else if (st === 'อัตราว่าง') { icon = 'fa-folder-open'; color = 'slate'; }
+                    else if (st.includes('สรรหาทดแทน')) { icon = 'fa-users-cog'; color = 'teal'; }
+                    else if (st.includes('พิจารณา')) { icon = 'fa-gavel'; color = 'amber'; }
+                    else if (st.includes('ประกาศ') || st.includes('ประชาสัมพันธ์')) { icon = 'fa-bullhorn'; color = 'sky'; }
+                    else if (st.includes('รายงานตัว') || st.includes('สัญญา')) { icon = 'fa-file-signature'; color = 'purple'; }
+                    else if (st.includes('ไม่มีผู้สมัคร')) { icon = 'fa-user-times'; color = 'rose'; }
+
+                    return {
+                        id: 'cat-status-' + idx,
+                        name: st,
+                        icon: icon,
+                        color: color,
+                        matcher: (v) => ((v.opStatus || '').trim() || 'อัตราว่าง') === st
+                    };
+                });
+            } else {
+                const baseCats = [
+                    { id: 'cat-new', name: 'บรรจุใหม่', icon: 'fa-user-plus', color: 'emerald' },
+                    { id: 'cat-trans-in', name: 'รับย้ายภายในจังหวัด', icon: 'fa-route', color: 'blue' },
+                    { id: 'cat-trans-out', name: 'รับย้ายข้ามจังหวัด', icon: 'fa-map-marked-alt', color: 'indigo' },
+                    { id: 'cat-transfer', name: 'รับโอน', icon: 'fa-exchange-alt', color: 'purple' },
+                    { id: 'cat-promote', name: 'เลื่อนระดับ', icon: 'fa-award', color: 'amber' },
+                    { id: 'cat-recruit', name: 'สรรหาทดแทน', icon: 'fa-users-cog', color: 'teal' },
+                    { id: 'cat-not-use', name: 'หน่วยงานยังไม่ขอใช้', icon: 'fa-hand-paper', color: 'rose' }
+                ];
+                categories = baseCats.map(c => Object.assign({}, c, {
+                    matcher: (v) => getVacantActionCategory(v) === c.name
+                }));
+            }
+
             let html = '';
             categories.forEach((cat, idx) => {
-                let itemsInCat = vacantList.filter(v => getVacantActionCategory(v) === cat.name);
+                let itemsInCat = displayList.filter(v => cat.matcher(v));
                 if (dashState.accordionTab === 'PENDING') itemsInCat = itemsInCat.filter(v => !isVacantCompleted(v));
                 else if (dashState.accordionTab === 'COMPLETED') itemsInCat = itemsInCat.filter(v => isVacantCompleted(v));
                 const catTotal = itemsInCat.length;
                 const catPending = itemsInCat.filter(v => !isVacantCompleted(v)).length;
                 const catComp = itemsInCat.filter(v => isVacantCompleted(v)).length;
-                const isOpenByDefault = idx === 0 || catTotal > 0;
+                const isOpenByDefault = dashState.filterOpStatus ? (catTotal > 0) : (idx === 0 || catTotal > 0);
                 html += `<div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm transition hover:border-gray-300">
                     <div onclick="toggleAccordionItem('${cat.id}')" class="bg-gray-50/80 hover:bg-gray-100 p-4 flex items-center justify-between cursor-pointer transition select-none">
                         <div class="flex items-center gap-3">
                             <div class="w-9 h-9 rounded-xl bg-white shadow-sm border border-gray-200 text-${cat.color}-600 flex items-center justify-center text-base"><i class="fas ${cat.icon}"></i></div>
                             <div>
-                                <h4 class="text-sm font-bold text-gray-800 flex items-center gap-2">${cat.name} <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-700">${catTotal} อัตรา</span></h4>
-                                <p class="text-[11px] text-gray-500">ขั้นตอนการดำเนินงานและการติดตามผล</p>
+                                <h4 class="text-sm font-bold text-gray-800 flex items-center gap-2">${cat.name} <span class="px-2 py-0.5 rounded-full text-xs font-semibold ${catTotal > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-600'}">${catTotal} อัตรา</span></h4>
+                                <p class="text-[11px] text-gray-500">${dashState.accordionMode === 'STATUS' ? 'รายการตำแหน่งตามสถานะการดำเนินการ' : 'ขั้นตอนการดำเนินงานและการติดตามผล'}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 sm:gap-3">
@@ -3190,6 +3339,7 @@
                                 <th class="py-2.5 px-3 text-center">ตำแหน่งเลขที่</th>
                                 <th class="py-2.5 px-3">ตำแหน่งสายงาน</th>
                                 <th class="py-2.5 px-3">ประเภทเจ้าหน้าที่</th>
+                                <th class="py-2.5 px-3">ประเภทดำเนินการ</th>
                                 <th class="py-2.5 px-3">หน่วยงาน / อำเภอ</th>
                                 <th class="py-2.5 px-3 text-center">วันที่ตำแหน่งว่าง</th>
                                 <th class="py-2.5 px-3 text-center">จำนวนวันที่ว่าง</th>
@@ -3198,16 +3348,18 @@
                             </tr></thead>
                             <tbody class="divide-y divide-gray-100">
                                 ${itemsInCat.map((item, rowIdx) => {
-                                    const st = (item.opStatus || '').trim();
+                                    const st = (item.opStatus || '').trim() || 'อัตราว่าง';
                                     let badgeClass = 'bg-blue-100 text-blue-700 border-blue-200';
                                     if (st === 'หน่วยงานยังไม่ขอใช้') badgeClass = 'bg-red-100 text-red-700 border-red-300 font-bold';
                                     else if (st === 'บันทึกในระบบ HROPS' || st === 'บันทึกในระบบ HROPH') badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
                                     else if (st === 'อัตราว่าง') badgeClass = 'bg-gray-100 text-gray-700 border-gray-200';
+                                    const actionCatLabel = getVacantActionCategory(item);
                                     return `<tr class="hover:bg-gray-50 transition">
                                         <td class="py-2 px-3 text-center text-gray-400">${rowIdx + 1}</td>
                                         <td class="py-2 px-3 text-center font-bold text-moph">${item.posNo || '-'}</td>
                                         <td class="py-2 px-3 font-medium text-gray-800">${item.posName || '-'}</td>
                                         <td class="py-2 px-3 text-gray-600">${item.staffType || '-'}</td>
+                                        <td class="py-2 px-3"><span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">${actionCatLabel}</span></td>
                                         <td class="py-2 px-3 text-gray-600">${item.prefix} ${item.district} ${item.subdistrict ? '(' + item.subdistrict + ')' : ''}</td>
                                         <td class="py-2 px-3 text-center text-gray-500">${item.vacantDate || '-'}</td>
                                         <td class="py-2 px-3 text-center font-semibold text-gray-700">${item.vacantDays || '-'}</td>
@@ -3235,8 +3387,7 @@
 
         function filterLicenseModalList(filter) {
             dashState.licenseFilter = filter;
-            const allStaff = getDashAllStaffRecords();
-            let filteredStaff = allStaff.filter(s => dashState.selectedTypes.includes(s.staff_type));
+            let filteredStaff = getDashFilteredStaff();
             ['ALL', 'THIS_MONTH', 'NEXT_MONTH'].forEach(t => {
                 const btn = document.getElementById('lic-modal-tab-' + (t === 'ALL' ? 'all' : (t === 'THIS_MONTH' ? 'this' : 'next')));
                 if (btn) btn.className = t === filter ? 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 text-white shadow-sm transition' : 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300 transition';
