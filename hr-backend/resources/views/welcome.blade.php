@@ -1018,7 +1018,7 @@
                                           <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('tr').remove(); saveToLocalStorage();"><i class="fas fa-trash"></i></button>
                                       </td>
                                   </tr>
-                                  <tr class="hover:bg-gray-50 transition" data-opstatus="บันทึกในระบบ HROPH" data-opresult="ผ่าน">
+                                  <tr class="hover:bg-gray-50 transition" data-opstatus="บันทึกในระบบ HROPS" data-opresult="ผ่าน">
                                       <td class="text-center">7</td>
                                       <td>สสจ.</td>
                                       <td>เมืองศรีสะเกษ</td>
@@ -1028,7 +1028,7 @@
                                       <td>พนักงานกระทรวงสาธารณสุข</td>
                                       <td class="text-center">15/05/2569</td>
                                       <td class="text-center">5 เดือน 10 วัน</td>
-                                      <td class="text-center"><div class="leading-tight font-semibold text-emerald-600">บันทึกในระบบ HROPH<div class="text-xs text-green-600 font-medium mt-1"><i class="fas fa-check-circle"></i> ผ่าน</div></div></td>
+                                      <td class="text-center"><div class="leading-tight font-semibold text-emerald-600">บันทึกในระบบ HROPS<div class="text-xs text-green-600 font-medium mt-1"><i class="fas fa-check-circle"></i> ผ่าน</div></div></td>
                                       <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
                                       <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
                                       <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
@@ -1938,7 +1938,6 @@
                     "ส่งสัญญาจ้างให้ สสจ.",
                     "นพ.สสจ. ลงนามสัญญา/คำสั่งจ้าง",
                     "บันทึกในระบบ HROPS",
-                    "บันทึกในระบบ HROPH",
                     "ไม่มีผู้สมัคร/ไม่มีผู้ผ่านการคัดเลือก/เปลี่ยนเงื่อนไข"
                 ];
                 
@@ -2163,7 +2162,7 @@
                     let currentStatus = (item.position_status || '').trim();
                     const pNo = String(item.position_number || '').trim();
                     if (vacantMap[pNo] !== undefined) {
-                        const expectedStatus = (vacantMap[pNo] === 'บันทึกในระบบ HROPH') ? 'มีคนครอง' : 'ไม่มีคนครอง';
+                        const expectedStatus = (vacantMap[pNo] === 'บันทึกในระบบ HROPS' || vacantMap[pNo] === 'บันทึกในระบบ HROPH') ? 'มีคนครอง' : 'ไม่มีคนครอง';
                         if (currentStatus !== expectedStatus) {
                             currentStatus = expectedStatus;
                             item.position_status = expectedStatus;
@@ -2874,7 +2873,7 @@
                             const posNo = tds[1].innerText.trim();
                             let posStatus = tds[2].innerText.includes('ไม่มีคนครอง') ? 'ไม่มีคนครอง' : 'มีคนครอง';
                             if (posNo && vacantMap[posNo] !== undefined) {
-                                posStatus = (vacantMap[posNo] === 'บันทึกในระบบ HROPH') ? 'มีคนครอง' : 'ไม่มีคนครอง';
+                                posStatus = (vacantMap[posNo] === 'บันทึกในระบบ HROPS' || vacantMap[posNo] === 'บันทึกในระบบ HROPH') ? 'มีคนครอง' : 'ไม่มีคนครอง';
                             }
                             records.push({
                                 pos_no: posNo, pos_status: posStatus,
@@ -2901,7 +2900,7 @@
                         let posStatus = item.pos_status || 'มีคนครอง';
                         const pNo = String(item.pos_no || '').trim();
                         if (pNo && vacantMap[pNo] !== undefined) {
-                            posStatus = (vacantMap[pNo] === 'บันทึกในระบบ HROPH') ? 'มีคนครอง' : 'ไม่มีคนครอง';
+                            posStatus = (vacantMap[pNo] === 'บันทึกในระบบ HROPS' || vacantMap[pNo] === 'บันทึกในระบบ HROPH') ? 'มีคนครอง' : 'ไม่มีคนครอง';
                         }
                         records.push(Object.assign({}, item, { staff_type: t, pos_status: posStatus }));
                     });
